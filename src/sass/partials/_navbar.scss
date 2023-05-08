@@ -1,0 +1,89 @@
+nav {
+    width: 100%;
+    align-items: center;
+    color: $light;
+    font-size: 1.2em;
+    .upperNav {
+        justify-content: space-between;
+        @media screen and (min-width:768px) {
+            border-bottom: 1px solid $light;
+            justify-content: center;
+        }
+    }
+
+    .mobile-nav-btn{
+        font-size: 2.25em;
+        &:focus, &:active {
+            border: 1px solid $light;
+            border-radius: 0.1em;
+        }
+    }
+
+    #navLogo {
+        width: 60px;
+    }
+    
+    .nav-link {
+        font-size: 1.1em;
+        color: inherit;
+        padding: 0.35em;
+        &:hover, &::selection, &:active, &:focus {
+            text-decoration: none;
+            color: inherit;
+            font-weight: 600;
+        }
+        @media screen and (max-width: 767px) {
+            &:nth-child(2) {
+                border-bottom: 1px solid $light;
+            }
+        }
+    }
+
+    .link-login{
+        font-size: 1.2em;
+    }
+
+    .navbar-nav .show > .nav-link, .navbar-nav .nav-link.active {
+        color: inherit;
+        font-weight: 600;
+    }
+
+    .login-dropdown {
+        position: relative;
+    }
+
+    .l-dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 0.5rem);
+        background-color: $primary;
+        padding: 0.75rem;
+        border-radius: 0.25rem;
+        -webkit-box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.3); 
+        box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.3);
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 150ms ease-in-out;
+        pointer-events: none;
+    }
+
+    .mobile-dropdown-menu {
+        @extend .l-dropdown-menu;
+        top: 100%;
+        min-width: 300px;
+    }
+
+    .login-dropdown.active > #login-drop-btn + .l-dropdown-menu, .nav-dropdown.active > .mobile-nav-btn + .mobile-dropdown-menu {
+        opacity: 1;
+        transform: translateY(0px);
+        pointer-events: auto;
+    }
+
+    .login-form {
+        input, label {
+            margin: 0.3em 0;
+        }
+
+        border-bottom: 1px solid $light;
+    }
+}

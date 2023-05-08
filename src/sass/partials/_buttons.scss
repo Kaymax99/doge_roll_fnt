@@ -1,0 +1,13 @@
+#login-drop-btn {
+    background-color: inherit;
+    border: none;
+}
+#login-btn {
+    border:none;
+    border-radius: 0.25em;
+    color:inherit;
+    background-color: $secondary;
+    padding: 0.25em 0.5em;
+    -webkit-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.15); 
+        box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.15);
+}

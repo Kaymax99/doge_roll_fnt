@@ -4,10 +4,12 @@
 @import "node_modules/bootstrap/scss/mixins";
 
 //Bootstrap overrides
-@import "./partials/custom.scss";
+@import "./partials/custom";
 
-//Saving bootstrap customizations
 //Saving bootstrap customizations
 @import "node_modules/bootstrap/scss/bootstrap";
 
 //Custom imports
+@import "./partials/reset";
+@import "./partials/navbar";
+@import "./partials/buttons";
