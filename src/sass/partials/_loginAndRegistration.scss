@@ -1,0 +1,71 @@
+#regPageContainer {
+  background-image: url(https://i.imgur.com/8uvc7Le.jpg);
+  background-position: center;
+  background-size: cover;
+  min-height: 100vh;
+}
+.bgBlur {
+  min-height: 100vh;
+  backdrop-filter: blur(5px);
+}
+
+#registrationPage {
+background-color: #ccccccdd;
+padding: 12px 0;
+@media screen and (min-width:600.5px) {
+  padding: 12px;
+}
+> .container {
+  max-width: 75%;
+  @media screen and (max-width:575px) {
+    max-width: 100%;
+  }
+}
+}
+
+.headingMsg {
+  font-family: 'Cinzel', serif;
+  @media screen and (max-width:600px) {
+    font-size: 1.5em;
+  }
+}
+
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+  background-color: $light;
+  @media screen and (min-width:600px) {
+    padding:48px
+  }
+}
+
+.tab {
+  overflow: hidden;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  .tablinks {
+    width: 50%;
+    background-color: transparent;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-weight: 600;
+    @media screen and (min-width:600.5px) {
+      font-size: 1.2em;
+    }
+    &:hover {
+      background-color: #ddddddab;
+    }
+    &.activeSign {
+      color:black;
+      background-color: $light;
+      border-top: 5px solid $secondary;
+    }
+  }
+}

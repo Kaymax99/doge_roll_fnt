@@ -3,6 +3,7 @@ import './sass/app.scss';
 import { Route, Routes } from 'react-router-dom';
 import { GamePage } from './components/GamePage';
 import { CustomNavbar } from './components/CustomNavbar';
+import { LoginAndRegistration } from './components/LoginAndRegistration';
 
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
       <CustomNavbar/>
       <Routes>
         <Route path='/' element={<h1>Hi</h1>} />
-        <Route path='/register' element={<h1>Register pls</h1>} />
+        <Route path='/account/login' element={<LoginAndRegistration/>} />
+        <Route path='/account/register' element={<LoginAndRegistration/>} />
         <Route path='*' element={<h1>Not found</h1>} />
       </Routes>
     </>
