@@ -2,8 +2,11 @@ import {Navbar, Container, Nav, NavDropdown, Row, Col} from "react-bootstrap"
 import { Link } from "react-router-dom"
 import logo from "../assets/img/logo.png"
 import {List} from "react-bootstrap-icons"
+import { useAppSelector } from "../hooks/hooks"
 
 export const CustomNavbar = () => {
+
+    const user = useAppSelector((state) => state.user.content);
 
     return (
         <>
@@ -30,7 +33,7 @@ export const CustomNavbar = () => {
                                 <Link to={"/search"} className="nav-link px-3">Join a Game (WIP)</Link>
                             </Col>
                             <Col xs ={4} className="d-flex justify-content-end">
-                                <Link to={"/account/login"} id="login-drop-btn" className="nav-link px-0">Log in/Register</Link>
+                                {!user?.username ? <Link to={"/account/login"} id="login-drop-btn" className="nav-link px-0">Log in/Register</Link> : <Link to={"/account/" + user.username} className="nav-link px-0">{user.username}</Link>}
                             </Col>
                         </Nav>
                     </Col>

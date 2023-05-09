@@ -1,23 +1,25 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
-import { accountActions } from "./fetch/AccountHandle"
-import { AccountData, LoginData } from "../App";
+import { IAccountData, IUserData, LoginData } from "../App";
+import { useAppDispatch } from "../hooks/hooks";
+import { LOG_IN } from "../redux/reducers/userReducer";
 
 
 export const LoginAndRegistration = () => {
-    const [regData, setRegData] = useState({
-        "name": "",
-        "surname": "",
-        "username": "",
-        "email": "",
-        "password": "",
+    const [regData, setRegData] = useState<IAccountData>({
+        name: "",
+        surname: "",
+        username: "",
+        email: "",
+        password: "",
     })
     const [logData, setLogData] = useState({
         "username": "",
         "password": "",
     })
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         hideTabContent();
@@ -31,9 +33,9 @@ export const LoginAndRegistration = () => {
             }
         } else if (window.location.href.slice(22) === "account/register") {
             tabcontent[1].style.display = "block";
-            const loginTab = document.getElementById("registerTabBtn");
-            if (loginTab) {
-                loginTab.className += " activeSign";
+            const registerTab = document.getElementById("registerTabBtn");
+            if (registerTab) {
+                registerTab.className += " activeSign";
             }
         }
     }, [window.location.href]) 
@@ -75,13 +77,42 @@ export const LoginAndRegistration = () => {
             setLogData({ ...logData, [propertyName]: propertyValue })
         }
       }
-    const handleSubmit = async (e: React.SyntheticEvent, action: string, data: AccountData | LoginData) => {
+    const handleSubmit = async (e: React.SyntheticEvent, action: string, data: IAccountData | LoginData) => {
         e.preventDefault();
-        if (action === "register") {
-            accountActions(data, action);
-        } else if (action === "login") {
-            const userData = await accountActions(data, action)
-        
+        accountActions(data, action);
+    }
+    
+    const baseUrl = `http://localhost:8080/api/auth/`;
+
+    const accountActions = async (data: IAccountData | LoginData, endpoint: string) => {
+        try {
+            const res = await fetch(baseUrl + endpoint, {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            if (res.ok) {
+                if (endpoint === "register") {
+                    accountActions(data, "login")
+                } else {
+                    console.log("Logged in!");
+                    const userData = await res.json();
+
+                    console.log(regData)
+                    const newUser: IUserData = {
+                        name: regData.name,
+                        surname: regData.surname,
+                        username: regData.username,
+                        email: regData.email,
+                        accessToken: userData.accessToken,
+                    }
+                    dispatch({type: LOG_IN, payload: newUser})
+                }
+            }
+        } catch (error) {
+            console.log("FATAL ERROR: ", error)
         }
     }
 
