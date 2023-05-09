@@ -5,6 +5,17 @@ import { GamePage } from './components/GamePage';
 import { CustomNavbar } from './components/CustomNavbar';
 import { LoginAndRegistration } from './components/LoginAndRegistration';
 
+export type AccountData = {
+  name: string;
+  surname: string;
+  username: string;
+  email: string;
+  password: string;
+}
+export type LoginData = {
+  username: string;
+  password: string;
+}
 
 function App() {
 

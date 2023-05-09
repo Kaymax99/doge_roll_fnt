@@ -1,9 +1,22 @@
-import { useEffect } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap"
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { accountActions } from "./fetch/AccountHandle"
+import { AccountData, LoginData } from "../App";
 
 
 export const LoginAndRegistration = () => {
+    const [regData, setRegData] = useState({
+        "name": "",
+        "surname": "",
+        "username": "",
+        "email": "",
+        "password": "",
+    })
+    const [logData, setLogData] = useState({
+        "username": "",
+        "password": "",
+    })
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -55,6 +68,23 @@ export const LoginAndRegistration = () => {
         navigate("/account/" + signType);
     }
 
+    const handleChange = (propertyName: string, propertyValue: string, type: string) => {
+        if (type === "register") {
+            setRegData({ ...regData, [propertyName]: propertyValue });
+        } else if (type === "login") {
+            setLogData({ ...logData, [propertyName]: propertyValue })
+        }
+      }
+    const handleSubmit = async (e: React.SyntheticEvent, action: string, data: AccountData | LoginData) => {
+        e.preventDefault();
+        if (action === "register") {
+            accountActions(data, action);
+        } else if (action === "login") {
+            const userData = await accountActions(data, action)
+        
+        }
+    }
+
     return (
         <>
         <div id="regPageContainer">
@@ -71,16 +101,28 @@ export const LoginAndRegistration = () => {
                                 <h1 className="text-secondary headingMsg">Welcome back!</h1>
                             </div>
                             <Form>
-                                <Form.Group className="mb-3" controlId="email">
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control type="email" placeholder="Enter your email address" />
+                                <Form.Group className="mb-3" controlId="logInEmail">
+                                    <Form.Label>Username</Form.Label>
+                                    <Form.Control 
+                                    type="username" 
+                                    placeholder="Enter your username"
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange("username", e.target.value, "login")}
+                                     />
                                 </Form.Group>
-                                <Form.Group className="mb-3" controlId="password">
+                                <Form.Group className="mb-3" controlId="logInPassword">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" placeholder="Password" />
+                                    <Form.Control 
+                                    type="password"
+                                    placeholder="Password"
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange("password", e.target.value, "login")}
+                                     />
                                 </Form.Group>
                                 <div className="text-center">
-                                    <Button variant="primary" className="text-light my-3" type="submit">
+                                    <Button 
+                                    variant="primary" 
+                                    className="text-light my-3" 
+                                    type="submit"
+                                    onClick={(e) => handleSubmit(e, "login", logData)}>
                                         Login
                                     </Button>
                                 </div>
@@ -95,22 +137,43 @@ export const LoginAndRegistration = () => {
                             <Form>
                                 <Form.Group className="mb-3" controlId="name">
                                     <Form.Label>First Name</Form.Label>
-                                    <Form.Control type="name" placeholder="Enter your name" />
+                                    <Form.Control 
+                                    type="name"
+                                    placeholder="Enter your name"
+                                    value={regData.name}
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange("name", e.target.value, "register")}
+                                    />
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="surname">
                                     <Form.Label>Last Name</Form.Label>
-                                    <Form.Control type="surname" placeholder="Enter surname" />
+                                    <Form.Control 
+                                    type="surname" 
+                                    placeholder="Enter surname" 
+                                    value={regData.surname}
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange("surname", e.target.value, "register")}
+                                    />
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="username">
                                     <Form.Label>Username</Form.Label>
-                                    <Form.Control type="username" placeholder="Enter a nickname" />
+                                    <Form.Control 
+                                    type="username"
+                                    value={regData.username}
+                                    placeholder="Enter a nickname"
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange("username", e.target.value, "register")}
+                                    />
+
                                 </Form.Group>
 
                                 <Form.Group className="mb-3" controlId="email">
                                     <Form.Label>Email address</Form.Label>
-                                    <Form.Control type="email" placeholder="Enter email address" />
+                                    <Form.Control 
+                                    type="email"
+                                    value={regData.email}
+                                    placeholder="Enter email address"
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange("email", e.target.value, "register")}
+                                    />
                                     <Form.Text className="text-muted">
                                     We'll never share your email with anyone else.
                                     </Form.Text>
@@ -118,10 +181,20 @@ export const LoginAndRegistration = () => {
 
                                 <Form.Group className="mb-3" controlId="password">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" placeholder="Password" />
+                                    <Form.Control 
+                                    type="password"
+                                    value={regData.password}
+                                    placeholder="Password"
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange("password", e.target.value, "register")}
+                                    />
                                 </Form.Group>
                                 <div className="text-center">
-                                    <Button variant="primary" className="text-light my-3" type="submit">
+                                    <Button 
+                                    variant="primary" 
+                                    className="text-light my-3" 
+                                    type="submit"
+                                    onClick={(e) => handleSubmit(e, "register", regData)}
+                                    >
                                         Create a new account
                                     </Button>
                                 </div>
