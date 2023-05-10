@@ -2,9 +2,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './sass/app.scss';
 import { Route, Routes } from 'react-router-dom';
 import { GamePage } from './components/GamePage';
-import { CustomNavbar } from './components/CustomNavbar';
 import { LoginAndRegistration } from './components/LoginAndRegistration';
 import { Home } from './components/Home';
+import { WithoutNavbar } from './components/navHandling/WithoutNavbar';
+import { WithNavbar } from './components/navHandling/WithNavbar';
 
 export interface IAccountData {
   name: string;
@@ -31,12 +32,16 @@ function App() {
 
   return (
     <>
-      <CustomNavbar/>
       <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/account/login' element={<LoginAndRegistration/>} />
-        <Route path='/account/register' element={<LoginAndRegistration/>} />
-        <Route path='*' element={<h1>Not found</h1>} />
+        <Route element={<WithNavbar/>}>
+          <Route path='/' element={<Home/>} />
+          <Route path='/account/login' element={<LoginAndRegistration/>} />
+          <Route path='/account/register' element={<LoginAndRegistration/>} />
+          <Route path='*' element={<h1>Not found</h1>} />
+        </Route>
+        <Route element={<WithoutNavbar/>}>
+          <Route path='/play' element={<GamePage/>} />
+        </Route>
       </Routes>
     </>
   )

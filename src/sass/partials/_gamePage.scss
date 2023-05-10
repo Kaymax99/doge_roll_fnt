@@ -1,0 +1,43 @@
+  .sidebar {
+    position: absolute;
+    top: 0px;
+    left: -300px;
+    height: 100%;
+    width: 300px;
+    transition: left 0.3s ease-in-out;
+    background-color: $primary;
+    color: $light
+  }
+  .sidebar-toggle {
+    position: absolute;
+    top: 20%;
+    right: -60px;
+    height: 60px;
+    width: 60px;
+    z-index: 1;
+  }
+  .content {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    height: 100%;
+    transition: left 0.3s ease-in-out;
+    background-color: $dark;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .content.open {
+    left: 300px;
+  }
+  #gameScreen {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+.canvas-container {
+    margin: 0 auto;
+    margin-top: 5em;
+    text-align: center;
+}
+  

@@ -17,14 +17,11 @@ export const userReducer = (
      ) => {
     switch (action.type) {
         case LOG_IN:
-            console.log("logging in...")
-            console.log(action.payload)
             return {
                 ...state,
                 content: action.payload,
             }
         default:
-            console.log("Nope!")
             return state;
     }
 }

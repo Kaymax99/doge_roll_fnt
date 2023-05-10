@@ -7,7 +7,7 @@ import { useAppSelector } from "../hooks/hooks"
 export const CustomNavbar = () => {
 
     const user = useAppSelector((state) => state.user.content);
-
+    
     return (
         <>
         <Navbar bg="primary" className="p-0">
@@ -29,7 +29,8 @@ export const CustomNavbar = () => {
                     <Col md={12} className="d-flex py-2 justify-content-center d-none d-md-flex">
                         <Nav className="w-100">
                             <Col xs ={8} className="d-flex">
-                                <Link to={"/account/register"} className="nav-link me-3">Play Now</Link>
+                                {/* <Link to={"/account/register"} className="nav-link me-3">Play Now</Link> */}
+                                <Link to={"/play"} className="nav-link me-3">Play Now</Link>
                                 <Link to={"/search"} className="nav-link px-3">Join a Game (WIP)</Link>
                             </Col>
                             <Col xs ={4} className="d-flex justify-content-end">
@@ -40,6 +41,7 @@ export const CustomNavbar = () => {
                 </Row>
             </Container>
         </Navbar>
+
         </>
     )
 }
