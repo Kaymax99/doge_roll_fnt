@@ -1,12 +1,17 @@
-import { Col, Container } from "react-bootstrap"
+import { Button, Col, Container } from "react-bootstrap"
 import { fabric } from "fabric";
 import { useEffect, useRef, useState } from "react";
 import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid} from "../hooks/canvasLogic";
+import { CharacterModal } from "./CharacterModal";
 
 
 export const GamePage = () => {
     const [sidebarOpen, setSideBarOpen] = useState(false);
     const canvas = useRef<fabric.Canvas>();
+
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
 
     useEffect( () => {
         //creating canvas
@@ -53,10 +58,11 @@ export const GamePage = () => {
     const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar";
 
     return (
-        <div>
+        <div className="overflow-hidden">
             <canvas id="gameScreen" width="800" height="800"></canvas>
             <div className={sidebarClass}>
-                <div> Sliding </div>
+                <Button variant="secondary" className="my-2" onClick={handleShow}>Open test Character sheet</Button>
+                <CharacterModal show={show} handleClose={handleClose}/>
                 <div> Down </div>
                 <div> The hill </div>
                 <button onClick={handleViewSidebar} className="sidebar-toggle">

@@ -1,0 +1,51 @@
+.modal-content, .modal-dialog {
+    min-width: 80vw;
+}
+.charSheetInfo{
+    display: flex;
+    align-items: center;
+}
+
+.charInputField{
+    border: none;
+    border-bottom: 1px solid $dark;
+}
+.charLabel{
+    color: gray;
+}
+
+.charSelect > div{
+    border: none;
+    div > span {
+        display: none;
+    }
+}
+
+.charInputField{
+    &:focus {
+        outline: none;
+    }
+    input {
+        @extend .charInputField;
+    }
+}
+.charLvl{
+    min-width: 70px
+}
+.charRndBorder{
+    background-color: white;
+    border: 2px solid black;
+    border-bottom-right-radius: 15px 50%;;
+    border-bottom-left-radius: 15px 50%;;
+    border-top-right-radius: 15px 50%;;
+    border-top-left-radius: 15px 50%;;
+    &:nth-child(1) {
+        margin-right: -6px;
+        @media screen and (min-width:768px) {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+    }
+    /* overflow: hidden; */
+    margin-bottom: 16px;
+}
