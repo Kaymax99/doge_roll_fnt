@@ -1,19 +1,23 @@
 import { Component } from "react";
 import { Col, Container, Row, Button, Modal } from "react-bootstrap";
 import DnDCharacter from "./DnDCharacter";
+import { createCharacter } from "../../hooks/fetch/gameFetches";
 
 interface IDnDCharacterSheetProps {
     character?: DnDCharacter
     show: boolean;
     handleClose: () => void;
+    updateChars: () => Promise<void>;
 }
 
 interface IDnDCharacterSheetState {
     character: DnDCharacter
+    isNewCharacter: boolean
   }
 
 const initialState: IDnDCharacterSheetState = {
-    character: {}
+    character: {},
+    isNewCharacter: true
 }
 
 export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCharacterSheetState> {
@@ -25,8 +29,11 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     componentDidMount() {
         if (this.props.character) {
-            this.setState( {character: this.props.character})
-        } 
+            this.setState( {character: this.props.character, isNewCharacter: false})
+        } else {
+            const newCharacter: DnDCharacter = {}
+            this.setState({character: newCharacter})
+        }
     }
 
     checkForCharChange() {
@@ -51,9 +58,13 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        console.log(this.state.character)
         this.props.handleClose();
-        console.log(typeof this.state.character.classLevel)
-        console.log(typeof this.state.character.xp)
+    }
+    newCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        createCharacter("", this.state.character,this.props.updateChars)
+        this.props.handleClose();
     }
 
     render() {
@@ -89,8 +100,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                 <input 
                                                 type="text"
                                                 className="border-0 me-2 w-100 ps-2"
-                                                value={character.class ? character.class : ""}
-                                                onChange={(e) => this.characterChange("class", e.target.value)}
+                                                value={character.charClass ? character.charClass : ""}
+                                                onChange={(e) => this.characterChange("charClass", e.target.value)}
                                                 />
                                                 <input 
                                                 type="number"
@@ -154,7 +165,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                 </Col>
                                                 <Col xs={1}>/</Col>
                                                 <Col className="flex-grow-1 text-center">
-                                                    <span>20000</span>
+                                                    <span>355,000</span>
                                                 </Col>
                                             </div>
                                             <label className="charLabel">Exp Points</label>
@@ -168,12 +179,12 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                         </Row>
                     </Container>
             </Modal.Body>
-                <Modal.Footer>
-                <Button variant="secondary" onClick={this.handleSubmit}>
-                    Close
+                <Modal.Footer className="d-flex justify-content-between">
+                <Button variant="danger" onClick={this.props.handleClose}>
+                    {this.state.isNewCharacter? "Discart" : "Undo changes"}
                 </Button>
-                <Button variant="primary" onClick={this.handleSubmit}>
-                    Save Changes
+                <Button variant="secondary" className="text-light" onClick={this.state.isNewCharacter? this.newCharacter : this.handleSubmit}>
+                {this.state.isNewCharacter? "Create character" : "Save Changes"}
                 </Button>
                 </Modal.Footer>
             </Modal>

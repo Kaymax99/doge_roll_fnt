@@ -62,9 +62,9 @@ export const LoginAndRegistration = () => {
         removeActiveClass();
 
         // Show the current tab, and add an "activeSign" class to the button that opened the tab
-        const selectedCity = document.getElementById(signType);
-        if (selectedCity) {
-            selectedCity.style.display = "block";
+        const selectedSign = document.getElementById(signType);
+        if (selectedSign) {
+            selectedSign.style.display = "block";
         }
         e.currentTarget.className += " activeSign";
         navigate("/account/" + signType);

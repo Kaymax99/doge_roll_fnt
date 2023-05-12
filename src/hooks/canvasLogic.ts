@@ -38,6 +38,7 @@ export const setGridSize = (newSize: number) => {
 
 export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
     const evt = options.e
+    console.log(options)
     if (evt.altKey === false) {
         const action = options.transform?.action
         if (action === "scale" || action === "scaleX" || action === "scaleY")  {
@@ -52,16 +53,15 @@ export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
                     } else options.target.set({ scaleX: newWidth, scaleY: newHeight});
                 }
             }
-        } else if (options.transform?.action === "drag") {
-            if (options.target?.left && options.target?.top ) {
-                options.target?.set({
-                left: Math.round(options.target.left / gridSize) * gridSize,
-                top: Math.round(options.target.top / gridSize) * gridSize
-                })
-            }
+        }
+        if (options.target?.left && options.target?.top ) {
+            options.target?.set({
+            left: Math.round(options.target.left / gridSize) * gridSize,
+            top: Math.round(options.target.top / gridSize) * gridSize
+            })
+        }
         }
     }
-}
 
 export const preventDragOffCanvas = (options:fabric.IEvent<MouseEvent>) =>{
     const target = options.target

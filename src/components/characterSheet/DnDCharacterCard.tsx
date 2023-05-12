@@ -1,20 +1,20 @@
 import { Button } from "react-bootstrap"
 import DnDCharacter from "./DnDCharacter"
 import { DnDCharacterSheet } from "./DnDCharacterSheet"
+import { useState } from "react";
 
 interface CharCardProps {
-    show: boolean;
-    handleShow: () => void;
-    handleClose: () => void;
+    character: DnDCharacter;
+    updateChars: () => Promise<void>;
 }
 
-const character: DnDCharacter  = {
-    name: "Egg",
-    classLevel: "1",
-    background: "EGGER"
-}
 
-export const DnDCharacterCard = ({handleShow, show, handleClose}: CharCardProps) => {
+export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
+
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
+
     return (
         <>
             <Button 
@@ -22,10 +22,10 @@ export const DnDCharacterCard = ({handleShow, show, handleClose}: CharCardProps)
             onClick={handleShow}>
                 <img src="https://placekitten.com/50/50"/>
                 <div className="ps-2">
-                    Test
+                    {character.name}
                 </div>
             </Button>
-            <DnDCharacterSheet show={show} handleClose={handleClose} character={character}/>
+            <DnDCharacterSheet show={show} handleClose={handleClose} character={character} updateChars={updateChars}/>
         </>
     )
 }
