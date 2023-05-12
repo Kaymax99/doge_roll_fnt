@@ -1,8 +1,7 @@
-import { Button, Col, Container } from "react-bootstrap"
 import { fabric } from "fabric";
 import { useEffect, useRef, useState } from "react";
 import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid} from "../hooks/canvasLogic";
-import { CharacterModal } from "./CharacterModal";
+import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 
 
 export const GamePage = () => {
@@ -61,10 +60,9 @@ export const GamePage = () => {
         <div className="overflow-hidden">
             <canvas id="gameScreen" width="800" height="800"></canvas>
             <div className={sidebarClass}>
-                <Button variant="secondary" className="my-2" onClick={handleShow}>Open test Character sheet</Button>
-                <CharacterModal show={show} handleClose={handleClose}/>
-                <div> Down </div>
-                <div> The hill </div>
+                {/* <Button variant="secondary" className="my-2" onClick={handleShow}>Create new Character</Button>
+                    <DnDCharSheetModal show={show} handleClose={handleClose} character={undefined}/> */}
+                <DnDCharacterCard handleShow={handleShow} show={show} handleClose={handleClose}/>
                 <button onClick={handleViewSidebar} className="sidebar-toggle">
                     Toggle Sidebar
                 </button>
