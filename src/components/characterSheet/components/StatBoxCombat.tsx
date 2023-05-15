@@ -44,7 +44,7 @@ export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantS
                             <p className="fs-5 hitDieMax d-inline-block">/ {relevantStat}</p>
                         </div>
                     </div>}
-                {name === "init" ? <label className="fs-normal">(Dex)</label> : ""}
+                {name === "init" ? <label className="fs-normal mt-2">(Dex)</label> : ""}
                 <div>
                     <label>{label}</label>
                 </div>
