@@ -151,6 +151,14 @@ export default class DnDCharacter {
     bonds?: string
     flaws?: string
 
+    modifiers?: string
+    racialTraits?: string
+    classFeatures?: string
+    feats?: string
+    traits?: string
+    miscNotes1?: string
+    miscNotes2?: string
+
     gender?: string
     age?: string
     height?: string

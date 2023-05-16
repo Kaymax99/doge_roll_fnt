@@ -12,6 +12,7 @@ interface CharCardProps {
 export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
 
     const [show, setShow] = useState(false);
+
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
 
@@ -25,7 +26,12 @@ export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
                     {character.name}
                 </div>
             </Button>
-            <DnDCharacterSheet show={show} handleClose={handleClose} character={character} updateChars={updateChars}/>
+            <DnDCharacterSheet 
+            character={character} 
+            show={show} 
+            handleClose={handleClose} 
+            updateChars={updateChars} 
+            />
         </>
     )
 }

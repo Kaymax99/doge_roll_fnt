@@ -21,6 +21,7 @@ export const StatBox = ({name, value, label, onChange, cssClass}: StatProps) => 
                 type='number'
                 value={value ? value : ''}
                 onChange={(e) => onChange(name, e.target.value)}
+                className="charInput"
                 />
             </div>
         </div>

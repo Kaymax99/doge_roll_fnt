@@ -17,7 +17,9 @@ export const StatRow = ({name, value, label, onChange, cssClass}: StatProps) => 
                 <input
                 type="text"
                 value={value? value : ""}
-                onChange={(e) => onChange(name, e.target.value)}/>}
+                onChange={(e) => onChange(name, e.target.value)}
+                className="charInput"
+                />}
                 
             </div>
             <div className="charStatRowLabel">

@@ -1,4 +1,3 @@
-import { Col, Row } from "react-bootstrap"
 import { statModCalculator } from "../StatsLogic"
 import { CombatStatProps } from "./StatInterfaces"
 
@@ -28,6 +27,7 @@ export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantS
                         type="text"
                         value={value ? value : ""}
                         onChange={(e) => onChange(name, e.target.value)}
+                        className="charInput"
                         /> : <span>{modifier != undefined && modifier >= 0 ? "+" + modifier : modifier}</span>}
                     </div>
                     : 
@@ -37,7 +37,7 @@ export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantS
                             type="number"
                             value={value ? value : ""}
                             onChange={(e) => onChange(name, e.target.value)}
-                            className="hitDie fs-5"
+                            className="hitDie fs-5 charInput"
                             min={0}
                             max={relevantStat}
                             /> 

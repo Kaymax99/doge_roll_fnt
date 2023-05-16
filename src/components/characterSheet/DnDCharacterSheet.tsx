@@ -64,10 +64,17 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
         this.setState({ character: newCharacter })
     }
 
-    handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    updateCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         console.log(this.state.character)
         this.props.handleClose();
+    }
+    discardChanges = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        if (this.props.character) {
+            this.setState( {character: this.props.character})
+        }
+        this.props.handleClose()
     }
     newCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -80,8 +87,13 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
         return (
             <Modal show={this.props.show} onHide={this.props.handleClose} className="characterModal">
-                <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Header closeButton className="d-flex justify-content-between">
+                    <Modal.Title className="mb-2 me-3">{character ? character.name : "New Character"}</Modal.Title>
+                    {this.state.isNewCharacter? "" : 
+                    <Button variant="danger" onClick={this.discardChanges}>
+                        Reset character to last saved state (undo recent changes)
+                    </Button>
+                    }
                 </Modal.Header>
                 <Modal.Body>
                     <Container className="charSheet">
@@ -92,7 +104,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                         <input 
                                         type="text" 
                                         id="characterName" 
-                                        className="charInputField ps-2 w-100"
+                                        className="charInputField ps-2 w-100 charInput"
                                         value={character.name ? character.name : ""}
                                         onChange={(e) => this.characterChange("name", e.target.value)}
                                         />
@@ -104,10 +116,10 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                 <div className="charDetails my-2">
                                     <Row className="align-items-end">
                                         <Col sm={9}>
-                                            <div className="d-flex justify-content-between charInputField">
+                                            <div className="d-flex justify-content-between charInputField charInput ">
                                                 <input 
                                                 type="text"
-                                                className="border-0 me-2 w-100 ps-2"
+                                                className="border-0 me-2 w-100 ps-2 charInput"
                                                 value={character.charClass ? character.charClass : ""}
                                                 onChange={(e) => this.characterChange("charClass", e.target.value)}
                                                 />
@@ -116,7 +128,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                 min={1}
                                                 max={20}
                                                 placeholder="lvl"
-                                                className="charLvl border-0"
+                                                className="charLvl border-0 charInput"
                                                 value={character.classLevel ? character.classLevel : ""}
                                                 onChange={(e) => this.characterChange("classLevel", e.target.value)}
                                                 />
@@ -126,7 +138,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                         <Col sm={3}>
                                             <input 
                                             type="text"
-                                            className="charInputField ps-2 w-100"
+                                            className="charInputField ps-2 w-100 charInput"
                                             value={character.background ? character.background : ""}
                                             onChange={(e) => this.characterChange("background", e.target.value)}/>
                                             <label className="charLabel">Background</label>
@@ -137,7 +149,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <div>
                                                 <input 
                                                 type="text"
-                                                className="charInputField pb-1 ps-2"
+                                                className="charInputField ps-2 charInput"
                                                 value={character.race ? character.race : ""}
                                                 onChange={(e) => this.characterChange("race", e.target.value)}/>
                                             </div>
@@ -146,7 +158,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                         <Col xs={12} sm={6} md={3}>
                                             <div className="charInputField border-0">
                                                 <input type="text" 
-                                                className="charSelect"
+                                                className="charSelect charInput"
                                                 value={character.size ? character.size : ""}
                                                 onChange={(e) => this.characterChange("size", e.target.value)}/>
                                             </div>
@@ -155,7 +167,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                         <Col xs={12} sm={6} md={3}>
                                             <div className="charInputField border-0">
                                                 <input type="text" 
-                                                className="charSelect"
+                                                className="charSelect charInput"
                                                 value={character.alignment ? character.alignment : ""}
                                                 onChange={(e) => this.characterChange("alignment", e.target.value)}/>
                                             </div>
@@ -167,7 +179,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                     <input 
                                                     type="number" 
                                                     min={0} 
-                                                    className="text-center border-0 w-100"
+                                                    className="text-center border-0 w-100 charInput"
                                                     value={character.xp ? character.xp : ""}
                                                     onChange={(e) => this.characterChange("xp", e.target.value)}/>
                                                 </Col>
@@ -314,7 +326,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             />
                                             
                                         </div>
-                                        <label className="skillsLabel">Saving Throws</label>
+                                        <label>Saving Throws</label>
                                     </div>
                                     <div className="charBox">
                                         <div className="charSkills">
@@ -518,28 +530,30 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             }}
                                             />
                                         </div>
-                                        <label className="skillsLabel">Skills</label>
+                                        <label>Skills</label>
                                     </div>
                                     </Col>
                                 </Row>
                                 <div className="charBox">
                                     <div>
-                                        <label className="skillsLabel otherProfs">Proficiencies</label>
+                                        <label className="otherProfs">Proficiencies</label>
                                         <textarea
                                         value={character.otherProficiencies ? character.otherProficiencies : ""}
                                         onChange={(e) => this.characterChange("otherProficiencies", e.target.value)}
                                         rows={6}
+                                        className="charInput"
                                         />
                                     </div>
                                     <div>
-                                    <label className="skillsLabel otherProfs">Languages</label>
+                                    <label className="otherProfs">Languages</label>
                                         <textarea
                                         value={character.languages ? character.languages : ""}
                                         onChange={(e) => this.characterChange("languages", e.target.value)}
                                         rows={4}
+                                        className="charInput"
                                         />
                                     </div>
-                                    <label className="skillsLabel">Other Proficiencies & Languages</label>
+                                    <label>Other Proficiencies & Languages</label>
                                 </div>
                             </Col>
                             <Col lg={4}>
@@ -585,13 +599,15 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                     <input
                                                         type="text" 
                                                         value={character.hp ? character.hp : ""} 
-                                                        onChange={(e) => this.characterChange("hp", e.target.value)} 
+                                                        onChange={(e) => this.characterChange("hp", e.target.value)}
+                                                        className="charInput rounded-pill"
                                                     />
                                                 </div>
                                                 <div className="tempHp">
                                                     <div className="hpWrapper">
-                                                        <span className="ms-1">+</span> 
+                                                        <span>+</span> 
                                                         <input 
+                                                        className="charInput"
                                                         type="text" 
                                                         value={character.tempHp ? character.tempHp : ""} 
                                                         onChange={(e) => this.characterChange("tempHp", e.target.value)} 
@@ -653,7 +669,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
                                 <div className="charBox">
                                     <Row>
-                                        <div>
+                                        <div className="coinsContainer">
                                             <Coins
                                             label="CP"
                                             name="cp"
@@ -695,23 +711,215 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             }}
                                             />
                                         </div>
-                                        <Col></Col>
-                                        <Col></Col>
-                                        <label>
-                                            Equipment
-                                        </label>
+                                        <Col className="ps-0">
+                                            <textarea
+                                                className="charInput"
+                                                value={character.equipment ? character.equipment : ""}
+                                                onChange={(e) => this.characterChange("maxHp", e.target.value)} 
+                                                rows={15}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <label>
+                                        Equipment
+                                    </label>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className="charBox gray">
+                                    <div className="charPersonality">
+                                        <textarea
+                                        className="charInput"
+                                        value={character.personalityTraits ? character.personalityTraits : ""}
+                                        onChange={(e) => this.characterChange("personalityTraits", e.target.value)}
+                                        rows={4}/>
+                                        <label className="mt-0">Personality Traits</label>
+                                    </div>
+                                    <div className="charPersonality">
+                                        <textarea
+                                        className="charInput"
+                                        value={character.ideals ? character.ideals : ""}
+                                        onChange={(e) => this.characterChange("ideals", e.target.value)}
+                                        rows={4}/>
+                                        <label className="mt-0">Ideals</label>
+                                    </div>
+                                    <div className="charPersonality">
+                                        <textarea
+                                        className="charInput"
+                                        value={character.bonds ? character.bonds : ""}
+                                        onChange={(e) => this.characterChange("bonds", e.target.value)}
+                                        rows={4}/>
+                                        <label className="mt-0">Bonds</label>
+                                    </div>
+                                    <div className="charPersonality">
+                                        <textarea
+                                        className="charInput"
+                                        value={character.flaws ? character.flaws : ""}
+                                        onChange={(e) => this.characterChange("flaws", e.target.value)}
+                                        rows={4}/>
+                                        <label className="mt-0">Flaws</label>
+                                    </div>
+                                </div>
+                                <div className="charBox">
+                                    <textarea
+                                    className="charInput"
+                                    value={character.modifiers ? character.modifiers : ""}
+                                    onChange={(e) => this.characterChange("modifiers", e.target.value)}
+                                    rows={3}/>
+                                    <label className="mt-0">Modifiers</label>
+                                </div>
+                                <div className="charBox">
+                                    <div>
+                                        <textarea
+                                        className="charInput"
+                                        value={character.racialTraits ? character.racialTraits : ""}
+                                        onChange={(e) => this.characterChange("racialTraits", e.target.value)}
+                                        rows={3}/>
+                                        <label className="mt-0 pb-1">Racial Traits</label>
+                                    </div>
+                                    <div>
+                                        <textarea
+                                        className="charInput"
+                                        value={character.classFeatures ? character.classFeatures : ""}
+                                        onChange={(e) => this.characterChange("classFeatures", e.target.value)}
+                                        rows={10}/>
+                                        <label className="mt-0 pb-1">Class Features</label>
+                                    </div>
+                                    <div>
+                                        <textarea
+                                        className="charInput"
+                                        value={character.feats ? character.feats : ""}
+                                        onChange={(e) => this.characterChange("feats", e.target.value)}
+                                        rows={3}/>
+                                        <label className="mt-0 pb-1">Feats</label>
+                                    </div>  
+                                    <div>
+                                        <textarea
+                                        className="charInput"
+                                        value={character.traits ? character.traits : ""}
+                                        onChange={(e) => this.characterChange("traits", e.target.value)}
+                                        rows={3}/>
+                                        <label className="mt-0 pb-1">Traits</label>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row className="notesContainer pt-3">
+                            <Col lg={4} >
+                                <div className="charBox miscNotes">
+                                    <textarea
+                                    className="charInput"
+                                    value={character.miscNotes1 ? character.miscNotes1 : ""}
+                                    onChange={(e) => this.characterChange("miscNotes1", e.target.value)}
+                                    rows={25}
+                                    />
+                                    <label className="mt-0 pb-1 looksLabel">Miscellaneous notes</label>
+                                </div>
+                            </Col>
+                            <Col lg={4} >
+                                <div className="charBox miscNotes">
+                                    <textarea
+                                    className="charInput"
+                                    value={character.miscNotes2 ? character.miscNotes2 : ""}
+                                    onChange={(e) => this.characterChange("miscNotes2", e.target.value)}
+                                    rows={25}
+                                    />
+                                    <label className="mt-0 pb-1 looksLabel">Miscellaneous notes</label>
+                                </div>
+                            </Col>
+                            <Col lg={4} >
+                                <div className="charBox charLooks">
+                                    <Row>
+                                        <Col xs={3}>
+                                            <input
+                                            className="charInput"
+                                            type="text" 
+                                            value={character.gender ? character.gender : ""}
+                                            onChange={(e) => this.characterChange("gender", e.target.value)}/>
+                                            <label className="looksLabel">Gender</label>
+                                        </Col>
+                                        <Col xs={3}>
+                                            <input
+                                            className="charInput"
+                                            type="text" 
+                                            value={character.age ? character.age : ""}
+                                            onChange={(e) => this.characterChange("age", e.target.value)}
+                                            />
+                                            <label className="looksLabel">Age</label>
+                                        </Col>
+                                        <Col xs={3}>
+                                            <input
+                                            className="charInput"
+                                            type="text" 
+                                            value={character.height ? character.height : ""}
+                                            onChange={(e) => this.characterChange("height", e.target.value)}
+                                            />
+                                            <label className="looksLabel">Height</label>
+                                        </Col>
+                                        <Col xs={3}>
+                                            <input
+                                            className="charInput"
+                                            type="text" 
+                                            value={character.weight ? character.weight : ""}
+                                            onChange={(e) => this.characterChange("weight", e.target.value)}
+                                            />
+                                            <label className="looksLabel">Weight</label>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col xs={4}>
+                                            <input
+                                            className="charInput"
+                                            type="text" 
+                                            value={character.eyes ? character.eyes : ""}
+                                            onChange={(e) => this.characterChange("eyes", e.target.value)}
+                                            />
+                                            <label className="looksLabel">Eyes</label>
+                                        </Col>
+                                        <Col xs={4}>
+                                            <input
+                                            className="charInput"
+                                            type="text" 
+                                            value={character.skin ? character.skin : ""}
+                                            onChange={(e) => this.characterChange("skin", e.target.value)}
+                                            />
+                                            <label className="looksLabel">Skin</label>
+                                        </Col>
+                                        <Col xs={4}>
+                                            <input
+                                            className="charInput"
+                                            type="text" 
+                                            value={character.hair ? character.hair : ""}
+                                            onChange={(e) => this.characterChange("hair", e.target.value)}
+                                            />
+                                            <label className="looksLabel">Hair</label>
+                                        </Col>
                                     </Row>
                                 </div>
-
+                                <div className="charBox miscNotes">
+                                    <textarea
+                                    className="charInput"
+                                    value={character.appeareance ? character.appeareance : ""}
+                                    onChange={(e) => this.characterChange("appeareance", e.target.value)}
+                                    rows={5}
+                                    />
+                                    <label className="mt-0 looksLabel">Appeareance</label>
+                                </div>
+                                <div className="charBox miscNotes">
+                                    <textarea
+                                    className="charInput"
+                                    value={character.backstory ? character.backstory : ""}
+                                    onChange={(e) => this.characterChange("backstory", e.target.value)}
+                                    rows={12}
+                                    />
+                                    <label className="mt-0 looksLabel">Backstory</label>
+                                </div>
                             </Col>
                         </Row>
                     </Container>
-            </Modal.Body>
-                <Modal.Footer className="d-flex justify-content-between">
-                <Button variant="danger" onClick={this.props.handleClose}>
-                    {this.state.isNewCharacter? "Discart" : "Undo changes"}
-                </Button>
-                <Button variant="secondary" className="text-light" onClick={this.state.isNewCharacter? this.newCharacter : this.handleSubmit}>
+                </Modal.Body>
+                <Modal.Footer className="d-flex justify-content-end">
+                <Button variant="secondary" className="text-light" onClick={this.state.isNewCharacter? this.newCharacter : this.updateCharacter}>
                 {this.state.isNewCharacter? "Create character" : "Save Changes"}
                 </Button>
                 </Modal.Footer>
