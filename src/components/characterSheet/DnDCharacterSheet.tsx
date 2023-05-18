@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Col, Container, Row, Button, Modal } from "react-bootstrap";
 import DnDCharacter from "./DnDCharacter";
-import { createCharacter } from "../../hooks/fetch/gameFetches";
+import { createUpdateChar } from "../../hooks/fetch/gameFetches";
 import { StatBox } from "./components/StatBox";
 import { StatRow } from "./components/StatRow";
 import { setCharMaxXP, setCharProficiency } from "./StatsLogic";
@@ -66,7 +66,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     updateCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        console.log(this.state.character)
+        createUpdateChar("/" + this.state.character.id?.toString(), "PUT" , this.state.character,this.props.updateChars)
         this.props.handleClose();
     }
     discardChanges = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,7 +78,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
     }
     newCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        createCharacter("", this.state.character,this.props.updateChars)
+        createUpdateChar("", "POST" , this.state.character,this.props.updateChars)
         this.props.handleClose();
     }
 
@@ -201,43 +201,43 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                         <div className='charBox gray pb-0'>
                                             <StatBox
                                             label='Strength'
-                                            name='str'
-                                            value={character.str}
+                                            name='strength'
+                                            value={character.strength}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}/>
                                             <StatBox
                                             label='Dexterity'
-                                            name='dex'
-                                            value={character.dex}
+                                            name='dexterity'
+                                            value={character.dexterity}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}/>
                                             <StatBox
                                             label='Constitution'
-                                            name='con'
-                                            value={character.con}
+                                            name='constitution'
+                                            value={character.constitution}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}/>
                                             <StatBox
                                             label='Intelligence'
-                                            name='int'
-                                            value={character.int}
+                                            name='intelligence'
+                                            value={character.intelligence}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}/>
                                             <StatBox
                                             label='Wisdom'
-                                            name='wis'
-                                            value={character.wis}
+                                            name='wisdom'
+                                            value={character.wisdom}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}/>
                                             <StatBox
                                             label='Charisma'
-                                            name='cha'
-                                            value={character.cha}
+                                            name='charisma'
+                                            value={character.charisma}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
@@ -267,7 +267,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <Skill
                                             name="strSave"
                                             label="Strength"
-                                            value={character.str}
+                                            value={character.strength}
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             proficient={character.strSaveProficient}
                                             onChange={(name: string, value: any) => {
@@ -277,7 +277,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <Skill
                                             name="dexSave"
                                             label="Dexterity"
-                                            value={character.dex}
+                                            value={character.dexterity}
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             proficient={character.dexSaveProficient}
                                             onChange={(name: string, value: any) => {
@@ -287,7 +287,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <Skill
                                             name="conSave"
                                             label="Constitution"
-                                            value={character.con}
+                                            value={character.constitution}
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             proficient={character.conSaveProficient}
                                             onChange={(name: string, value: any) => {
@@ -297,7 +297,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <Skill
                                             name="intSave"
                                             label="Intelligence"
-                                            value={character.int}
+                                            value={character.intelligence}
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             proficient={character.intSaveProficient}
                                             onChange={(name: string, value: any) => {
@@ -307,7 +307,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <Skill
                                             name="wisSave"
                                             label="Wisdom"
-                                            value={character.wis}
+                                            value={character.wisdom}
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             proficient={character.wisSaveProficient}
                                             onChange={(name: string, value: any) => {
@@ -317,7 +317,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <Skill
                                             name="chaSave"
                                             label="Charisma"
-                                            value={character.cha}
+                                            value={character.charisma}
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             proficient={character.chaSaveProficient}
                                             onChange={(name: string, value: any) => {
@@ -334,7 +334,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <Skill
                                             name="acrobatics"
                                             label="Acrobatics"
-                                            value={character.dex}
+                                            value={character.dexterity}
                                             proficient={character.acrobaticsProficient}
                                             defaultStat="(Dex)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
@@ -346,7 +346,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="animalHandling"
                                             label="Animal Handling"
                                             proficient={character.animalHandlingProficient}
-                                            value={character.wis}
+                                            value={character.wisdom}
                                             defaultStat="(Wis)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -357,7 +357,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="arcana"
                                             label="Arcana"
                                             proficient={character.arcanaProficient}
-                                            value={character.int}
+                                            value={character.intelligence}
                                             defaultStat="(Int)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -368,7 +368,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="athletics"
                                             label="Athletics"
                                             proficient={character.athleticsProficient}
-                                            value={character.str}
+                                            value={character.strength}
                                             defaultStat="(Str)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -379,7 +379,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="deception"
                                             label="Deception"
                                             proficient={character.deceptionProficient}
-                                            value={character.cha}
+                                            value={character.charisma}
                                             defaultStat="(Cha)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -390,7 +390,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="history"
                                             label="History"
                                             proficient={character.historyProficient}
-                                            value={character.int}
+                                            value={character.intelligence}
                                             defaultStat="(Int)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -401,7 +401,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="insight"
                                             label="Insight"
                                             proficient={character.insightProficient}
-                                            value={character.wis}
+                                            value={character.wisdom}
                                             defaultStat="(Wis)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -412,7 +412,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="intimidation"
                                             label="Intimidation"
                                             proficient={character.intimidationProficient}
-                                            value={character.cha}
+                                            value={character.charisma}
                                             defaultStat="(Cha)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -423,7 +423,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="investigation"
                                             label="Investigation"
                                             proficient={character.investigationProficient}
-                                            value={character.int}
+                                            value={character.intelligence}
                                             defaultStat="(Int)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -434,7 +434,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="medicine"
                                             label="Medicine"
                                             proficient={character.medicineProficient}
-                                            value={character.wis}
+                                            value={character.wisdom}
                                             defaultStat="(Wis)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -445,7 +445,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="nature"
                                             label="Nature"
                                             proficient={character.natureProficient}
-                                            value={character.int}
+                                            value={character.intelligence}
                                             defaultStat="(Int)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -456,7 +456,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="perception"
                                             label="Perception"
                                             proficient={character.perceptionProficient}
-                                            value={character.wis}
+                                            value={character.wisdom}
                                             defaultStat="(Wis)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -467,7 +467,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="performance"
                                             label="Performance"
                                             proficient={character.performanceProficient}
-                                            value={character.cha}
+                                            value={character.charisma}
                                             defaultStat="(Cha)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -478,7 +478,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="persuasion"
                                             label="Persuasion"
                                             proficient={character.persuasionProficient}
-                                            value={character.cha}
+                                            value={character.charisma}
                                             defaultStat="(Cha)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -489,7 +489,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="religion"
                                             label="Religion"
                                             proficient={character.religionProficient}
-                                            value={character.int}
+                                            value={character.intelligence}
                                             defaultStat="(Int)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -500,7 +500,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="slightOfHand"
                                             label="Sleight of Hand"
                                             proficient={character.slightOfHandProficient}
-                                            value={character.dex}
+                                            value={character.dexterity}
                                             defaultStat="(Dex)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -511,7 +511,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="stealth"
                                             label="Stealth"
                                             proficient={character.stealthProficient}
-                                            value={character.dex}
+                                            value={character.dexterity}
                                             defaultStat="(Dex)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -522,7 +522,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             name="survival"
                                             label="Survival"
                                             proficient={character.survivalProficient}
-                                            value={character.wis}
+                                            value={character.wisdom}
                                             defaultStat="(Wis)"
                                             proficiencyBonus={setCharProficiency(character.classLevel)}
                                             onChange={(name: string, value: any) => {
@@ -575,7 +575,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             label="Initiative"
                                             name="init"
                                             value={character.init}
-                                            relevantStat={character.dex}
+                                            relevantStat={character.dexterity}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
@@ -617,7 +617,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                 <div className="maxHp">
                                                     <div className="hpWrapper">
                                                         <input 
-                                                        type="text" 
+                                                        type="text"
+                                                        className="charInput"
                                                         value={character.maxHp ? character.maxHp : ""} 
                                                         onChange={(e) => this.characterChange("maxHp", e.target.value)} 
                                                         />

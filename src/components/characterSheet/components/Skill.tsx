@@ -10,7 +10,7 @@ export const Skill = ({name, value, label, onChange, proficient, defaultStat, cs
     const statMod = statModCalculator(value);
 
     
-    if (statMod) {
+    if (statMod !== undefined) {
         if (proficient === "expertise") {
             skillMod = statMod + (Number(proficiencyBonus)*2)
         } else if (proficient === "proficient") {

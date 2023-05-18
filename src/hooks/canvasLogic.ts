@@ -38,7 +38,7 @@ export const setGridSize = (newSize: number) => {
 
 export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
     const evt = options.e
-    /* console.log(options) */
+    console.log(options)
     if (evt.altKey === false) {
         const action = options.transform?.action
         if (action === "scale" || action === "scaleX" || action === "scaleY")  {
@@ -54,12 +54,13 @@ export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
                 }
             }
         }
-        if (options.target?.left && options.target?.top ) {
-            options.target?.set({
-            left: Math.round(options.target.left / gridSize) * gridSize,
-            top: Math.round(options.target.top / gridSize) * gridSize
-            })
-        }
+        if (action !== "rotate")
+            if (options.target?.left && options.target?.top ) {
+                options.target?.set({
+                left: Math.round(options.target.left / gridSize) * gridSize,
+                top: Math.round(options.target.top / gridSize) * gridSize
+                })
+            }
         }
     }
 

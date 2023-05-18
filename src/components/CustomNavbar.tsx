@@ -15,7 +15,7 @@ export const CustomNavbar = () => {
                 <Row className="justify-content-center w-100 mx-0">
                     <Col xs={12} className="text-md-center py-2 upperNav d-flex align-items-center">
                         <Link to={"/"}>
-                            <img src={logo} alt="logo" id="navLogo"></img>
+                            <img src={logo} alt="logo" id="navLogo"/>
                         </Link>
                         <div className="nav-dropdown" data-dropdown>
                             <List className="mobile-nav-btn d-md-none" data-dropdown-button data-mobile-dropdown-button/>

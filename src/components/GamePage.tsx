@@ -5,6 +5,9 @@ import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
 import { fetchCharacters } from "../hooks/fetch/gameFetches";
+import { CaretRightFill } from "react-bootstrap-icons"
+import logo from "../assets/img/logo.png"
+import { Link } from "react-router-dom";
 
 
 export const GamePage = () => {
@@ -46,6 +49,10 @@ export const GamePage = () => {
             padding: 0,
             selectable:true
         });
+        fabric.Image.fromURL('https://i.imgur.com/bhNyhQ5.png', function(myImg) {
+        const img1 = myImg.set({ left: 0, top: 0 ,width:gridSize*2,height:gridSize*2});
+        canvas.current?.add(img1); 
+        });
         canvas.current.add(block);
 
         //activating canvas logic
@@ -53,11 +60,22 @@ export const GamePage = () => {
         canvas.current.on("object:modified",snapControls);
 
         console.log("Canvas drawn!")
+        /* if (dragAndDropSupported () === true) {
+            console.log("supported")
+        } else {
+            console.log("not supported")
+        } */
+        
     }, [])
+
+    function dragAndDropSupported () {
+        return 'draggable' in document.createElement('span');
+    }
+    
 
     const retrieveCharacters = async () => {
         const characters = await fetchCharacters("/all");
-        setCharactersArray(characters)
+        setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
     }
 
     const handleViewSidebar = () => {
@@ -65,29 +83,32 @@ export const GamePage = () => {
     };
     const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar";
 
+      
 
-    /* const character1: DnDCharacter = {
-        "name": "a"
-    }
-    const character2: DnDCharacter = {
-        "name": "a"
-    } */
 
     return (
         <div className="overflow-hidden">
             <canvas id="gameScreen" width="800" height="800"></canvas>
             <div className={sidebarClass}>
-                <Button variant="secondary" className="my-2" onClick={handleShow}>Create new Character</Button>
+                <div className="mx-auto text-center mb-2">
+                    <Link to={"/"}><img src={logo} alt="logo" id="dogeLogo"/></Link>
+                </div>
+                <div className="text-center mb-1">
+                    <Button variant="secondary" className="my-2 mx-auto text-light" onClick={handleShow}>Create new Character</Button>
+                </div>
                 <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters}/>
-                {charactersArray?.map( function(char, i) {
-                    return (
-                        <DnDCharacterCard 
-                        key={"character-" + i} character={char} updateChars={retrieveCharacters} />
-                    )
-                })}
-                <button onClick={handleViewSidebar} className="sidebar-toggle">
-                    Toggle Sidebar
-                </button>
+                <div>
+                    <h3 className="ms-1">Characters</h3>
+                    {charactersArray?.map( function(char, i) {
+                        return (
+                            <DnDCharacterCard 
+                            key={"character-" + i} character={char} updateChars={retrieveCharacters} />
+                        )
+                    })}
+                </div>
+                <Button variant="secondary" onClick={handleViewSidebar} className={!sidebarOpen ? "sidebar-toggle" : "sidebar-toggle sidebarRotated"}>
+                    <CaretRightFill/>
+                </Button>
             </div>
         </div>
     )

@@ -21,7 +21,7 @@ export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
             <Button 
             className="d-flex align-items-center w-100"
             onClick={handleShow}>
-                <img src="https://placekitten.com/50/50"/>
+                <img src="https://placekitten.com/50/50" id={"charImg-" + character.id}/>
                 <div className="ps-2">
                     {character.name}
                 </div>

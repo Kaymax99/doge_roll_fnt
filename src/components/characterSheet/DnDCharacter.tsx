@@ -1,5 +1,6 @@
 export default class DnDCharacter {
     //base info
+    id?: number
     name?: string
     charClass?: string
     classLevel?: string
@@ -14,12 +15,12 @@ export default class DnDCharacter {
     proficiencyBonus?: string
 
     //stats
-    str?: string
-    dex?: string
-    con?: string
-    int?: string
-    wis?: string
-    cha?: string
+    strength?: string
+    dexterity?: string
+    constitution?: string
+    intelligence?: string
+    wisdom?: string
+    charisma?: string
 
     strSave?: string
     strSaveProficient?: string
@@ -143,7 +144,6 @@ export default class DnDCharacter {
     gp?: string
     pp?: string
     equipment?: string
-    //*equipment stuff needs to be double checked
 
     //extra info
     personalityTraits?: string

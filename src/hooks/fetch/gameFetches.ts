@@ -6,7 +6,7 @@ export const fetchCharacters = async (endpoint: string) => {
         const res = await fetch(baseUrl + endpoint, {
             method: "GET",
             headers: {
-                Authorization: "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJicmluazkyM0Bob3RtYWlsLml0IiwiaWF0IjoxNjgzNjY5MjQwLCJleHAiOjE2ODQyNzQwNDB9.l_2wjcfICnGs8x8YA-IoJvVNgfG7-auMVNor2xxKvTyRMPdXfuAHGJapIyH-G5f4",
+                Authorization: "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJicmluazkyM0Bob3RtYWlsLml0IiwiaWF0IjoxNjg0MzIwNDA3LCJleHAiOjE2ODQ5MjUyMDd9.Jb1BDZBIwDJ_4Sgy_7U2ESZGoF4bspJ-os_zQFYLp8z0ySY3i_FpFkG_h4UGfs67",
             }
         })
         if (res.ok) {
@@ -19,13 +19,13 @@ export const fetchCharacters = async (endpoint: string) => {
         console.log("FATAL ERROR: ", error)
     }
 }
-export const createCharacter = async (endpoint: string, character:DnDCharacter, callbackFn: () => Promise<void>) => {
+export const createUpdateChar = async (endpoint: string | undefined, type: string ,character:DnDCharacter, callbackFn: () => Promise<void>) => {
     try {
         const res = await fetch(baseUrl + endpoint, {
-            method: "POST",
+            method: type,
             body: JSON.stringify(character),
             headers: {
-                Authorization: "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJicmluazkyM0Bob3RtYWlsLml0IiwiaWF0IjoxNjgzNjY5MjQwLCJleHAiOjE2ODQyNzQwNDB9.l_2wjcfICnGs8x8YA-IoJvVNgfG7-auMVNor2xxKvTyRMPdXfuAHGJapIyH-G5f4",
+                Authorization: "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJicmluazkyM0Bob3RtYWlsLml0IiwiaWF0IjoxNjg0MzIwNDA3LCJleHAiOjE2ODQ5MjUyMDd9.Jb1BDZBIwDJ_4Sgy_7U2ESZGoF4bspJ-os_zQFYLp8z0ySY3i_FpFkG_h4UGfs67",
                 "Content-Type": "application/json",
             }
         });
