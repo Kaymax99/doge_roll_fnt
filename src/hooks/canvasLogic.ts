@@ -79,6 +79,3 @@ export const preventDragOffCanvas = (options:fabric.IEvent<MouseEvent>) =>{
         }
     }
 }    
-
-
-

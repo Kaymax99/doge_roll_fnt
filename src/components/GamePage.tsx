@@ -27,6 +27,7 @@ export const GamePage = () => {
         });
         // creating grid
         addGrid(canvas.current);
+        console.log("Canvas drawn!")
 
         const block = new fabric.Rect({
             left: gridSize,
@@ -36,21 +37,17 @@ export const GamePage = () => {
             fill: 'red',
             originX: 'left',
             originY: 'top',
-            lockScalingX: false,
-            lockScalingY: false,
             lockRotation: false,
-            hasControls: true,
             transparentCorners: false,
             cornerColor: "#CA9534",
             borderColor: "#CA9534",
             cornerSize: 10,
-            hasBorders: true,
             snapAngle:45,
             padding: 0,
             selectable:true
         });
         fabric.Image.fromURL('https://i.imgur.com/bhNyhQ5.png', function(myImg) {
-        const img1 = myImg.set({ left: 0, top: 0 ,width:gridSize*2,height:gridSize*2});
+        const img1 = myImg.set({ left: 0, top: 0, width:gridSize, height:gridSize});
         canvas.current?.add(img1); 
         });
         canvas.current.add(block);
@@ -59,20 +56,102 @@ export const GamePage = () => {
         canvas.current.on('object:moving', preventDragOffCanvas);
         canvas.current.on("object:modified",snapControls);
 
-        console.log("Canvas drawn!")
-        /* if (dragAndDropSupported () === true) {
-            console.log("supported")
-        } else {
-            console.log("not supported")
-        } */
-        
-    }, [])
+        if (dragAndDropSupported () !== true) {
+            alert("Your browser does not support Drag and Drop, some functionality will not work.")
+        }
+           
+        const canvasContainer = document.getElementById("canvasContainer")
 
-    function dragAndDropSupported () {
+        canvasContainer?.addEventListener('dragenter', handleDragEnter, false);
+        canvasContainer?.addEventListener('dragend', handleDragOver, false);
+        canvasContainer?.addEventListener('dragleave', handleDragLeave, false);
+        canvasContainer?.addEventListener('drop', handleDrop, false);
+
+        const images = document.querySelectorAll('.characterImages img');
+        [].forEach.call(images, function (img: HTMLElement) {
+            console.log(img)
+            img.addEventListener('dragstart', handleDragStart, false);
+            img.addEventListener('dragend', handleDragEnd, false);
+          });
+
+        let imageOffsetX: number, imageOffsetY: number;
+        const canvasObject = document.getElementById("gameScreen");
+
+        function handleDragStart(this: HTMLElement, e: DragEvent) {
+            [].forEach.call(images, function (img: HTMLElement) {
+                img.classList.remove('img_dragging');
+            });
+            this.classList.add('img_dragging');
+        
+            /* if (this.offsetTop && this.offsetLeft) { */
+            imageOffsetX = e.clientX - this.offsetLeft;
+            imageOffsetY = e.clientY - this.offsetTop;
+            /* console.log(imageOffsetX, imageOffsetY) */
+            /* } */
+            
+        }
+
+        function handleDragOver(e: DragEvent) {
+            if (e.preventDefault && e.dataTransfer) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+            }
+        }
+
+        function handleDragEnter(this:HTMLElement) {
+            this.classList.add('over');
+        }
+
+        function handleDragLeave(this:HTMLElement) {
+            this.classList.remove('over');
+        }
+
+        function handleDrop(this: HTMLElement, e: DragEvent) {
+            e = e || window.event;
+            if (e.preventDefault) {
+            e.preventDefault();
+            }
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            const img: HTMLImageElement | null = document.querySelector('.characterImages img.img_dragging');
+            console.log('event: ', e);
+            
+            if (canvasObject) {
+                const y = e.pageY - (130 + imageOffsetY);
+                const x = e.pageX - (canvasObject.offsetWidth);
+                console.log("canvas", canvasObject.offsetHeight, canvasObject.offsetWidth)
+                console.log("page ",e.pageX, e.pageY)
+                console.log("coords",x, y)
+                if (img) {
+                    const newImage = new fabric.Image(img, {
+                        width: gridSize,
+                        height: gridSize,
+                        left: Math.round(x / gridSize) * gridSize,
+                        top: Math.round(y / gridSize) * gridSize,
+                        transparentCorners: false,
+                        cornerColor: "#CA9534",
+                        borderColor: "#CA9534",
+                        cornerSize: 10,
+                        snapAngle:45,
+                    });
+                    canvas?.current?.add(newImage);
+                }
+            }
+            return false;
+        }
+
+        function handleDragEnd() {
+            [].forEach.call(images, function (img: HTMLElement) {
+                img.classList.remove('img_dragging');
+            });
+        }
+
+    }, [])
+    
+    function dragAndDropSupported() {
         return 'draggable' in document.createElement('span');
     }
-    
-
     const retrieveCharacters = async () => {
         const characters = await fetchCharacters("/all");
         setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
@@ -81,14 +160,17 @@ export const GamePage = () => {
     const handleViewSidebar = () => {
       setSideBarOpen(!sidebarOpen);
     };
-    const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar";
-
-      
+    const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar";      
 
 
     return (
         <div className="overflow-hidden">
-            <canvas id="gameScreen" width="800" height="800"></canvas>
+            <div className="characterImages ms-5">
+                <img draggable="true" src="https://via.placeholder.com/50x50/848/fff"/>
+            </div>
+            <div id="canvasContainer">
+                <canvas id="gameScreen" width="800" height="800"></canvas>
+            </div>
             <div className={sidebarClass}>
                 <div className="mx-auto text-center mb-2">
                     <Link to={"/"}><img src={logo} alt="logo" id="dogeLogo"/></Link>
