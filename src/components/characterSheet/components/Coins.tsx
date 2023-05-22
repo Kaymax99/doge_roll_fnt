@@ -1,9 +1,9 @@
 import { StatProps } from "./StatInterfaces";
-import CP from "../../../assets/img/CP.png"
-import SP from "../../../assets/img/SP.png"
-import GP from "../../../assets/img/GP.png"
-import EP from "../../../assets/img/EP.png"
-import PP from "../../../assets/img/PP.png"
+import CP from "../../../assets/img/character-sheet/CP.png"
+import SP from "../../../assets/img/character-sheet/SP.png"
+import GP from "../../../assets/img/character-sheet/GP.png"
+import EP from "../../../assets/img/character-sheet/EP.png"
+import PP from "../../../assets/img/character-sheet/PP.png"
 
 export const Coins = ({name, value, label, onChange, cssClass}: StatProps) => {
 

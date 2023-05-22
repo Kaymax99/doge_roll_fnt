@@ -6,7 +6,7 @@ import { LoginAndRegistration } from './components/LoginAndRegistration';
 import { Home } from './components/Home';
 import { WithoutNavbar } from './components/navHandling/WithoutNavbar';
 import { WithNavbar } from './components/navHandling/WithNavbar';
-import { MyGames } from './components/characterSheet/MyGames';
+import { MyGames } from './components/MyGames';
 import { GameDetails } from './components/GameDetails';
 
 export interface IAccountData {
@@ -40,11 +40,11 @@ function App() {
           <Route path='/account/login' element={<LoginAndRegistration/>} />
           <Route path='/account/register' element={<LoginAndRegistration/>} />
           <Route path='/campaigns/search' element={<MyGames/>} />
-          <Route path='/campaigns/details/:gameId' element={<GameDetails/>} />
+          <Route path='/campaigns/details/:campaignId' element={<GameDetails/>} />
           <Route path='*' element={<h1>Not found</h1>} />
         </Route>
         <Route element={<WithoutNavbar/>}>
-          <Route path='/play' element={<GamePage/>} />
+          <Route path='/game/editor/:gameId' element={<GamePage/>} />
         </Route>
       </Routes>
     </>

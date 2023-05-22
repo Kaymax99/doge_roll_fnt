@@ -15,8 +15,8 @@ export const LoginAndRegistration = () => {
         password: "",
     })
     const [logData, setLogData] = useState({
-        "username": "",
-        "password": "",
+        username: "",
+        password: "",
     })
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -38,6 +38,7 @@ export const LoginAndRegistration = () => {
                 registerTab.className += " activeSign";
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [window.location.href]) 
 
     const hideTabContent = () => {
@@ -97,10 +98,10 @@ export const LoginAndRegistration = () => {
                 if (endpoint === "register") {
                     accountActions(data, "login")
                 } else {
-                    console.log("Logged in!");
+                    /* console.log("Logged in!"); */
                     const userData = await res.json();
 
-                    console.log(regData)
+                    /* console.log(regData) */
                     const newUser: IUserData = {
                         name: regData.name,
                         surname: regData.surname,

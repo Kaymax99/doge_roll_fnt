@@ -168,4 +168,5 @@ export default class DnDCharacter {
     hair?: string
     appeareance?: string
     backstory?: string
+    campaign_id?: number
 }

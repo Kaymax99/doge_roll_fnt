@@ -4,7 +4,6 @@ export let gridSize = 50;
 export let gridGroup: fabric.Group;
 
 export const addGrid = (canvas: fabric.Canvas) => {
-    if (gridGroup) return;
     const gridOptions = {
         stroke: '#ccc',
         strokeWidth: 1,

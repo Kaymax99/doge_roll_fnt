@@ -1,13 +1,13 @@
 import { Component } from "react";
 import { Col, Container, Row, Button, Modal } from "react-bootstrap";
 import DnDCharacter from "./DnDCharacter";
-import { createUpdateChar } from "../../hooks/fetch/gameFetches";
+import { createUpdate } from "../../hooks/fetch/gameFetches";
 import { StatBox } from "./components/StatBox";
 import { StatRow } from "./components/StatRow";
 import { setCharMaxXP, setCharProficiency } from "./StatsLogic";
 import { Skill } from "./components/Skill";
 import { StatBoxCombat } from "./components/StatBoxCombat";
-import heart from "../../assets/img/heart-frame.png";
+import heart from "../../assets/img/character-sheet/heart-frame.png";
 import { DeathSave } from "./components/DeathSave";
 import { Coins } from "./components/Coins";
 
@@ -16,6 +16,7 @@ interface IDnDCharacterSheetProps {
     show: boolean;
     handleClose: () => void;
     updateChars: () => Promise<void>;
+    gameId?: string | undefined;
 }
 
 interface IDnDCharacterSheetState {
@@ -66,7 +67,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     updateCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        createUpdateChar("/" + this.state.character.id?.toString(), "PUT" , this.state.character,this.props.updateChars)
+        createUpdate("characters/" + this.state.character.id?.toString(), "PUT" , this.state.character,this.props.updateChars)
         this.props.handleClose();
     }
     discardChanges = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,7 +79,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
     }
     newCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        createUpdateChar("", "POST" , this.state.character,this.props.updateChars)
+        createUpdate("characters/campaign/" + this.props.gameId, "POST" , this.state.character,this.props.updateChars)
         this.props.handleClose();
     }
 

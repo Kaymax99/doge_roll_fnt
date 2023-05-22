@@ -4,10 +4,11 @@ import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid} from
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
-import { fetchCharacters } from "../hooks/fetch/gameFetches";
+import { fetchContent } from "../hooks/fetch/gameFetches";
 import { CaretRightFill } from "react-bootstrap-icons"
 import logo from "../assets/img/logo.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAppSelector } from "../hooks/hooks";
 
 
 export const GamePage = () => {
@@ -17,8 +18,13 @@ export const GamePage = () => {
     const [show, setShow] = useState(false);
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
+    const { gameId } = useParams<{gameId: string}>();
+    const navigate = useNavigate();
+    const user = useAppSelector((state) => state.user.content);
 
+    
     useEffect( () => {
+        checkGameValidity();
         retrieveCharacters();
         //creating canvas
         canvas.current = new fabric.Canvas("gameScreen", {
@@ -149,12 +155,22 @@ export const GamePage = () => {
 
     }, [])
     
+    
+    const checkGameValidity = async () => {
+        const game = await fetchContent("campaigns/" + gameId)
+        if (!game || game?.username !== user?.username) {
+            navigate("/404")
+        }
+    }
+    
     function dragAndDropSupported() {
         return 'draggable' in document.createElement('span');
     }
     const retrieveCharacters = async () => {
-        const characters = await fetchCharacters("/all");
-        setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
+        const characters = await fetchContent("characters/filter/campaign/" + gameId);
+        if (characters) {
+            setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
+        }
     }
 
     const handleViewSidebar = () => {
@@ -178,7 +194,7 @@ export const GamePage = () => {
                 <div className="text-center mb-1">
                     <Button variant="secondary" className="my-2 mx-auto text-light" onClick={handleShow}>Create new Character</Button>
                 </div>
-                <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters}/>
+                <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={gameId}/>
                 <div>
                     <h3 className="ms-1">Characters</h3>
                     {charactersArray?.map( function(char, i) {
