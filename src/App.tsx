@@ -9,27 +9,6 @@ import { WithNavbar } from './components/navHandling/WithNavbar';
 import { MyGames } from './components/MyGames';
 import { GameDetails } from './components/GameDetails';
 
-export interface IAccountData {
-  name: string;
-  surname: string;
-  username: string;
-  email: string;
-  password: string;
-}
-
-export interface IUserData {
-  name: string;
-  surname: string;
-  username: string;
-  email: string;
-  accessToken: string;
-}
-
-export type LoginData = {
-  username: string;
-  password: string;
-}
-
 function App() {
 
   return (

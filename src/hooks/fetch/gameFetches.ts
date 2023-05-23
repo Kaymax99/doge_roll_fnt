@@ -1,18 +1,21 @@
-import { INewCampaign } from "../../components/MyGames";
 import DnDCharacter from "../../components/characterSheet/DnDCharacter";
+import { INewCampaign } from "../../types/Interfaces";
 
 export const baseUrl = "http://localhost:8080/"
-export const fetchContent = async (endpoint: string) => {
+export const getDeleteContent = async (endpoint: string, type: string) => {
     try {
         const res = await fetch(baseUrl + endpoint, {
-            method: "GET",
+            method: type,
             headers: {
                 Authorization: "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJicmluazkyM0Bob3RtYWlsLml0IiwiaWF0IjoxNjg0NzU1OTk0LCJleHAiOjE2ODUzNjA3OTR9._3CNnoFSFhbac5M35PpoLgyQ1_Ec92K3fpkOa-0D0PHkJnP124wExuAs7L2JvGBp",
             }
         })
-        if (res.ok) {
-            const charactersArray = await res.json();
-            return charactersArray;
+        if (res.ok && type === "GET") {
+            const data = await res.json();
+            return data;
+        } else if (res.ok) {
+            const data = res;
+            return data;
         } else {
             console.log("Res not OK.", res.status)
         }

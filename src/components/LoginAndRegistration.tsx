@@ -1,9 +1,9 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
-import { IAccountData, IUserData, LoginData } from "../App";
 import { useAppDispatch } from "../hooks/hooks";
 import { LOG_IN } from "../redux/reducers/userReducer";
+import { IAccountData, IUserData, LoginData } from "../types/Interfaces";
 
 
 export const LoginAndRegistration = () => {
@@ -101,15 +101,18 @@ export const LoginAndRegistration = () => {
                     /* console.log("Logged in!"); */
                     const userData = await res.json();
 
-                    /* console.log(regData) */
+                    console.log(userData)
                     const newUser: IUserData = {
-                        name: regData.name,
-                        surname: regData.surname,
-                        username: regData.username,
-                        email: regData.email,
-                        accessToken: userData.accessToken,
+                        name: userData.name,
+                        surname: userData.surname,
+                        username: userData.username,
+                        profilePic: userData.profilePic,
+                        registration_date: userData.registration_date,
+                        email: userData.email,
+                        accessToken: userData.tokenType + " " + userData.accessToken,
                     }
                     dispatch({type: LOG_IN, payload: newUser})
+                    navigate("/");
                 }
             }
         } catch (error) {

@@ -4,7 +4,7 @@ import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid} from
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
-import { fetchContent } from "../hooks/fetch/gameFetches";
+import { getDeleteContent } from "../hooks/fetch/gameFetches";
 import { CaretRightFill } from "react-bootstrap-icons"
 import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -157,7 +157,7 @@ export const GamePage = () => {
     
     
     const checkGameValidity = async () => {
-        const game = await fetchContent("campaigns/" + gameId)
+        const game = await getDeleteContent("campaigns/" + gameId, "GET")
         if (!game || game?.username !== user?.username) {
             navigate("/404")
         }
@@ -167,7 +167,7 @@ export const GamePage = () => {
         return 'draggable' in document.createElement('span');
     }
     const retrieveCharacters = async () => {
-        const characters = await fetchContent("characters/filter/campaign/" + gameId);
+        const characters = await getDeleteContent("characters/filter/campaign/" + gameId, "GET");
         if (characters) {
             setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
         }

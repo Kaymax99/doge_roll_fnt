@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Col, Container, Row, Button, Modal } from "react-bootstrap";
 import DnDCharacter from "./DnDCharacter";
-import { createUpdate } from "../../hooks/fetch/gameFetches";
+import { createUpdate, getDeleteContent } from "../../hooks/fetch/gameFetches";
 import { StatBox } from "./components/StatBox";
 import { StatRow } from "./components/StatRow";
 import { setCharMaxXP, setCharProficiency } from "./StatsLogic";
@@ -78,9 +78,20 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
         this.props.handleClose()
     }
     newCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const newCharacter: DnDCharacter = {}
         e.preventDefault();
         createUpdate("characters/campaign/" + this.props.gameId, "POST" , this.state.character,this.props.updateChars)
+        
+        this.setState({character: newCharacter});
         this.props.handleClose();
+    }
+    deleteCharacter = async (id: number | undefined) => {
+        if (id) {
+            await getDeleteContent("characters/" + id, "DELETE")
+        }
+        this.props.updateChars();
+        this.props.handleClose();
+
     }
 
     render() {
@@ -196,7 +207,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                             </Col>
                         </Row>
                         <Row className="charSheetMain mt-2">
-                            <Col lg={4}>
+                            <Col md={6} xl={4}>
                                 <Row>
                                     <Col xs={5} className="mx-auto statBoxContainer">
                                         <div className='charBox gray pb-0'>
@@ -557,7 +568,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                     <label>Other Proficiencies & Languages</label>
                                 </div>
                             </Col>
-                            <Col lg={4}>
+                            <Col md={6} xl={4}>
                                 <div className="charBox gray">
                                     <Row>
                                         <Col xs={4}>
@@ -727,7 +738,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                     </label>
                                 </div>
                             </Col>
-                            <Col lg={4}>
+                            <Col xl={4}>
                                 <div className="charBox gray">
                                     <div className="charPersonality">
                                         <textarea
@@ -920,10 +931,13 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                         </Row>
                     </Container>
                 </Modal.Body>
-                <Modal.Footer className="d-flex justify-content-end">
-                <Button variant="secondary" className="text-light" onClick={this.state.isNewCharacter? this.newCharacter : this.updateCharacter}>
-                {this.state.isNewCharacter? "Create character" : "Save Changes"}
-                </Button>
+                <Modal.Footer className="d-flex justify-content-between">
+                    <Button variant="danger" onClick={() => this.deleteCharacter(character.id)}>
+                        Delete Character
+                    </Button>
+                    <Button variant="secondary" className="text-light" onClick={this.state.isNewCharacter? this.newCharacter : this.updateCharacter}>
+                    {this.state.isNewCharacter? "Create character" : "Save Changes"}
+                    </Button>
                 </Modal.Footer>
             </Modal>
         )

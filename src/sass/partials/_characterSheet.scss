@@ -4,16 +4,21 @@
 .charInput{
     background-color: #daebf3;
 }
-.charSheet textarea {
-    &:focus {
-        outline: none;
+.charSheet {
+    @media screen and (min-width:992px) {
+        font-size: 1.2em;
     }
-    line-height: 16px;
-    padding: 0;
-    width: 100%;
-    border: none;
-    resize: none;
-    background-position-y: -2px;
+    textarea {
+        &:focus {
+            outline: none;
+        }
+        line-height: 16px;
+        padding: 0;
+        width: 100%;
+        border: none;
+        resize: none;
+        background-position-y: -2px;
+    }
 }
 
 .charSheetInfo{
@@ -70,7 +75,7 @@
     text-align: center;
     width: 100%;
     font-weight: bold;
-    font-size: 9px;
+    font-size: 0.65em;
     margin-bottom: 0px;
     border: 2px solid black;
     border-radius: 8px;
@@ -425,6 +430,12 @@
     border-radius: 8px 8px 0 0;
     margin-bottom: 5px;
     padding: 2px;
+    label {
+        font-size: 1.2em;
+    }
+    textarea {
+        font-size: 1.5em;
+    }
 }
 
 .notesContainer{
@@ -450,4 +461,7 @@
 }
 .miscNotes{
     padding: 4px;
+    textarea {
+        font-size: 1.1em;
+    }
 }

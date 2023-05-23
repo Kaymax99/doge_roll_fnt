@@ -26,16 +26,16 @@ nav {
     .nav-link {
         font-size: 1.1em;
         color: inherit;
-        padding: 0.35em;
+        padding: 0.2em 0.35em;
         &:hover, &::selection, &:active, &:focus {
             text-decoration: none;
             color: inherit;
             font-weight: 600;
         }
+    }
+    .nav-border {
         @media screen and (max-width: 767px) {
-            &:nth-child(2) {
-                border-bottom: 1px solid $light;
-            }
+        border-bottom: 1px solid $light;
         }
     }
 
@@ -48,7 +48,7 @@ nav {
         font-weight: 600;
     }
 
-    .login-dropdown {
+    .logged-dropdown {
         position: relative;
     }
 
@@ -65,6 +65,7 @@ nav {
         transform: translateY(-10px);
         transition: all 150ms ease-in-out;
         pointer-events: none;
+        min-width: 180px;
     }
 
     .mobile-dropdown-menu {
@@ -73,7 +74,7 @@ nav {
         min-width: 300px;
     }
 
-    .login-dropdown.active > #login-drop-btn + .l-dropdown-menu, .nav-dropdown.active > .mobile-nav-btn + .mobile-dropdown-menu {
+    .logged-dropdown.active > #login-drop-btn + .l-dropdown-menu, .nav-dropdown.active > .mobile-nav-btn + .mobile-dropdown-menu {
         opacity: 1;
         transform: translateY(0px);
         pointer-events: auto;

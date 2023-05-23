@@ -1,13 +1,7 @@
 import { Button } from "react-bootstrap"
-import DnDCharacter from "./DnDCharacter"
 import { DnDCharacterSheet } from "./DnDCharacterSheet"
 import { useState } from "react";
-
-interface CharCardProps {
-    character: DnDCharacter;
-    updateChars: () => Promise<void>;
-}
-
+import { CharCardProps } from "../../types/Interfaces";
 
 export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
 
@@ -18,7 +12,7 @@ export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
 
     return (
         <>
-            <Button 
+            <Button variant="none"
             className="d-flex align-items-center w-100"
             onClick={handleShow}>
                 <img src="https://placekitten.com/50/50" id={"charImg-" + character.id}/>

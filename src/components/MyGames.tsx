@@ -2,18 +2,16 @@ import { useEffect, useState } from "react"
 import { Button, Col, Container, Modal, Row } from "react-bootstrap"
 import { GameCard } from "./GameCard"
 import { useAppSelector } from "../hooks/hooks"
-import { createUpdate, fetchContent } from "../hooks/fetch/gameFetches"
-
-export interface INewCampaign {
-    name: string,
-    username: string | undefined
-}
-
+import { createUpdate, getDeleteContent } from "../hooks/fetch/gameFetches"
+import { useNavigate } from "react-router-dom"
+import { ProfileMiniCard } from "./ProfileMiniCard"
+import { INewCampaign } from "../types/Interfaces"
 
 export const MyGames = () => {
     const [gamesList, setGamesList] = useState([])
     const [showCreateGame, setShowCreateGame] = useState (false);
     const user = useAppSelector((state) => state.user.content);
+    const navigate = useNavigate()
 
     const handleShow = () => setShowCreateGame(true);
     const handleClose = () => setShowCreateGame(false);
@@ -25,11 +23,14 @@ export const MyGames = () => {
     })
 
     useEffect(() => {
+        if (!user?.username) {
+            navigate("/account/login")
+        }
         retrieveGames();
     }, [])
 
     const retrieveGames = async() => {
-        const games = await fetchContent("campaigns/all")
+        const games = await getDeleteContent("campaigns/user/" + user?.username, "GET")
         setGamesList(games)
     }
 
@@ -44,13 +45,10 @@ export const MyGames = () => {
     return (
         <Container>
            <Row>
-                <Col md={9}>
-                    <div className="d-flex justify-content-between mt-3">
+                <Col md={8} className="mt-3">
+                    <div className="d-flex justify-content-between">
                         <h2>Your Games</h2>
-                        <Button variant="secondary" className="text-light" onClick={() => setShowCreateGame(true)}>
-                            Create new game
-                        </Button>
-                        <Modal show={showCreateGame} onHide={handleClose}>
+                        <Modal show={showCreateGame} onHide={handleClose} className="newGameModal">
                             <Modal.Header>
                                 <Modal.Title>
                                     New Campaign
@@ -59,7 +57,7 @@ export const MyGames = () => {
                             <Modal.Body className="text-center">
                                 <input
                                 type="text"
-                                className="campaignName mx-auto"
+                                className="newCampaignName mx-auto"
                                 value={newCampaign.name}
                                 placeholder="Campaign name..."
                                 onChange={(e) => handleChange("name", e.target.value)}
@@ -72,7 +70,7 @@ export const MyGames = () => {
                             </Modal.Footer>
                         </Modal>
                     </div>
-                    <Row className="justify-content-around">
+                    <Row>
                         {gamesList?.map(function(game, i) {
                             return (
                                 <GameCard key={"game-" + i} game={game}/>
@@ -80,8 +78,11 @@ export const MyGames = () => {
                         })}
                     </Row>
                 </Col>
-                <Col md={3}>
-
+                <Col md={4} className="mt-3">
+                    <Button variant="secondary" className="text-light w-100" onClick={() => setShowCreateGame(true)}>
+                        Create new game
+                    </Button>
+                    <ProfileMiniCard user={user}/>
                 </Col>
             </Row>
         </Container>
