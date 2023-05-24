@@ -1,0 +1,25 @@
+.profileSection {
+    border-bottom: 1px solid black;
+}
+.profilePicContainer {
+    overflow: hidden;
+    img {
+        width: 100%;
+        aspect-ratio: 1/1;
+    }
+}
+.profileUsername{
+    font-size: 5em;
+    font-weight: 600;
+    @media screen and (max-width:500px) {
+        font-size: 2em;
+    }
+    overflow: scroll;
+}
+.personalProfile {
+    border: none;
+}
+.form-control:focus {
+    box-shadow: none;
+    border-color: $secondary;
+}

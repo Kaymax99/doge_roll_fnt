@@ -21,10 +21,15 @@ export const GameDetails = () => {
     const [charactersArray, setCharactersArray] = useState([])
     const navigate = useNavigate();
     const user = useAppSelector((state) => state.user.content);
-    const [show, setShow] = useState(false);
+    const token = user?.accessToken ? user.accessToken : "";
+    const [showDelete, setShowDelete] = useState(false);
+    const [showCharModal, setShowCharModal] = useState(false);
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleCloseCharModal = () => setShowCharModal(false);
+    const handleShowCharModa = () => setShowCharModal(true);
+
+    const handleCloseDel = () => setShowDelete(false);
+    const handleShowDel = () => setShowDelete(true);
 
     useEffect(() => {
         fetchGame();
@@ -32,8 +37,9 @@ export const GameDetails = () => {
     }, [])
 
     const fetchGame = async () => {
-        const game = await getDeleteContent("campaigns/" + campaignId, "GET")
-        if (!game || game?.username !== user?.username) {
+        const game = await getDeleteContent("campaigns/" + campaignId, "GET", token)
+        /* console.log(game) */
+        if (!game || game?.user.id !== user?.id) {
             navigate("/404");
         } else if (game) {
             setCampaignDetails(game);
@@ -41,7 +47,7 @@ export const GameDetails = () => {
     }
 
     const retrieveCharacters = async () => {
-        const characters = await getDeleteContent("characters/filter/campaign/" + campaignId, "GET");
+        const characters = await getDeleteContent("characters/filter/campaign/" + campaignId, "GET", token);
         if (characters) {
             setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
         }
@@ -52,18 +58,18 @@ export const GameDetails = () => {
         }
     }
     const saveChanges = () => {
-        createUpdate("campaigns/" + campaignId, "PUT", campaignDetails, fetchGame)
+        createUpdate("campaigns/" + campaignId, "PUT", campaignDetails, fetchGame, token)
 
     }
     const deleteGame = async() => {
-        handleClose()
-        await getDeleteContent("campaigns/" + campaignId, "DELETE")
+        handleCloseDel()
+        await getDeleteContent("campaigns/" + campaignId, "DELETE", token)
         navigate("/campaigns/search")
     }
 
     return (
-        <Container className="mt-3">
-            <Row>
+        <Container fluid className="pageContent mainContent">
+            <Row className="bgWhite m-0 py-3 px-1">
                 <Col xs={12} md={8}>
                     <div className="campaignHead">
                         <div>
@@ -84,16 +90,16 @@ export const GameDetails = () => {
                                     <span>Launch game</span>
                                 </Link>
                             </Button>
-                            <Button variant="danger" className="campaignActions" onClick={handleShow}>
+                            <Button variant="danger" className="campaignActions" onClick={handleShowDel}>
                                 Delete Game
                             </Button>
-                            <Modal show={show} onHide={handleClose}>
+                            <Modal show={showDelete} onHide={handleCloseDel}>
                                 <Modal.Header closeButton>
                                 <Modal.Title>Warning!</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>This action is irreversible and will also delete ALL characters and tokens associated with this game, are you sure you want to proceed?</Modal.Body>
                                 <Modal.Footer className="d-flex justify-content-between">
-                                <Button variant="primary" onClick={handleClose} className="text-light">
+                                <Button variant="primary" onClick={handleCloseDel} className="text-light">
                                     Back to safety
                                 </Button>
                                 <Button variant="danger" onClick={deleteGame}>
@@ -106,14 +112,14 @@ export const GameDetails = () => {
                             <h4>Next Game Will Be</h4>
                             <input
                             type="date"
-                            value={campaignDetails.nextSession}
+                            value={campaignDetails.nextSession ? campaignDetails.nextSession : ""}
                             onChange={(e) => handleChange("nextSession", e.target.value)}
                             />
                         </div>
                         <div className="my-3 pb-3 borderBottom">
                             <textarea
                             className="w-100 rounded campaignDescription"
-                            value={campaignDetails.description}
+                            value={campaignDetails.description ? campaignDetails.description : ""}
                             onChange={(e) => handleChange("description", e.target.value)}
                             rows={5}
                             />
@@ -133,9 +139,9 @@ export const GameDetails = () => {
                     <div className="bgGray p-3">
                         <h3>Campaign Characters</h3>
                         <div className="text-center mb-1">
-                            <Button variant="secondary" className="my-2 mx-auto text-light" onClick={handleShow}>Create new Character</Button>
+                            <Button variant="secondary" className="my-2 mx-auto text-light" onClick={handleShowCharModa}>Create new Character</Button>
                         </div>
-                        <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={campaignId}/>
+                        <DnDCharacterSheet show={showCharModal} handleClose={handleCloseCharModal} character={undefined} updateChars={retrieveCharacters} gameId={campaignId} token={token}/>
                         {charactersArray?.map( function(char, i) {
                             return (
                                 <DnDCharacterCard

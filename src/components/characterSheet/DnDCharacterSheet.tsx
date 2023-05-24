@@ -17,6 +17,7 @@ interface IDnDCharacterSheetProps {
     handleClose: () => void;
     updateChars: () => Promise<void>;
     gameId?: string | undefined;
+    token: string;
 }
 
 interface IDnDCharacterSheetState {
@@ -67,7 +68,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     updateCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        createUpdate("characters/" + this.state.character.id?.toString(), "PUT" , this.state.character,this.props.updateChars)
+        createUpdate("characters/" + this.state.character.id?.toString(), "PUT" , this.state.character,this.props.updateChars, this.props.token)
         this.props.handleClose();
     }
     discardChanges = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -80,14 +81,14 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
     newCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newCharacter: DnDCharacter = {}
         e.preventDefault();
-        createUpdate("characters/campaign/" + this.props.gameId, "POST" , this.state.character,this.props.updateChars)
+        createUpdate("characters/campaign/" + this.props.gameId, "POST" , this.state.character,this.props.updateChars, this.props.token)
         
         this.setState({character: newCharacter});
         this.props.handleClose();
     }
     deleteCharacter = async (id: number | undefined) => {
         if (id) {
-            await getDeleteContent("characters/" + id, "DELETE")
+            await getDeleteContent("characters/" + id, "DELETE", this.props.token)
         }
         this.props.updateChars();
         this.props.handleClose();

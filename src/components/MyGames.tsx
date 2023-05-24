@@ -11,6 +11,7 @@ export const MyGames = () => {
     const [gamesList, setGamesList] = useState([])
     const [showCreateGame, setShowCreateGame] = useState (false);
     const user = useAppSelector((state) => state.user.content);
+    const token = user?.accessToken ? user.accessToken : "";
     const navigate = useNavigate()
 
     const handleShow = () => setShowCreateGame(true);
@@ -19,7 +20,7 @@ export const MyGames = () => {
 
     const [newCampaign, setNewCampaign] = useState<INewCampaign>({
         name: "",
-        username: user?.username
+        id: user?.id,
     })
 
     useEffect(() => {
@@ -30,7 +31,7 @@ export const MyGames = () => {
     }, [])
 
     const retrieveGames = async() => {
-        const games = await getDeleteContent("campaigns/user/" + user?.username, "GET")
+        const games = await getDeleteContent("campaigns/user/" + user?.id, "GET", token)
         setGamesList(games)
     }
 
@@ -38,13 +39,13 @@ export const MyGames = () => {
         setNewCampaign({...newCampaign, [name]: value});
     }
     const createNewGame = () => {
-        createUpdate("campaigns", "POST" , newCampaign, retrieveGames)
+        createUpdate("campaigns/" + newCampaign.id , "POST" , newCampaign, retrieveGames, token)
         setShowCreateGame(false)
     }
     
     return (
-        <Container>
-           <Row>
+        <Container fluid className="pageContent mainContent">
+           <Row className="bgWhite m-0 pb-3">
                 <Col md={8} className="mt-3">
                     <div className="d-flex justify-content-between">
                         <h2>Your Games</h2>

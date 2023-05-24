@@ -9,7 +9,21 @@ html, body, #root {
     &::-webkit-scrollbar {
     display: none;
   }
-
+}
+.blurredBg {
+  background: url(https://i.imgur.com/k747Q8f.png) center top no-repeat fixed;
+  background-size: cover;
+  min-height: calc(100vh - 133px);
+  @media screen and (max-width:767px) {
+    min-height: calc(100vh - 76px);
+  }
+}
+.blurredGameBg {
+  @extend .blurredBg;
+  min-height: 100vh;
+  @media screen and (max-width:767px) {
+    min-height: 100vh;
+  }
 }
 
 a {
@@ -31,4 +45,50 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.pageContent{
+  /* max-width: 1296px; */
+  padding: 0 1.5em;
+
+  .bgWhite {
+    background-color: white;
+    min-height: 70vh;
+  }
+  .bgPrimary{
+    background-color: $primary;
+    color: $light;
+  }
+  &.mainContent{
+    padding-top: 1.5em;
+  }
+  &.footer {
+    padding-bottom: 1.5em;
+  }
+  >.row {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  footer {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  @media screen and (max-width:575px) {
+    padding: 0;    
+    >.row {
+      border-radius: 0;
+    }
+    footer {
+      border-radius: 0;
+    }
+    &.mainContent{
+      padding-top: 0;
+    }
+    &.footer {
+      padding-bottom: 0;
+    }
+  }
+  @media screen and (min-width:1296px) {
+    padding: 0 5em;    
+  }
 }

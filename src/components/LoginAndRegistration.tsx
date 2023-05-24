@@ -1,5 +1,5 @@
-import { SetStateAction, useEffect, useState } from "react";
-import { Button, Container, Form } from "react-bootstrap"
+import { useEffect, useState } from "react";
+import { Button, Container, Form, Row } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/hooks";
 import { LOG_IN } from "../redux/reducers/userReducer";
@@ -98,16 +98,17 @@ export const LoginAndRegistration = () => {
                 if (endpoint === "register") {
                     accountActions(data, "login")
                 } else {
-                    /* console.log("Logged in!"); */
                     const userData = await res.json();
 
-                    console.log(userData)
+                    /* console.log(userData) */
                     const newUser: IUserData = {
+                        id: userData.id,
                         name: userData.name,
                         surname: userData.surname,
                         username: userData.username,
                         profilePic: userData.profilePic,
                         registration_date: userData.registration_date,
+                        bio: userData.bio,
                         email: userData.email,
                         accessToken: userData.tokenType + " " + userData.accessToken,
                     }
@@ -121,10 +122,9 @@ export const LoginAndRegistration = () => {
     }
 
     return (
-        <>
-        <div id="regPageContainer">
-            <div className="bgBlur pt-5">
-                <Container id="registrationPage" className="rounded">
+        <Container fluid id="regPageContainer" className="pageContent mainContent">
+            <Row id="registrationPage" className="m-0 pb-3">
+                <Container>
                     <Container className="p-0 my-3 mb-5 rounded">
                         <div className="tab rounded-top">
                                 <button id="loginTabBtn" className="tablinks rounded-top" onClick={(event: React.MouseEvent<HTMLElement>) => openSign(event, "login")}>Login</button>
@@ -237,9 +237,8 @@ export const LoginAndRegistration = () => {
                         </Container>
                     </Container>
                 </Container>
-            </div>
-        </div>
-        </>
+            </Row>
+        </Container>
     )
 
 }

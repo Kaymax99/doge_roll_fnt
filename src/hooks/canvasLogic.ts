@@ -37,20 +37,22 @@ export const setGridSize = (newSize: number) => {
 
 export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
     const evt = options.e
-    console.log(options)
     if (evt.altKey === false) {
         const action = options.transform?.action
         if (action === "scale" || action === "scaleX" || action === "scaleY")  {
-            if (options.target && options.target.scaleX && options.target.scaleY) {
-                options.target.set({ opacity: 1 }); 
-                const newWidth = (Math.round(options.target.scaleX));
-                const newHeight = (Math.round(options.target.scaleY)); 
+            if (options.target && options.target.scaleX && options.target.scaleY && options.target.width && options.target.height) {
+                const currentHeight = options.target.height * options.target.scaleX
+                const currentWidth = options.target.width * options.target.scaleY
+                const newHeight = Math.round(currentHeight / gridSize ) * gridSize
+                const newWidth = Math.round(currentWidth / gridSize ) * gridSize
 
-                if (options.target.scaleX !== newWidth || options.target.scaleY !== newHeight) {
-                    if (newWidth < 1 || newHeight < 1) {
-                        options.target.set({ scaleX: 1, scaleY: 1});
-                    } else options.target.set({ scaleX: newWidth, scaleY: newHeight});
-                }
+                if (currentHeight < gridSize || currentWidth < gridSize) {
+                    options.target.scaleToHeight(gridSize)
+                    options.target.scaleToWidth(gridSize)
+                } else {
+                    options.target.scaleToHeight(newHeight)
+                    options.target.scaleToWidth(newWidth)
+                } 
             }
         }
         if (action !== "rotate")

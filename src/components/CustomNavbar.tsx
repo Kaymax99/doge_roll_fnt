@@ -1,7 +1,7 @@
-import {Navbar, Container, Nav, Row, Col, Button} from "react-bootstrap"
+import { Navbar, Container, Nav, Row, Col, Button } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import logo from "../assets/img/logo.png"
-import {List} from "react-bootstrap-icons"
+import { List } from "react-bootstrap-icons"
 import { useAppDispatch, useAppSelector } from "../hooks/hooks"
 
 export const CustomNavbar = () => {
@@ -31,7 +31,7 @@ export const CustomNavbar = () => {
                                 {!user?.username ? <Link to={"/search"} className="nav-link disabled nav-border">Join a Game</Link> : <Link to={"/campaigns/search"} className="nav-link nav-border">My Games</Link>}
                                 {!user?.username ? <Link to={"/account/login"} className="nav-link link-login">Log in/Sign up</Link> : 
                                     <div>
-                                        <Link to={"/account/" + user.username} className="nav-link">{user.username}</Link>
+                                        <Link to={"/users/" + user.id} className="nav-link">{user.username}</Link>
                                         <Button className="signOutBtn" onClick={logout}>Sign out</Button>
                                     </div>
                                 }
@@ -50,7 +50,7 @@ export const CustomNavbar = () => {
                                     <div className="logged-dropdown" data-dropdown>
                                         <button id="login-drop-btn" className="nav-link px-0" data-dropdown-button>{user.username}</button>
                                         <div className="l-dropdown-menu">
-                                            <Link to={"/account/" + user.username} className="nav-link">My Account</Link>
+                                            <Link to={"/users/" + user.id} className="nav-link">My Account</Link>
                                             <Button className="signOutBtn" onClick={logout}>Sign out</Button>
                                         </div>
                                     </div>

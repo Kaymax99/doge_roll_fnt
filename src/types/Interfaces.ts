@@ -9,7 +9,7 @@ export interface ICampaignDetails {
 
 export interface INewCampaign {
     name: string,
-    username: string | undefined
+    id: number | undefined
 }
 
 export interface IAccountData {
@@ -21,13 +21,15 @@ export interface IAccountData {
 }
   
 export interface IUserData {
+    id?: number;
     name: string;
     surname: string;
     username: string;
     email: string;
     profilePic: string;
-    registration_date: Date;
-    accessToken: string;
+    registration_date?: Date;
+    accessToken?: string;
+    bio: string;
 }
 
 export type LoginData = {

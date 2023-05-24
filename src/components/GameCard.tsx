@@ -6,7 +6,7 @@ import { GameCardProps } from "../types/Interfaces"
 
 export const GameCard = ({game}: GameCardProps) => {
     return (
-        <Col xs={12} sm={6} xl={4} className="my-2">
+        <Col xs={12} sm={6} className="my-3">
             <div className="rounded gameCardShadow p-2">
                 <div className="imgContainer text-center mb-2">
                     <img src={game?.image? game.image : placeholder} alt="Campaign" className="cardImage" />

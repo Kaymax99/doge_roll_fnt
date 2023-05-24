@@ -66,6 +66,7 @@ nav {
         transition: all 150ms ease-in-out;
         pointer-events: none;
         min-width: 180px;
+        z-index: 1000
     }
 
     .mobile-dropdown-menu {

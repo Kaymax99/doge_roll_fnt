@@ -9,6 +9,7 @@ import { CaretRightFill } from "react-bootstrap-icons"
 import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../hooks/hooks";
+import testcoin from "../assets/img/character-sheet/Untitled-1.png"
 
 
 export const GamePage = () => {
@@ -21,7 +22,7 @@ export const GamePage = () => {
     const { gameId } = useParams<{gameId: string}>();
     const navigate = useNavigate();
     const user = useAppSelector((state) => state.user.content);
-
+    const token = user?.accessToken ? user.accessToken : "";
     
     useEffect( () => {
         checkGameValidity();
@@ -52,48 +53,40 @@ export const GamePage = () => {
             padding: 0,
             selectable:true
         });
-        fabric.Image.fromURL('https://i.imgur.com/bhNyhQ5.png', function(myImg) {
-        const img1 = myImg.set({ left: 0, top: 0, width:gridSize, height:gridSize});
-        canvas.current?.add(img1); 
-        });
         canvas.current.add(block);
 
-        //activating canvas logic
+        //activating canvas tokens logic
         canvas.current.on('object:moving', preventDragOffCanvas);
         canvas.current.on("object:modified",snapControls);
 
         if (dragAndDropSupported () !== true) {
             alert("Your browser does not support Drag and Drop, some functionality will not work.")
         }
-           
+        
+        //adding event listeners for drag and drop functionalities
         const canvasContainer = document.getElementById("canvasContainer")
-
         canvasContainer?.addEventListener('dragenter', handleDragEnter, false);
         canvasContainer?.addEventListener('dragend', handleDragOver, false);
         canvasContainer?.addEventListener('dragleave', handleDragLeave, false);
         canvasContainer?.addEventListener('drop', handleDrop, false);
 
+        //selecting all images with given tags and applying drag event listeners
         const images = document.querySelectorAll('.characterImages img');
         [].forEach.call(images, function (img: HTMLElement) {
-            console.log(img)
             img.addEventListener('dragstart', handleDragStart, false);
             img.addEventListener('dragend', handleDragEnd, false);
           });
 
         let imageOffsetX: number, imageOffsetY: number;
-        const canvasObject = document.getElementById("gameScreen");
+        const canvasObject = document.querySelector(".canvas-container");
 
         function handleDragStart(this: HTMLElement, e: DragEvent) {
             [].forEach.call(images, function (img: HTMLElement) {
                 img.classList.remove('img_dragging');
             });
             this.classList.add('img_dragging');
-        
-            /* if (this.offsetTop && this.offsetLeft) { */
             imageOffsetX = e.clientX - this.offsetLeft;
             imageOffsetY = e.clientY - this.offsetTop;
-            /* console.log(imageOffsetX, imageOffsetY) */
-            /* } */
             
         }
 
@@ -120,19 +113,15 @@ export const GamePage = () => {
             if (e.stopPropagation) {
                 e.stopPropagation();
             }
-            const img: HTMLImageElement | null = document.querySelector('.characterImages img.img_dragging');
-            console.log('event: ', e);
-            
+            const img: HTMLImageElement | null = document.querySelector('.characterImages img.img_dragging');     
             if (canvasObject) {
-                const y = e.pageY - (130 + imageOffsetY);
-                const x = e.pageX - (canvasObject.offsetWidth);
-                console.log("canvas", canvasObject.offsetHeight, canvasObject.offsetWidth)
-                console.log("page ",e.pageX, e.pageY)
-                console.log("coords",x, y)
+                const nodeStyle = window.getComputedStyle(canvasObject)
+                const offsetLeft = Number(nodeStyle.getPropertyValue('margin-left').slice(0, -2))
+                const offsetTop = Number(nodeStyle.getPropertyValue('margin-top').slice(0, -2))
+                const y = e.clientY - Number(offsetTop) - imageOffsetY;
+                const x = e.clientX - Number(offsetLeft)  - imageOffsetX;
                 if (img) {
                     const newImage = new fabric.Image(img, {
-                        width: gridSize,
-                        height: gridSize,
                         left: Math.round(x / gridSize) * gridSize,
                         top: Math.round(y / gridSize) * gridSize,
                         transparentCorners: false,
@@ -141,6 +130,8 @@ export const GamePage = () => {
                         cornerSize: 10,
                         snapAngle:45,
                     });
+                    newImage.scaleToHeight(gridSize)
+                    newImage.scaleToWidth(gridSize)
                     canvas?.current?.add(newImage);
                 }
             }
@@ -157,8 +148,8 @@ export const GamePage = () => {
     
     
     const checkGameValidity = async () => {
-        const game = await getDeleteContent("campaigns/" + gameId, "GET")
-        if (!game || game?.username !== user?.username) {
+        const game = await getDeleteContent("campaigns/" + gameId, "GET", token)
+        if (!game || game?.user.id !== user?.id) {
             navigate("/404")
         }
     }
@@ -167,7 +158,7 @@ export const GamePage = () => {
         return 'draggable' in document.createElement('span');
     }
     const retrieveCharacters = async () => {
-        const characters = await getDeleteContent("characters/filter/campaign/" + gameId, "GET");
+        const characters = await getDeleteContent("characters/filter/campaign/" + gameId, "GET", token);
         if (characters) {
             setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
         }
@@ -181,11 +172,13 @@ export const GamePage = () => {
 
     return (
         <div className="overflow-hidden">
-            <div className="characterImages ms-5">
-                <img draggable="true" src="https://via.placeholder.com/50x50/848/fff"/>
-            </div>
             <div id="canvasContainer">
                 <canvas id="gameScreen" width="800" height="800"></canvas>
+            </div>
+            <div className="characterImages ms-5">
+                <img draggable="true" style={{width:"50px", height:"50px"}} src="https://via.placeholder.com/100x100/848/fff"/>
+                <img draggable="true" style={{width:"50px", height:"50px"}} src="https://via.placeholder.com/200x200/848/fff"/>
+                <img draggable="true" style={{width:"50px", height:"50px"}} src={testcoin} />
             </div>
             <div className={sidebarClass}>
                 <div className="mx-auto text-center mb-2">
@@ -194,7 +187,7 @@ export const GamePage = () => {
                 <div className="text-center mb-1">
                     <Button variant="secondary" className="my-2 mx-auto text-light" onClick={handleShow}>Create new Character</Button>
                 </div>
-                <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={gameId}/>
+                <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={gameId} token={token}/>
                 <div>
                     <h3 className="ms-1">Characters</h3>
                     {charactersArray?.map( function(char, i) {
