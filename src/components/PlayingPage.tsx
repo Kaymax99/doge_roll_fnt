@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 import { useEffect, useRef, useState } from "react";
-import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid} from "../hooks/canvasLogic";
+import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid } from "../hooks/canvasLogic";
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button, Col, Row } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
@@ -61,6 +61,13 @@ export const PlayingPage = () => {
         //activating canvas tokens logic
         canvas.current.on('object:moving', preventDragOffCanvas);
         canvas.current.on("object:modified",snapControls);
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "Delete" && canvas.current) {
+                const activeObjects = canvas.current.getActiveObjects()
+                activeObjects.forEach((obj) => 
+                canvas.current?.remove(obj));
+            }
+        }, false);
 
         if (dragAndDropSupported () !== true) {
             alert("Your browser does not support Drag and Drop, some functionality will not work.")

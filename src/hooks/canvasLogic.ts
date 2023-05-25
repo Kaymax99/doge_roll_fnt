@@ -1,4 +1,5 @@
 import {fabric} from "fabric";
+import { KeyboardEvent } from "react";
 
 export let gridSize = 50;
 export let gridGroup: fabric.Group;
@@ -79,4 +80,4 @@ export const preventDragOffCanvas = (options:fabric.IEvent<MouseEvent>) =>{
             target.left = Math.min(target.left, target.canvas.width-target.getBoundingRect().width+target.left-target.getBoundingRect().left);
         }
     }
-}    
+}

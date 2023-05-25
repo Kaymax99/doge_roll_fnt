@@ -610,7 +610,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <div className="heartHP" style={{backgroundImage: `url(${heart})`}}>
                                                 <div className="currentHp mb-3">
                                                     <input
-                                                        type="text" 
+                                                        type="number" 
                                                         value={character.hp ? character.hp : ""} 
                                                         onChange={(e) => this.characterChange("hp", e.target.value)}
                                                         className="charInput rounded-pill"
@@ -621,7 +621,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                         <span>+</span> 
                                                         <input 
                                                         className="charInput"
-                                                        type="text" 
+                                                        type="number" 
                                                         value={character.tempHp ? character.tempHp : ""} 
                                                         onChange={(e) => this.characterChange("tempHp", e.target.value)} 
                                                         />

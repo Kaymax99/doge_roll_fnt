@@ -43,7 +43,7 @@ export const Coins = ({name, value, label, onChange, cssClass}: StatProps) => {
             </div>
             <div className="charCoinsValue">
                 <input 
-                type="text"
+                type="number"
                 value={value ? value : ""}
                 onChange={(e) => onChange(name, e.target.value)}
                 className="charInput"
