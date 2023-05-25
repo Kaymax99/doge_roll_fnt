@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './sass/app.scss';
 import { Route, Routes } from 'react-router-dom';
-import { GamePage } from './components/GamePage';
+import { PlayingPage } from './components/PlayingPage';
 import { LoginAndRegistration } from './components/LoginAndRegistration';
 import { Home } from './components/Home';
 import { WithoutNavbarAndFooter } from './components/navHandling/WithoutNavbarAndFooter';
@@ -25,7 +25,7 @@ function App() {
             <Route path='*' element={<h1>Not found</h1>} />
         </Route>
         <Route element={<WithoutNavbarAndFooter/>}>
-          <Route path='/game/editor/:gameId' element={<GamePage/>} />
+          <Route path='/game/editor/:gameId' element={<PlayingPage/>} />
         </Route>
       </Routes>
     </>

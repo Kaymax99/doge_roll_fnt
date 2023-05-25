@@ -34,7 +34,6 @@ export const createUpdate = async (endpoint: string | undefined, type: string, b
             }
         });
         if (res.ok) {
-            console.log("operation successfull")
             callbackFn();
         } else {
             console.log("Res not OK.", res.status)

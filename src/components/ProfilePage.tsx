@@ -77,7 +77,7 @@ export const ProfilePage = () => {
 
                 </Col>
                 <Col md={8}>
-                    <Row className="profileSection">
+                    <Row className="profileSection pt-3">
                         {user?.id === profile?.id ? 
                         <input
                         className="profileUsername personalProfile"

@@ -18,6 +18,7 @@ export const LoginAndRegistration = () => {
         username: "",
         password: "",
     })
+    /* const user =  */
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -99,8 +100,6 @@ export const LoginAndRegistration = () => {
                     accountActions(data, "login")
                 } else {
                     const userData = await res.json();
-
-                    /* console.log(userData) */
                     const newUser: IUserData = {
                         id: userData.id,
                         name: userData.name,
@@ -127,11 +126,12 @@ export const LoginAndRegistration = () => {
                 <Container>
                     <Container className="p-0 my-3 mb-5 rounded">
                         <div className="tab rounded-top">
-                                <button id="loginTabBtn" className="tablinks rounded-top" onClick={(event: React.MouseEvent<HTMLElement>) => openSign(event, "login")}>Login</button>
-                                <button id="registerTabBtn" className="tablinks rounded-top" onClick={(event: React.MouseEvent<HTMLElement>) => openSign(event, "register")}>Register</button>
+                            <button id="loginTabBtn" className="tablinks rounded-top" onClick={(event: React.MouseEvent<HTMLElement>) => openSign(event, "login")}>Login</button>
+                            <button id="registerTabBtn" className="tablinks rounded-top" onClick={(event: React.MouseEvent<HTMLElement>) => openSign(event, "register")}>Register</button>
                         </div>
 
                         <Container id="login" className="tabcontent">
+                            {/* {user} */}
                             <div className="text-center my-3">
                                 <h1 className="text-secondary headingMsg">Welcome back!</h1>
                             </div>

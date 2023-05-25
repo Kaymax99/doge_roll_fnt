@@ -12,7 +12,7 @@ import { useAppSelector } from "../hooks/hooks";
 import testcoin from "../assets/img/character-sheet/Untitled-1.png"
 
 
-export const GamePage = () => {
+export const PlayingPage = () => {
     const [sidebarOpen, setSideBarOpen] = useState(false);
     const [charactersArray, setCharactersArray] = useState([])
     const canvas = useRef<fabric.Canvas>();
