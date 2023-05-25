@@ -53,5 +53,5 @@ export interface IMiniCardProps {
 export interface CharCardProps {
     character: DnDCharacter;
     updateChars: () => Promise<void>;
-    classes?: string;
+    Cssclasses?: string;
 }

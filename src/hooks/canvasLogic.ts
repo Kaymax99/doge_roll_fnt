@@ -1,5 +1,4 @@
 import {fabric} from "fabric";
-import { KeyboardEvent } from "react";
 
 export let gridSize = 50;
 export let gridGroup: fabric.Group;

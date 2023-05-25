@@ -1,11 +1,10 @@
-import { Button } from "react-bootstrap"
 import { DnDCharacterSheet } from "./DnDCharacterSheet"
 import { useState } from "react";
 import { CharCardProps } from "../../types/Interfaces";
 import defaultPic from "../../assets/img/profile_no_pic.jpg"
 import { useAppSelector } from "../../hooks/hooks";
 
-export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
+export const DnDCharacterCard = ({character, updateChars, Cssclasses}: CharCardProps) => {
 
     const [show, setShow] = useState(false);
     const user = useAppSelector((state) => state.user.content);
@@ -14,16 +13,18 @@ export const DnDCharacterCard = ({character, updateChars}: CharCardProps) => {
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
 
+    const classes = Cssclasses ? Cssclasses + " ps-2" : "ps-2"
+
     return (
         <>
-            <Button variant="none"
-            className="d-flex align-items-center w-100"
+            <div
+            className="d-flex align-items-center gameSideBarEntry mx-2 py-1"
             onClick={handleShow}>
-                <img className="charCardPic" src={defaultPic} id={"charImg-" + character.id}/>
-                <div className="ps-2">
+                <img className="charCardPic ms-2" src={defaultPic} id={"charImg-" + character.id}/>
+                <div className={classes}>
                     {character.name}
                 </div>
-            </Button>
+            </div>
             <DnDCharacterSheet 
             character={character} 
             show={show} 

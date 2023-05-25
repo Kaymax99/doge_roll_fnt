@@ -1,8 +1,8 @@
 import { fabric } from "fabric";
 import { useEffect, useRef, useState } from "react";
-import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid } from "../hooks/canvasLogic";
+import { preventDragOffCanvas, snapControls, gridSize, addGrid } from "../hooks/canvasLogic";
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
 import { getDeleteContent } from "../hooks/fetch/gameFetches";
 import { CaretRightFill } from "react-bootstrap-icons"
@@ -10,8 +10,8 @@ import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../hooks/hooks";
 import testcoin from "../assets/img/character-sheet/Untitled-1.png"
-import noPic from "../assets/img/profile_no_pic.jpg"
 import DnDCharacter from "./characterSheet/DnDCharacter";
+import { ChevronRight } from "react-bootstrap-icons"
 
 
 export const PlayingPage = () => {
@@ -77,8 +77,10 @@ export const PlayingPage = () => {
             /* console.log(selCanvas) */
             document.addEventListener("contextmenu", (e) => {
                  e.preventDefault();
-                  /* // show a custom context menu */ });
+                  /* // show a custom context menu */ 
+                });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -204,32 +206,6 @@ export const PlayingPage = () => {
             <div id="canvasContainer">
                 <canvas id="gameScreen" width="800" height="800"></canvas>
             </div>
-            <div className="dragAndDropContainer">
-                <div>
-                    <h3 className="text-center pt-1">Available Tokens</h3>
-                    <Row className="characterImages">
-                        <Col xs={1} className="d-flex flex-column align-items-center">
-                            <img draggable="true" className="dragAndDropToken" src="https://via.placeholder.com/100x100/848/fff"/>
-                            <span>100x</span>
-                        </Col>
-                        <Col xs={1} className="d-flex flex-column align-items-center">
-                            <img draggable="true" className="dragAndDropToken" src="https://via.placeholder.com/200x200/848/fff"/>
-                            <span>200x</span>
-                        </Col>
-                        <Col xs={1} className="d-flex flex-column align-items-center">
-                            <img draggable="true" className="dragAndDropToken" src={testcoin} />
-                            <span>CP</span>
-                        </Col>
-                        {/* {charactersArray?.map( function(char, i) {
-                            return (
-                                <Col xs={1} className="d-flex flex-column align-items-center" key={"charToken-" + i}>
-                                    <img  draggable="true" className="dragAndDropToken" src={char.picture? char.picture : noPic} />
-                                    <span>{char.name}</span>
-                                </Col>
-                            )})} */}
-                    </Row>
-                </div>
-            </div>
             <div className={sidebarClass}>
                 <div className="mx-auto text-center mb-2">
                     <Link to={"/"}><img src={logo} alt="logo" id="dogeLogo"/></Link>
@@ -238,20 +214,83 @@ export const PlayingPage = () => {
                     <Button variant="secondary" className="my-2 mx-auto text-light" onClick={handleShow}>Create new Character</Button>
                 </div>
                 <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={gameId} token={token}/>
-                <div>
-                    <h3 className="ms-1">Characters</h3>
-                    <div className="characterImages">
-                        {charactersArray?.map( function(char, i) {
-                            return (
-                                <DnDCharacterCard 
-                                key={"character-" + i} character={char} updateChars={retrieveCharacters} />
-                            )
-                        })}
+                <div className="px-2">
+                    <div className="gameSideBarCategory">
+                        <h3 className="ms-2">Characters</h3>
+                        <div className="characterImages">
+                            {charactersArray?.map( function(char, i) {
+                                return (
+                                    <DnDCharacterCard 
+                                    key={"character-" + i} character={char} updateChars={retrieveCharacters} Cssclasses="text-light"/>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    <div className="gameSideBarCategory">
+                    <h3 className="ms-2">Testing Tokens</h3>
+                        <div className="characterImages">
+                            <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
+                                <img className="charCardPic ms-2" src="https://via.placeholder.com/100x100/848/fff"/>
+                                <div className="text-light ms-2">
+                                    100x100
+                                </div>
+                            </div>
+                            <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
+                                <img className="charCardPic ms-2" src="https://via.placeholder.com/200x200/848/fff"/>
+                                <div className="text-light ms-2">
+                                    200x200
+                                </div>
+                            </div>
+                            <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
+                                <img className="charCardPic ms-2" src={testcoin}/>
+                                <div className="text-light ms-2">
+                                    CP
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <Button variant="secondary" onClick={handleViewSidebar} className={!sidebarOpen ? "sidebar-toggle" : "sidebar-toggle sidebarRotated"}>
                     <CaretRightFill/>
                 </Button>
+            </div>
+            <div className="custCTMWrapper">
+                <div className="custCTMContent">
+                    <ul className="custCTMMenu">
+                        <li className="custCTMItem create">
+                            <div>
+                                <span>New Token</span>
+                            </div>
+                            <ChevronRight/>
+                            <ul className="createMenu">
+                                <li className="custCTMItem">
+                                    <span>Generic</span>
+                                </li>
+                                <li className="custCTMItem">
+                                    <span>Circle</span>
+                                </li>
+                                <li className="custCTMItem">
+                                    <span>From URL</span>
+                                </li>
+                            </ul>
+                        </li>
+                        <li className="custCTMItem">
+                            <span>preview</span>
+                        </li>
+                        <li className="custCTMItem">
+                            <span>preview</span>
+                        </li>
+                        <li className="custCTMItem">
+                            <span>preview</span>
+                        </li>
+                        <li className="custCTMItem">
+                            <span>preview</span>
+                        </li>
+                        <div className="custCTMSetting">
+
+                        </div>
+                    </ul>
+                </div>
             </div>
         </div>
     )

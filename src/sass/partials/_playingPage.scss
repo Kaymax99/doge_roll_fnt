@@ -72,20 +72,65 @@
   position: relative;
 }
 
-.dragAndDropContainer{
-  margin: 1rem auto;
-  text-align: center;
-  width: 800px;
-  >div {
-    background-color: rgba(255, 255, 255, 0.849);
+.gameSideBarCategory{
+  border-bottom: 1px solid $light;
+  margin-top: 0.3rem;
+}
+.gameSideBarEntry {
+  border-top: 1px solid $light;
+  border-radius: 0;
+}
+// Custom Context Menu (CTM)
+.custCTMShadow {
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+  background-color: $primary;
+}
+.custCTMWrapper {
+  @extend .custCTMShadow;
+  max-width: 300px;
+  border-radius: 10px;
+  .custCTMMenu {
+    padding: 10px 12px;
   }
-  .characterImages{
-    display: flex;
-    
-    padding: 1em;
-    margin: 0;
-  }
-  .dragAndDropToken{
-    max-width: 50px;
+  .custCTMContent {
+    .custCTMItem{
+      list-style: none;
+      font-size: 1.1em;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      padding: 0 5px 0 10px;
+      border-radius: 5px;
+      margin-bottom: 2px;
+      cursor: pointer;
+      min-width: 100%;
+      &:hover {
+        background-color: #69919c,
+      }
+      span {
+        /* margin-left: 8px; */
+        font-size: 1.2em;
+      }
+    }
+    .create {
+      position: relative;
+      justify-content: space-between;
+      .createMenu {
+        @extend .custCTMShadow;
+        border-radius: 10px;
+        padding: 12px;
+        position: absolute;
+        width: min(200px);
+        right: -200px;
+        top: -11px;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s ease;
+      }
+      &:hover .createMenu {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
   }
 }
