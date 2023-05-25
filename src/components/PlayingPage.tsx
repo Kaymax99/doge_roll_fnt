@@ -2,7 +2,7 @@ import { fabric } from "fabric";
 import { useEffect, useRef, useState } from "react";
 import { preventDragOffCanvas, snapControls, gridSize, addGrid, removeGrid} from "../hooks/canvasLogic";
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
-import { Button } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
 import { getDeleteContent } from "../hooks/fetch/gameFetches";
 import { CaretRightFill } from "react-bootstrap-icons"
@@ -10,11 +10,14 @@ import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../hooks/hooks";
 import testcoin from "../assets/img/character-sheet/Untitled-1.png"
+import noPic from "../assets/img/profile_no_pic.jpg"
+import DnDCharacter from "./characterSheet/DnDCharacter";
 
 
 export const PlayingPage = () => {
     const [sidebarOpen, setSideBarOpen] = useState(false);
-    const [charactersArray, setCharactersArray] = useState([])
+    const [charactersArray, setCharactersArray] = useState<DnDCharacter[]>()
+    const [dragAndDrop, setDragAndDrop] = useState(false)
     const canvas = useRef<fabric.Canvas>();
     const [show, setShow] = useState(false);
     const handleShow = () => setShow(true);
@@ -30,7 +33,7 @@ export const PlayingPage = () => {
         //creating canvas
         canvas.current = new fabric.Canvas("gameScreen", {
             width: 800,
-            height:800
+            height: 800
         });
         // creating grid
         addGrid(canvas.current);
@@ -62,23 +65,40 @@ export const PlayingPage = () => {
         if (dragAndDropSupported () !== true) {
             alert("Your browser does not support Drag and Drop, some functionality will not work.")
         }
-        
+        const selCanvas = document.querySelector(".upper-canvas"); 
+        if (selCanvas) {
+            /* console.log(selCanvas) */
+            document.addEventListener("contextmenu", (e) => {
+                 e.preventDefault();
+                  /* // show a custom context menu */ });
+        }
+    }, [])
+
+    useEffect(() => {
+        if (charactersArray && !dragAndDrop) {
+            enableDragAndDrop()
+        }
+      })
+
+    const enableDragAndDrop = () => {
+        setDragAndDrop(true);
         //adding event listeners for drag and drop functionalities
         const canvasContainer = document.getElementById("canvasContainer")
         canvasContainer?.addEventListener('dragenter', handleDragEnter, false);
         canvasContainer?.addEventListener('dragend', handleDragOver, false);
         canvasContainer?.addEventListener('dragleave', handleDragLeave, false);
         canvasContainer?.addEventListener('drop', handleDrop, false);
+        let imageOffsetX: number, imageOffsetY: number;
+        const canvasObject = document.querySelector(".canvas-container");
 
         //selecting all images with given tags and applying drag event listeners
         const images = document.querySelectorAll('.characterImages img');
         [].forEach.call(images, function (img: HTMLElement) {
             img.addEventListener('dragstart', handleDragStart, false);
             img.addEventListener('dragend', handleDragEnd, false);
-          });
+            console.log(img)
+        });
 
-        let imageOffsetX: number, imageOffsetY: number;
-        const canvasObject = document.querySelector(".canvas-container");
 
         function handleDragStart(this: HTMLElement, e: DragEvent) {
             [].forEach.call(images, function (img: HTMLElement) {
@@ -114,12 +134,16 @@ export const PlayingPage = () => {
                 e.stopPropagation();
             }
             const img: HTMLImageElement | null = document.querySelector('.characterImages img.img_dragging');     
-            if (canvasObject) {
+            const pageContainer = document.querySelector(".playingPage");
+            if (canvasObject && pageContainer) {
+                const pageStyle = window.getComputedStyle(pageContainer)
                 const nodeStyle = window.getComputedStyle(canvasObject)
                 const offsetLeft = Number(nodeStyle.getPropertyValue('margin-left').slice(0, -2))
                 const offsetTop = Number(nodeStyle.getPropertyValue('margin-top').slice(0, -2))
-                const y = e.clientY - Number(offsetTop) - imageOffsetY;
+                const pageOffsetTop = Number(pageStyle.getPropertyValue('padding-top').slice(0, -2))
+                const y = e.clientY - Number(offsetTop) - imageOffsetY - pageOffsetTop;
                 const x = e.clientX - Number(offsetLeft)  - imageOffsetX;
+                console.log(x)
                 if (img) {
                     const newImage = new fabric.Image(img, {
                         left: Math.round(x / gridSize) * gridSize,
@@ -135,7 +159,6 @@ export const PlayingPage = () => {
                     canvas?.current?.add(newImage);
                 }
             }
-            return false;
         }
 
         function handleDragEnd() {
@@ -143,9 +166,7 @@ export const PlayingPage = () => {
                 img.classList.remove('img_dragging');
             });
         }
-
-    }, [])
-    
+    }
     
     const checkGameValidity = async () => {
         const game = await getDeleteContent("campaigns/" + gameId, "GET", token)
@@ -159,6 +180,7 @@ export const PlayingPage = () => {
     }
     const retrieveCharacters = async () => {
         const characters = await getDeleteContent("characters/filter/campaign/" + gameId, "GET", token);
+        console.log("retrieveing chars")
         if (characters) {
             setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
         }
@@ -171,14 +193,35 @@ export const PlayingPage = () => {
 
 
     return (
-        <div className="overflow-hidden">
+        <div className="overflow-scroll playingPage pt-5">
             <div id="canvasContainer">
                 <canvas id="gameScreen" width="800" height="800"></canvas>
             </div>
-            <div className="characterImages ms-5">
-                <img draggable="true" style={{width:"50px", height:"50px"}} src="https://via.placeholder.com/100x100/848/fff"/>
-                <img draggable="true" style={{width:"50px", height:"50px"}} src="https://via.placeholder.com/200x200/848/fff"/>
-                <img draggable="true" style={{width:"50px", height:"50px"}} src={testcoin} />
+            <div className="dragAndDropContainer">
+                <div>
+                    <h3 className="text-center pt-1">Available Tokens</h3>
+                    <Row className="characterImages">
+                        <Col xs={1} className="d-flex flex-column align-items-center">
+                            <img draggable="true" className="dragAndDropToken" src="https://via.placeholder.com/100x100/848/fff"/>
+                            <span>100x</span>
+                        </Col>
+                        <Col xs={1} className="d-flex flex-column align-items-center">
+                            <img draggable="true" className="dragAndDropToken" src="https://via.placeholder.com/200x200/848/fff"/>
+                            <span>200x</span>
+                        </Col>
+                        <Col xs={1} className="d-flex flex-column align-items-center">
+                            <img draggable="true" className="dragAndDropToken" src={testcoin} />
+                            <span>CP</span>
+                        </Col>
+                        {/* {charactersArray?.map( function(char, i) {
+                            return (
+                                <Col xs={1} className="d-flex flex-column align-items-center" key={"charToken-" + i}>
+                                    <img  draggable="true" className="dragAndDropToken" src={char.picture? char.picture : noPic} />
+                                    <span>{char.name}</span>
+                                </Col>
+                            )})} */}
+                    </Row>
+                </div>
             </div>
             <div className={sidebarClass}>
                 <div className="mx-auto text-center mb-2">
@@ -190,12 +233,14 @@ export const PlayingPage = () => {
                 <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={gameId} token={token}/>
                 <div>
                     <h3 className="ms-1">Characters</h3>
-                    {charactersArray?.map( function(char, i) {
-                        return (
-                            <DnDCharacterCard 
-                            key={"character-" + i} character={char} updateChars={retrieveCharacters} />
-                        )
-                    })}
+                    <div className="characterImages">
+                        {charactersArray?.map( function(char, i) {
+                            return (
+                                <DnDCharacterCard 
+                                key={"character-" + i} character={char} updateChars={retrieveCharacters} />
+                            )
+                        })}
+                    </div>
                 </div>
                 <Button variant="secondary" onClick={handleViewSidebar} className={!sidebarOpen ? "sidebar-toggle" : "sidebar-toggle sidebarRotated"}>
                     <CaretRightFill/>

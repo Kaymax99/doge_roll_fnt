@@ -6,7 +6,7 @@
   position: absolute;
   top: 0px;
   left: -300px;
-  height: 100%;
+  min-height: 100%;
   width: 300px;
   transition: left 0.3s ease-in-out;
   background-color: $primary;
@@ -61,11 +61,31 @@
 }
 #gameScreen {
   border: 1px solid #ccc;
-  background-color: white;
-  overflow: scroll;
+  background-color: white
 }
 .canvas-container {
-  margin: 0 auto;
-  margin-top: 5em;
+  margin: auto auto;
   text-align: center;
+}
+
+.playingPage {
+  position: relative;
+}
+
+.dragAndDropContainer{
+  margin: 1rem auto;
+  text-align: center;
+  width: 800px;
+  >div {
+    background-color: rgba(255, 255, 255, 0.849);
+  }
+  .characterImages{
+    display: flex;
+    
+    padding: 1em;
+    margin: 0;
+  }
+  .dragAndDropToken{
+    max-width: 50px;
+  }
 }

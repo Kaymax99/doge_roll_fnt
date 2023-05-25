@@ -104,7 +104,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                     <Modal.Title className="mb-2 me-3">{character ? character.name : "New Character"}</Modal.Title>
                     {this.state.isNewCharacter? "" : 
                     <Button variant="danger" onClick={this.discardChanges}>
-                        Reset character to last saved state (undo recent changes)
+                        Undo recent changes
                     </Button>
                     }
                 </Modal.Header>
