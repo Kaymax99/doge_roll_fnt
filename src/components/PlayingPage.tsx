@@ -1,34 +1,55 @@
 import { fabric } from "fabric";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { preventDragOffCanvas, snapControls, gridSize, addGrid, customContextMenu, deleteSelected, moveTokenIndex } from "../hooks/canvasLogic";
+import { useEffect, useRef, useState } from "react";
+import { preventDragOffCanvas, snapControls, gridSize, addGrid, customContextMenu, deleteSelected, moveTokenIndex, createNewToken } from "../hooks/canvasLogic";
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
-import { Button } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
 import { getDeleteContent } from "../hooks/fetch/gameFetches";
-import { CaretRightFill } from "react-bootstrap-icons"
+import { CaretRightFill, Icon } from "react-bootstrap-icons"
 import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../hooks/hooks";
 import testcoin from "../assets/img/character-sheet/Untitled-1.png"
 import DnDCharacter from "./characterSheet/DnDCharacter";
-import { ChevronRight } from "react-bootstrap-icons"
+import { ChevronRight, Boxes, Map } from "react-bootstrap-icons"
+import { current } from "@reduxjs/toolkit";
 
+export interface ICoords {
+    x: number | undefined,
+    y: number | undefined
+}
+export interface INewTokenData {
+    url?: string | null,
+}
+
+    
+const initTokCreationState:INewTokenData = {
+    url: null
+}
 
 export const PlayingPage = () => {
     const [sidebarOpen, setSideBarOpen] = useState(false);
-    const [charactersArray, setCharactersArray] = useState<DnDCharacter[]>()
-    const [dragAndDrop, setDragAndDrop] = useState(false)
+    const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar"; 
+    const [charactersArray, setCharactersArray] = useState<DnDCharacter[]>();
+    const [dragAndDrop, setDragAndDrop] = useState(false);
     const canvas = useRef<fabric.Canvas>();
     const [show, setShow] = useState(false);
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
+    const [showTokCreation, setShowTokCreation] = useState(false);
+    const handleShowTokCreation = () => setShowTokCreation(true);
+    const handleCloseTokCreation = () => setShowTokCreation(false);
     const { gameId } = useParams<{gameId: string}>();
     const navigate = useNavigate();
     const user = useAppSelector((state) => state.user.content);
     const token = user?.accessToken ? user.accessToken : "";
-    const [mapLayer, setMapLayer] = useState<fabric.Object[]>([])
-    const [tokenLayer, setTokenLayer] = useState<fabric.Object[]>([])
-    
+    const [mapLayer, setMapLayer] = useState<fabric.Object[]>([]);
+    const [tokenLayer, setTokenLayer] = useState<fabric.Object[]>([]);
+    const [lastRightClickCoords, setLastRightClickCoords] = useState<ICoords>({x: undefined, y: undefined});
+    const [newTokenData, setNewTokenData] = useState<INewTokenData>(initTokCreationState);
+    const [currentLayer, setCurrentLayer] = useState<string>("token");
+
+
     useEffect( () => {
         checkGameValidity();
         retrieveCharacters();
@@ -65,10 +86,11 @@ export const PlayingPage = () => {
         //activating canvas tokens logic
         canvas.current.on('object:moving', preventDragOffCanvas);
         canvas.current.on("object:modified",snapControls);
-        canvas.current.on("mouse:down", (e) => customContextMenu(e, canvas.current));
+        canvas.current.on("mouse:down", (e) => customContextMenu(e, canvas.current, setLastRightClickCoords));
         window.addEventListener("keydown", (e) => {
             if (e.key === "Delete" && canvas.current) {
                 deleteSelected(canvas.current)
+                canvas.current.discardActiveObject().renderAll()
             }
         }, false);
 
@@ -102,7 +124,6 @@ export const PlayingPage = () => {
         [].forEach.call(images, function (img: HTMLElement) {
             img.addEventListener('dragstart', handleDragStart, false);
             img.addEventListener('dragend', handleDragEnd, false);
-            /* console.log(img) */
         });
 
 
@@ -161,8 +182,15 @@ export const PlayingPage = () => {
                     });
                     newImage.scaleToHeight(gridSize)
                     newImage.scaleToWidth(gridSize)
-                    setTokenLayer([...tokenLayer, newImage])
-                    canvas?.current?.add(newImage);
+                    if (currentLayer === "map") {
+                        setMapLayer([...mapLayer, newImage]);
+                        selectMapLayer();
+                    } else if (currentLayer === "token") {
+                        console.log("token layer")
+                        setTokenLayer([...tokenLayer, newImage]);
+                        selectTokenLayer();
+                    }
+                    canvas?.current?.add(newImage).renderAll();
                 }
             }
         }
@@ -186,7 +214,6 @@ export const PlayingPage = () => {
     }
     const retrieveCharacters = async () => {
         const characters = await getDeleteContent("characters/filter/campaign/" + gameId, "GET", token);
-        console.log("retrieveing chars")
         if (characters) {
             setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
         }
@@ -194,9 +221,8 @@ export const PlayingPage = () => {
     const handleViewSidebar = () => {
       setSideBarOpen(!sidebarOpen);
     };
-    const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar"; 
     const selectMapLayer = () => {
-        console.log("Map Layer")
+        setCurrentLayer("map")
         mapLayer.forEach((token) => {
             token.selectable = true
             token.evented = true
@@ -210,7 +236,7 @@ export const PlayingPage = () => {
          })
     }
     const selectTokenLayer = () => {
-        console.log("Token Layer")
+        setCurrentLayer("token")
         mapLayer.forEach((token) => {
             token.selectable = false
             token.evented = false
@@ -224,15 +250,19 @@ export const PlayingPage = () => {
          })
     }
 
+    const handleTokDataChange = (name: string, value: any)  => {
+        setNewTokenData({...newTokenData, [name]: value})
+    }
+
+    const cancelTokCreation = () => {
+        handleCloseTokCreation()
+        setNewTokenData(initTokCreationState)
+    }    
+
     return (
         <div className="overflow-scroll playingPage pt-5">
             <div id="canvasContainer" className="position-relative">
                 <canvas id="gameScreen" width="800" height="800"></canvas>
-                <div className="position-absolute gameControls">
-                    <Button onClick={selectMapLayer}>Map layer</Button>
-                    <Button onClick={selectTokenLayer}>Token layer</Button>
-
-                </div>
             </div>
             <div className={sidebarClass}>
                 <div className="mx-auto text-center mb-2">
@@ -264,7 +294,7 @@ export const PlayingPage = () => {
                                 </div>
                             </div>
                             <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
-                                <img className="charCardPic ms-2" src="https://via.placeholder.com/200x200/848/fff"/>
+                                <img className="charCardPic ms-2" src="https://i.imgur.com/j6hFdKJ.jpg"/>
                                 <div className="text-light ms-2">
                                     200x200
                                 </div>
@@ -281,7 +311,55 @@ export const PlayingPage = () => {
                 <Button variant="secondary" onClick={handleViewSidebar} className={!sidebarOpen ? "sidebar-toggle" : "sidebar-toggle sidebarRotated"}>
                     <CaretRightFill/>
                 </Button>
+                <div className="gameControlsWrapper">
+                    <div className="gameControlsContent">
+                        <ul className="gameControlsMenu">
+                            <li className="gameControlsItem layer">
+                                <div>
+                                    {currentLayer === "map" ? <Map/> : <Boxes/>}
+                                </div>
+                                <ul className="gameControlsLayer">
+                                    <li className="gameControlsItem">
+                                        <span onClick={selectMapLayer}>
+                                            <Map className="me-1"/> Map layer
+                                        </span>
+                                    </li>
+                                    <li className="gameControlsItem">
+                                        <span onClick={selectTokenLayer}>
+                                            <Boxes className="me-1"/>Token layer
+                                        </span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
+
+            <Modal show={showTokCreation} onHide={cancelTokCreation}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Label>Insert url</Form.Label>
+                    <Form.Control
+                    type="text"
+                    value={newTokenData.url? newTokenData.url : ""}
+                    onChange={(e) => {
+                        handleTokDataChange("url", e.target.value)
+                    }}
+                    />
+                </Modal.Body>
+                <Modal.Footer className="d-flex justify-content-between">
+                    <Button variant="danger" onClick={cancelTokCreation}>
+                        Discard
+                    </Button>
+                    <Button variant="secondary" className="text-light" onClick={() => createNewToken(canvas.current, newTokenData, lastRightClickCoords, handleCloseTokCreation)}>
+                        Create Token
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             <div className="custCTMWrapper">
                 <div className="custCTMContent">
                     <ul className="custCTMMenu">
@@ -292,7 +370,7 @@ export const PlayingPage = () => {
                             <ChevronRight/>
                             <ul className="createMenu">
                                 <li className="custCTMItem">
-                                    <span>From URL</span>
+                                    <span onClick={handleShowTokCreation}>From URL</span>
                                 </li>
                                 <li className="custCTMItem">
                                     <span>Square</span>

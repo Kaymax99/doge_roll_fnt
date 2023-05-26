@@ -1,4 +1,6 @@
 import {fabric} from "fabric";
+import { Dispatch, SetStateAction } from "react";
+import { ICoords, INewTokenData } from "../components/PlayingPage";
 
 export let gridSize = 50;
 export let gridGroup: fabric.Group;
@@ -37,6 +39,7 @@ export const setGridSize = (newSize: number) => {
 
 export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
     const evt = options.e
+    console.log(options)
     if (evt.altKey === false) {
         const action = options.transform?.action
         if (action === "scale" || action === "scaleX" || action === "scaleY")  {
@@ -81,7 +84,7 @@ export const preventDragOffCanvas = (options:fabric.IEvent<MouseEvent>) =>{
     }
 }
 
-export const customContextMenu = (options:fabric.IEvent<MouseEvent>, canvas:fabric.Canvas | undefined) => {
+export const customContextMenu = (options:fabric.IEvent<MouseEvent>, canvas:fabric.Canvas | undefined, setCoords: Dispatch<SetStateAction<ICoords>>) => {
     const selCanvas = document.querySelector(".upper-canvas");
     const contextMenu = document.querySelector<HTMLElement>(".custCTMWrapper");
     const tokenMenu = document.querySelector<HTMLElement>(".tokenCTMWrapper");
@@ -118,6 +121,7 @@ export const customContextMenu = (options:fabric.IEvent<MouseEvent>, canvas:fabr
                 x = x > winWidth - cmWidth ? winWidth - cmWidth : x
                 y = y > winHeight - cmHeight ? winHeight - cmHeight : y
 
+                setCoords({x,y})
                 if (e.target === upperCanvas) {
                     if (activeObjects?.length === 0 ) {
                         tokenMenu.style.visibility = "hidden"
@@ -169,4 +173,39 @@ export const moveTokenIndex = (canvas:fabric.Canvas | undefined, action: string)
             }
         })
     }
+}
+export const createNewToken = (canvas: fabric.Canvas | undefined, tokenData: INewTokenData, coords: ICoords, callbackFn: { (): void; (): void; }) => {
+    const canvasObject = document.querySelector(".canvas-container");
+    const pageContainer = document.querySelector(".playingPage");
+    if (canvasObject && pageContainer) {
+        const pageStyle = window.getComputedStyle(pageContainer)
+        const nodeStyle = window.getComputedStyle(canvasObject)
+        const offsetTop = Number(nodeStyle.getPropertyValue('margin-top').slice(0, -2))
+        const offsetLeft = Number(nodeStyle.getPropertyValue('margin-left').slice(0, -2))
+        const pageOffsetTop = Number(pageStyle.getPropertyValue('padding-top').slice(0, -2))
+
+        const url = tokenData?.url
+        console.log(url)
+        
+        if (canvas && coords?.x && coords?.y) {
+            const image = new Image();
+            image.src = url as "string";
+            const y = coords.y - Number(offsetTop) - pageOffsetTop - 25;
+            const x = coords.x - Number(offsetLeft) - 25;
+            const newImage = new fabric.Image(image, {
+                left: Math.round((x / gridSize) * gridSize),
+                top: Math.round((y / gridSize) * gridSize),
+                transparentCorners: false,
+                cornerColor: "#CA9534",
+                borderColor: "#CA9534",
+                cornerSize: 10,
+                snapAngle: 45,
+            });
+            newImage.scaleToHeight(gridSize)
+            newImage.scaleToWidth(gridSize)
+            console.log(newImage)
+            canvas.add(newImage).renderAll()
+        }
+    }
+    callbackFn()
 }
