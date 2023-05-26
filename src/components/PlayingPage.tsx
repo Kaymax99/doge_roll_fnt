@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
-import { useEffect, useRef, useState } from "react";
-import { preventDragOffCanvas, snapControls, gridSize, addGrid } from "../hooks/canvasLogic";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { preventDragOffCanvas, snapControls, gridSize, addGrid, customContextMenu, deleteSelected, moveTokenIndex } from "../hooks/canvasLogic";
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
@@ -26,6 +26,8 @@ export const PlayingPage = () => {
     const navigate = useNavigate();
     const user = useAppSelector((state) => state.user.content);
     const token = user?.accessToken ? user.accessToken : "";
+    const [mapLayer, setMapLayer] = useState<fabric.Object[]>([])
+    const [tokenLayer, setTokenLayer] = useState<fabric.Object[]>([])
     
     useEffect( () => {
         checkGameValidity();
@@ -33,7 +35,8 @@ export const PlayingPage = () => {
         //creating canvas
         canvas.current = new fabric.Canvas("gameScreen", {
             width: 800,
-            height: 800
+            height: 800,
+            fireRightClick: true,
         });
         // creating grid
         addGrid(canvas.current);
@@ -56,39 +59,33 @@ export const PlayingPage = () => {
             padding: 0,
             selectable:true
         });
+        setTokenLayer([...tokenLayer, block])
         canvas.current.add(block);
 
         //activating canvas tokens logic
         canvas.current.on('object:moving', preventDragOffCanvas);
         canvas.current.on("object:modified",snapControls);
+        canvas.current.on("mouse:down", (e) => customContextMenu(e, canvas.current));
         window.addEventListener("keydown", (e) => {
             if (e.key === "Delete" && canvas.current) {
-                const activeObjects = canvas.current.getActiveObjects()
-                activeObjects.forEach((obj) => 
-                canvas.current?.remove(obj));
+                deleteSelected(canvas.current)
             }
         }, false);
 
         if (dragAndDropSupported () !== true) {
             alert("Your browser does not support Drag and Drop, some functionality will not work.")
         }
-        const selCanvas = document.querySelector(".upper-canvas"); 
-        if (selCanvas) {
-            /* console.log(selCanvas) */
-            document.addEventListener("contextmenu", (e) => {
-                 e.preventDefault();
-                  /* // show a custom context menu */ 
-                });
-        }
+
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
 
     useEffect(() => {
         if (charactersArray && !dragAndDrop) {
             enableDragAndDrop()
         }
       })
-
     const enableDragAndDrop = () => {
         setDragAndDrop(true);
         //adding event listeners for drag and drop functionalities
@@ -105,7 +102,7 @@ export const PlayingPage = () => {
         [].forEach.call(images, function (img: HTMLElement) {
             img.addEventListener('dragstart', handleDragStart, false);
             img.addEventListener('dragend', handleDragEnd, false);
-            console.log(img)
+            /* console.log(img) */
         });
 
 
@@ -152,7 +149,6 @@ export const PlayingPage = () => {
                 const pageOffsetTop = Number(pageStyle.getPropertyValue('padding-top').slice(0, -2))
                 const y = e.clientY - Number(offsetTop) - imageOffsetY - pageOffsetTop;
                 const x = e.clientX - Number(offsetLeft)  - imageOffsetX;
-                console.log(x)
                 if (img) {
                     const newImage = new fabric.Image(img, {
                         left: Math.round(x / gridSize) * gridSize,
@@ -165,6 +161,7 @@ export const PlayingPage = () => {
                     });
                     newImage.scaleToHeight(gridSize)
                     newImage.scaleToWidth(gridSize)
+                    setTokenLayer([...tokenLayer, newImage])
                     canvas?.current?.add(newImage);
                 }
             }
@@ -194,17 +191,48 @@ export const PlayingPage = () => {
             setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
         }
     }
-
     const handleViewSidebar = () => {
       setSideBarOpen(!sidebarOpen);
     };
-    const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar";      
-
+    const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar"; 
+    const selectMapLayer = () => {
+        console.log("Map Layer")
+        mapLayer.forEach((token) => {
+            token.selectable = true
+            token.evented = true
+            canvas.current?.renderAll()
+        })
+        tokenLayer.forEach((token) => {
+            token.selectable = false
+            token.evented = false
+            token.opacity = 0.35
+            canvas.current?.renderAll()
+         })
+    }
+    const selectTokenLayer = () => {
+        console.log("Token Layer")
+        mapLayer.forEach((token) => {
+            token.selectable = false
+            token.evented = false
+            canvas.current?.renderAll()
+        })
+        tokenLayer.forEach((token) => {
+            token.selectable = true
+            token.evented = true
+            token.opacity = 1
+            canvas.current?.renderAll()
+         })
+    }
 
     return (
         <div className="overflow-scroll playingPage pt-5">
-            <div id="canvasContainer">
+            <div id="canvasContainer" className="position-relative">
                 <canvas id="gameScreen" width="800" height="800"></canvas>
+                <div className="position-absolute gameControls">
+                    <Button onClick={selectMapLayer}>Map layer</Button>
+                    <Button onClick={selectTokenLayer}>Token layer</Button>
+
+                </div>
             </div>
             <div className={sidebarClass}>
                 <div className="mx-auto text-center mb-2">
@@ -264,13 +292,13 @@ export const PlayingPage = () => {
                             <ChevronRight/>
                             <ul className="createMenu">
                                 <li className="custCTMItem">
-                                    <span>Generic</span>
+                                    <span>From URL</span>
+                                </li>
+                                <li className="custCTMItem">
+                                    <span>Square</span>
                                 </li>
                                 <li className="custCTMItem">
                                     <span>Circle</span>
-                                </li>
-                                <li className="custCTMItem">
-                                    <span>From URL</span>
                                 </li>
                             </ul>
                         </li>
@@ -286,9 +314,44 @@ export const PlayingPage = () => {
                         <li className="custCTMItem">
                             <span>preview</span>
                         </li>
-                        <div className="custCTMSetting">
-
-                        </div>
+                    </ul>
+                </div>
+            </div>
+            <div className="tokenCTMWrapper">
+                <div className="tokenCTMContent">
+                    <ul className="tokenCTMMenu">
+                        <li className="tokenCTMItem">
+                            <span onClick={() => moveTokenIndex(canvas.current, "front")}>To Front</span>
+                        </li>
+                        <li className="tokenCTMItem">
+                            <span onClick={() => moveTokenIndex(canvas.current, "back")}>To Back</span>
+                        </li>
+                        <li className="tokenCTMItem">
+                            <span onClick={() => moveTokenIndex(canvas.current, "forward")}>Move Forward</span>
+                        </li>
+                        <li className="tokenCTMItem">
+                            <span onClick={() => moveTokenIndex(canvas.current, "backwards")}>Move Back</span>
+                        </li>
+                        <li className="tokenCTMItem">
+                            <span onClick={() => deleteSelected(canvas.current)}>Delete</span>
+                        </li>
+                        <li className="tokenCTMItem">
+                            <span onClick={() => {
+                                if (canvas.current) {
+                                    const activeObjects = canvas.current.getActiveObjects()
+                                        activeObjects.forEach((obj) => {
+                                            obj.selectable = false
+                                            obj.evented = false
+                                            canvas?.current?.sendToBack(obj)
+                                            canvas?.current?.discardActiveObject().renderAll()
+                                            setMapLayer([...mapLayer, obj])
+                                            setTokenLayer((current) => current.filter(function(token) {
+                                                return token !== obj
+                                            }))
+                                        })
+                                    }
+                            }}>Add to Map layer</span>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -80,3 +80,93 @@ export const preventDragOffCanvas = (options:fabric.IEvent<MouseEvent>) =>{
         }
     }
 }
+
+export const customContextMenu = (options:fabric.IEvent<MouseEvent>, canvas:fabric.Canvas | undefined) => {
+    const selCanvas = document.querySelector(".upper-canvas");
+    const contextMenu = document.querySelector<HTMLElement>(".custCTMWrapper");
+    const tokenMenu = document.querySelector<HTMLElement>(".tokenCTMWrapper");
+    const createMenu = contextMenu?.querySelector<HTMLElement>(".createMenu");
+    const upperCanvas = document.querySelector(".upper-canvas");
+    const activeObjects = canvas?.getActiveObjects();
+
+    document.addEventListener("click", (e) => {
+        if (e.target !== upperCanvas && canvas) {
+            canvas.discardActiveObject().renderAll()
+        }
+    });
+
+    if (options.button === 3) {
+        if (selCanvas && contextMenu && createMenu && tokenMenu && activeObjects && canvas) {
+            document.addEventListener("click", (e) => {
+                contextMenu.style.visibility = "hidden";
+                tokenMenu.style.visibility = "hidden"
+            });
+            document.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                let x = e.clientX, y = e.clientY
+                const winWidth = window.innerWidth
+                const cmWidth = contextMenu.offsetWidth
+                const winHeight = window.innerHeight
+                const cmHeight = contextMenu.offsetHeight
+
+                if (x > (winWidth - cmWidth - createMenu.offsetWidth)) {
+                    createMenu.style.left = "-200px"
+                } else {
+                    createMenu.style.left = ""
+                    createMenu.style.right = "-200px"
+                }
+                x = x > winWidth - cmWidth ? winWidth - cmWidth : x
+                y = y > winHeight - cmHeight ? winHeight - cmHeight : y
+
+                if (e.target === upperCanvas) {
+                    if (activeObjects?.length === 0 ) {
+                        tokenMenu.style.visibility = "hidden"
+                        contextMenu.style.left = `${x}px`;
+                        contextMenu.style.top = `${y}px`;
+                        contextMenu.style.visibility = "visible"
+                    } else {
+                        contextMenu.style.visibility = "hidden"
+                        tokenMenu.style.left = `${x}px`;
+                        tokenMenu.style.top = `${y}px`;
+                        tokenMenu.style.visibility = "visible"
+                    }
+                }
+            });
+        }
+    }
+}
+
+export const deleteSelected = (canvas:fabric.Canvas | undefined) => {
+    if (canvas) {
+        const activeObjects = canvas.getActiveObjects()
+        activeObjects.forEach((obj) => 
+        canvas?.remove(obj));
+    }
+}
+export const moveTokenIndex = (canvas:fabric.Canvas | undefined, action: string) => {
+    if (canvas) {
+        const activeObjects = canvas.getActiveObjects()
+        activeObjects.forEach((obj) => {
+            switch (action) {
+                case "back":
+                    canvas.sendToBack(obj)
+                    canvas.discardActiveObject().renderAll()
+                    break;
+                case "front":
+                    canvas.bringToFront(obj)
+                    canvas.discardActiveObject().renderAll()
+                    break;
+                case "backwards":
+                    canvas.sendBackwards(obj)
+                    canvas.discardActiveObject().renderAll()
+                    break;
+                case "forward":
+                    canvas.bringForward(obj)
+                    canvas.discardActiveObject().renderAll()
+                    break;
+                default:
+                    break;
+            }
+        })
+    }
+}
