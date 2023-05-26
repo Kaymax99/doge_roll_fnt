@@ -130,7 +130,6 @@
   }
 }
 
-
 .playingPage {
   position: relative;
 }
@@ -210,6 +209,12 @@
     @extend .custCTMContent;
     .tokenCTMItem{
       @extend .custCTMItem;
+    }
+    .send2Layer{
+      @extend .create;
+      .send2LayerMenu{
+        @extend .createMenu;
+      }
     }
   }
 }

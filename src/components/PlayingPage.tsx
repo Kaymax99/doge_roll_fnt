@@ -49,6 +49,8 @@ export const PlayingPage = () => {
     const [newTokenData, setNewTokenData] = useState<INewTokenData>(initTokCreationState);
     const [currentLayer, setCurrentLayer] = useState<string>("token");
 
+    const MAP_LAYER = "map"
+    const TOKEN_LAYER = "token"
 
     useEffect( () => {
         checkGameValidity();
@@ -182,14 +184,7 @@ export const PlayingPage = () => {
                     });
                     newImage.scaleToHeight(gridSize)
                     newImage.scaleToWidth(gridSize)
-                    if (currentLayer === "map") {
-                        setMapLayer([...mapLayer, newImage]);
-                        selectMapLayer();
-                    } else if (currentLayer === "token") {
-                        console.log("token layer")
-                        setTokenLayer([...tokenLayer, newImage]);
-                        selectTokenLayer();
-                    }
+                    setTokenLayer([...tokenLayer, newImage]);
                     canvas?.current?.add(newImage).renderAll();
                 }
             }
@@ -222,7 +217,7 @@ export const PlayingPage = () => {
       setSideBarOpen(!sidebarOpen);
     };
     const selectMapLayer = () => {
-        setCurrentLayer("map")
+        setCurrentLayer(MAP_LAYER)
         mapLayer.forEach((token) => {
             token.selectable = true
             token.evented = true
@@ -236,7 +231,7 @@ export const PlayingPage = () => {
          })
     }
     const selectTokenLayer = () => {
-        setCurrentLayer("token")
+        setCurrentLayer(TOKEN_LAYER)
         mapLayer.forEach((token) => {
             token.selectable = false
             token.evented = false
@@ -316,7 +311,7 @@ export const PlayingPage = () => {
                         <ul className="gameControlsMenu">
                             <li className="gameControlsItem layer">
                                 <div>
-                                    {currentLayer === "map" ? <Map/> : <Boxes/>}
+                                    {currentLayer === MAP_LAYER ? <Map/> : <Boxes/>}
                                 </div>
                                 <ul className="gameControlsLayer">
                                     <li className="gameControlsItem">
@@ -413,22 +408,55 @@ export const PlayingPage = () => {
                         <li className="tokenCTMItem">
                             <span onClick={() => deleteSelected(canvas.current)}>Delete</span>
                         </li>
-                        <li className="tokenCTMItem">
-                            <span onClick={() => {
-                                if (canvas.current) {
-                                    const activeObjects = canvas.current.getActiveObjects()
-                                        activeObjects.forEach((obj) => {
-                                            obj.selectable = false
-                                            obj.evented = false
-                                            canvas?.current?.sendToBack(obj)
-                                            canvas?.current?.discardActiveObject().renderAll()
-                                            setMapLayer([...mapLayer, obj])
-                                            setTokenLayer((current) => current.filter(function(token) {
-                                                return token !== obj
-                                            }))
-                                        })
-                                    }
-                            }}>Add to Map layer</span>
+                        <li className="tokenCTMItem send2Layer">
+                            <div>
+                                <span>Layer</span>
+                            </div>
+                            <ChevronRight/>
+                            <ul className="send2LayerMenu">
+                                <li className="tokenCTMItem">
+                                    <span onClick={() => {
+                                        if (canvas.current) {
+                                            const activeObjects = canvas.current.getActiveObjects()
+                                                activeObjects.forEach((obj) => {
+                                                    if (mapLayer.find(tok => tok === obj) === undefined) {
+                                                        obj.selectable = false
+                                                        obj.evented = false
+                                                        canvas?.current?.sendToBack(obj)
+                                                        canvas?.current?.discardActiveObject().renderAll()
+                                                        setMapLayer([...mapLayer, obj])
+                                                        setTokenLayer((current) => current.filter(function(token) {
+                                                            return token !== obj
+                                                        }))
+                                                    }
+                                                })
+                                            }
+                                        }}>Map layer
+                                    </span>
+                                </li>
+                                <li className="tokenCTMItem">
+                                    <span onClick={() => {
+                                        if (canvas.current) {
+                                            const activeObjects = canvas.current.getActiveObjects()
+                                                activeObjects.forEach((obj) => {
+                                                    if (tokenLayer.find(tok => tok === obj) === undefined) {
+                                                        obj.selectable = false
+                                                        obj.evented = false
+                                                        obj.opacity = 0.35;
+                                                        canvas?.current?.bringForward(obj)
+                                                        canvas?.current?.discardActiveObject().renderAll()
+                                                        setTokenLayer([...tokenLayer, obj])
+                                                        setMapLayer((current) => current.filter(function(token) {
+                                                            return token !== obj
+                                                        }))
+                                                    }
+                                                })
+                                            }
+                                        }}>
+                                        Token layer
+                                    </span>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

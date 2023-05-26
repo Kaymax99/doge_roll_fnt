@@ -39,7 +39,6 @@ export const setGridSize = (newSize: number) => {
 
 export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
     const evt = options.e
-    console.log(options)
     if (evt.altKey === false) {
         const action = options.transform?.action
         if (action === "scale" || action === "scaleX" || action === "scaleY")  {
