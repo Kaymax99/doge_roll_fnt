@@ -12,7 +12,6 @@ import { useAppSelector } from "../hooks/hooks";
 import testcoin from "../assets/img/character-sheet/Untitled-1.png"
 import DnDCharacter from "./characterSheet/DnDCharacter";
 import { ChevronRight, Boxes, Map } from "react-bootstrap-icons"
-import { current } from "@reduxjs/toolkit";
 
 export interface ICoords {
     x: number | undefined,
@@ -47,12 +46,15 @@ export const PlayingPage = () => {
     const [tokenLayer, setTokenLayer] = useState<fabric.Object[]>([]);
     const [lastRightClickCoords, setLastRightClickCoords] = useState<ICoords>({x: undefined, y: undefined});
     const [newTokenData, setNewTokenData] = useState<INewTokenData>(initTokCreationState);
-    const [currentLayer, setCurrentLayer] = useState<string>("token");
+    const [currentLayer, setCurrentLayer] = useState<string>(); 
+    const gameLayer = useRef<string>();
 
     const MAP_LAYER = "map"
     const TOKEN_LAYER = "token"
 
     useEffect( () => {
+        gameLayer.current = TOKEN_LAYER
+        setCurrentLayer(TOKEN_LAYER)
         checkGameValidity();
         retrieveCharacters();
         //creating canvas
@@ -184,8 +186,14 @@ export const PlayingPage = () => {
                     });
                     newImage.scaleToHeight(gridSize)
                     newImage.scaleToWidth(gridSize)
-                    setTokenLayer([...tokenLayer, newImage]);
-                    canvas?.current?.add(newImage).renderAll();
+                    if (gameLayer.current === TOKEN_LAYER) {
+                        setTokenLayer([...tokenLayer, newImage]);
+                        canvas?.current?.add(newImage).renderAll().bringToFront(newImage);
+                    } else {
+                        setMapLayer([...mapLayer, newImage]);
+                        canvas?.current?.add(newImage).renderAll().sendToBack(newImage);
+                    }
+
                 }
             }
         }
@@ -217,6 +225,7 @@ export const PlayingPage = () => {
       setSideBarOpen(!sidebarOpen);
     };
     const selectMapLayer = () => {
+        gameLayer.current = MAP_LAYER;
         setCurrentLayer(MAP_LAYER)
         mapLayer.forEach((token) => {
             token.selectable = true
@@ -231,6 +240,7 @@ export const PlayingPage = () => {
          })
     }
     const selectTokenLayer = () => {
+        gameLayer.current = TOKEN_LAYER;
         setCurrentLayer(TOKEN_LAYER)
         mapLayer.forEach((token) => {
             token.selectable = false
@@ -311,7 +321,7 @@ export const PlayingPage = () => {
                         <ul className="gameControlsMenu">
                             <li className="gameControlsItem layer">
                                 <div>
-                                    {currentLayer === MAP_LAYER ? <Map/> : <Boxes/>}
+                                    {currentLayer === MAP_LAYER ? <Map/> : currentLayer === TOKEN_LAYER ? <Boxes/> : "?"}
                                 </div>
                                 <ul className="gameControlsLayer">
                                     <li className="gameControlsItem">
