@@ -39,7 +39,7 @@ export const MyGames = () => {
         setNewCampaign({...newCampaign, [name]: value});
     }
     const createNewGame = () => {
-        createUpdate("campaigns/" + newCampaign.id , "POST" , newCampaign, retrieveGames, token)
+        createUpdate("campaigns/" + newCampaign.id , "POST" , newCampaign, token, retrieveGames)
         setShowCreateGame(false)
     }
     

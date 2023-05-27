@@ -1,5 +1,5 @@
 import DnDCharacter from "../../components/characterSheet/DnDCharacter";
-import { INewCampaign } from "../../types/Interfaces";
+import { INewCampaign, tokenDB } from "../../types/Interfaces";
 
 export const baseUrl = "http://localhost:8080/"
 export const getDeleteContent = async (endpoint: string, type: string, token: string) => {
@@ -23,7 +23,7 @@ export const getDeleteContent = async (endpoint: string, type: string, token: st
         console.log("FATAL ERROR: ", error)
     }
 }
-export const createUpdate = async (endpoint: string | undefined, type: string, body: DnDCharacter | INewCampaign, callbackFn: () => Promise<void>, token: string) => {
+export const createUpdate = async (endpoint: string | undefined, type: string, body: DnDCharacter | INewCampaign | { tokens: tokenDB[]; maps: fabric.Object[]; },  token: string, callbackFn?: () => Promise<void>) => {
     try {
         const res = await fetch(baseUrl + endpoint, {
             method: type,
@@ -33,9 +33,9 @@ export const createUpdate = async (endpoint: string | undefined, type: string, b
                 "Content-Type": "application/json",
             }
         });
-        if (res.ok) {
+        if (res.ok && callbackFn) {
             callbackFn();
-        } else {
+        } else if (!res.ok) {
             console.log("Res not OK.", res.status)
         }
         
@@ -43,3 +43,18 @@ export const createUpdate = async (endpoint: string | undefined, type: string, b
         console.log("FATAL ERROR: ", error)
     }
 }
+/* export const saveOnUnload = (body) => {
+    console.log("nice")
+    const blolb = new Blob([JSON.stringify({body: body})], {type : "", })
+    navigator.sendBeacon()
+} */
+/* export const saveTokens = async (endpoint: string | undefined, body:{ tokens: fabric.Object[]; maps: fabric.Object[]; }) => {
+    try {
+        const res = await fetch(baseUrl + endpoint), {
+            method: "POST",
+            body: JSON.stringify()
+        }
+    } catch (error) {
+        console.log(error)
+    }
+} */

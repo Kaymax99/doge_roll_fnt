@@ -1,6 +1,7 @@
 import {fabric} from "fabric";
 import { Dispatch, SetStateAction } from "react";
-import { ICoords, INewTokenData } from "../components/PlayingPage";
+import { ObjectId } from "./customFabric";
+import { ICoords, INewTokenData } from "../types/Interfaces";
 
 export let gridSize = 50;
 export let gridGroup: fabric.Group;
@@ -37,8 +38,10 @@ export const setGridSize = (newSize: number) => {
     gridSize = newSize
 }
 
-export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
+export const snapControls = (options:fabric.IEvent<MouseEvent>, callbackFn: { (layer: string, obj: ObjectId): void; (arg0: string, arg1: ObjectId): void; }) => {
     const evt = options.e
+    const obj = options.target as ObjectId;
+    /* console.log(obj) */
     if (evt.altKey === false) {
         const action = options.transform?.action
         if (action === "scale" || action === "scaleX" || action === "scaleY")  {
@@ -57,7 +60,7 @@ export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
                 } 
             }
         }
-        if (action !== "rotate")
+        if (action !== "rotate") {
             if (options.target?.left && options.target?.top ) {
                 options.target?.set({
                 left: Math.round(options.target.left / gridSize) * gridSize,
@@ -65,7 +68,11 @@ export const snapControls = (options:fabric.IEvent<MouseEvent>) => {
                 })
             }
         }
+        if (obj.layer) {
+            callbackFn(obj.layer, obj)
+        }
     }
+}
 
 export const preventDragOffCanvas = (options:fabric.IEvent<MouseEvent>) =>{
     const target = options.target

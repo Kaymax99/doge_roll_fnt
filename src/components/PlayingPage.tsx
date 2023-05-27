@@ -4,24 +4,17 @@ import { preventDragOffCanvas, snapControls, gridSize, addGrid, customContextMen
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button, Form, Modal } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
-import { getDeleteContent } from "../hooks/fetch/gameFetches";
-import { CaretRightFill, Icon } from "react-bootstrap-icons"
+import { createUpdate, getDeleteContent } from "../hooks/fetch/gameFetches";
+import { CaretRightFill } from "react-bootstrap-icons"
 import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAppSelector } from "../hooks/hooks";
+import { genTokenId, useAppSelector } from "../hooks/hooks";
 import testcoin from "../assets/img/character-sheet/Untitled-1.png"
 import DnDCharacter from "./characterSheet/DnDCharacter";
 import { ChevronRight, Boxes, Map } from "react-bootstrap-icons"
+import { ImageId, ObjectId, RectId } from "../hooks/customFabric";
+import { ICoords, INewTokenData, MAP_LAYER, TOKEN_LAYER, tokenDB } from "../types/Interfaces";
 
-export interface ICoords {
-    x: number | undefined,
-    y: number | undefined
-}
-export interface INewTokenData {
-    url?: string | null,
-}
-
-    
 const initTokCreationState:INewTokenData = {
     url: null
 }
@@ -41,16 +34,16 @@ export const PlayingPage = () => {
     const { gameId } = useParams<{gameId: string}>();
     const navigate = useNavigate();
     const user = useAppSelector((state) => state.user.content);
-    const token = user?.accessToken ? user.accessToken : "";
+    const accessToken = user?.accessToken ? user.accessToken : "";
     const [mapLayer, setMapLayer] = useState<fabric.Object[]>([]);
-    const [tokenLayer, setTokenLayer] = useState<fabric.Object[]>([]);
+    const tokenLayer = useRef<ObjectId[]>([]);
+    const tokenLayerDB = useRef<tokenDB[]>([]);
+    const [mapLayerDB, setMapLayerDB] = useState<tokenDB[]>([]);
     const [lastRightClickCoords, setLastRightClickCoords] = useState<ICoords>({x: undefined, y: undefined});
     const [newTokenData, setNewTokenData] = useState<INewTokenData>(initTokCreationState);
     const [currentLayer, setCurrentLayer] = useState<string>(); 
     const gameLayer = useRef<string>();
 
-    const MAP_LAYER = "map"
-    const TOKEN_LAYER = "token"
 
     useEffect( () => {
         gameLayer.current = TOKEN_LAYER
@@ -65,34 +58,20 @@ export const PlayingPage = () => {
         });
         // creating grid
         addGrid(canvas.current);
-        console.log("Canvas drawn!")
-
-        const block = new fabric.Rect({
-            left: gridSize,
-            top: gridSize,
-            width: gridSize,
-            height: gridSize,
-            fill: 'red',
-            originX: 'left',
-            originY: 'top',
-            lockRotation: false,
-            transparentCorners: false,
-            cornerColor: "#CA9534",
-            borderColor: "#CA9534",
-            cornerSize: 10,
-            snapAngle:45,
-            padding: 0,
-            selectable:true
-        });
-        setTokenLayer([...tokenLayer, block])
-        canvas.current.add(block);
 
         //activating canvas tokens logic
         canvas.current.on('object:moving', preventDragOffCanvas);
-        canvas.current.on("object:modified",snapControls);
+        canvas.current.on("object:modified",(e) => snapControls(e, updateTokenPos));
         canvas.current.on("mouse:down", (e) => customContextMenu(e, canvas.current, setLastRightClickCoords));
         window.addEventListener("keydown", (e) => {
             if (e.key === "Delete" && canvas.current) {
+                const activeObjs:ObjectId[] = canvas.current.getActiveObjects()
+                activeObjs.forEach((obj) => tokenLayer.current = [...tokenLayer.current.filter(function(token) {
+                    return token.id !== obj.id
+                })])
+                activeObjs.forEach((obj) => tokenLayerDB.current = [...tokenLayerDB.current.filter(function(token) {
+                    return token.id !== obj.id
+                })])
                 deleteSelected(canvas.current)
                 canvas.current.discardActiveObject().renderAll()
             }
@@ -102,7 +81,7 @@ export const PlayingPage = () => {
             alert("Your browser does not support Drag and Drop, some functionality will not work.")
         }
 
-
+/*         window.onunload = saveOnUnload */
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -111,7 +90,11 @@ export const PlayingPage = () => {
         if (charactersArray && !dragAndDrop) {
             enableDragAndDrop()
         }
-      })
+    })
+    /*   useEffect(() => () => 
+    saveOnUnload()
+    , [] ); */
+    
     const enableDragAndDrop = () => {
         setDragAndDrop(true);
         //adding event listeners for drag and drop functionalities
@@ -122,15 +105,15 @@ export const PlayingPage = () => {
         canvasContainer?.addEventListener('drop', handleDrop, false);
         let imageOffsetX: number, imageOffsetY: number;
         const canvasObject = document.querySelector(".canvas-container");
-
+  
         //selecting all images with given tags and applying drag event listeners
         const images = document.querySelectorAll('.characterImages img');
         [].forEach.call(images, function (img: HTMLElement) {
             img.addEventListener('dragstart', handleDragStart, false);
             img.addEventListener('dragend', handleDragEnd, false);
         });
-
-
+  
+  
         function handleDragStart(this: HTMLElement, e: DragEvent) {
             [].forEach.call(images, function (img: HTMLElement) {
                 img.classList.remove('img_dragging');
@@ -140,22 +123,22 @@ export const PlayingPage = () => {
             imageOffsetY = e.clientY - this.offsetTop;
             
         }
-
+  
         function handleDragOver(e: DragEvent) {
             if (e.preventDefault && e.dataTransfer) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'copy';
             }
         }
-
+  
         function handleDragEnter(this:HTMLElement) {
             this.classList.add('over');
         }
-
+  
         function handleDragLeave(this:HTMLElement) {
             this.classList.remove('over');
         }
-
+  
         function handleDrop(this: HTMLElement, e: DragEvent) {
             e = e || window.event;
             if (e.preventDefault) {
@@ -175,7 +158,9 @@ export const PlayingPage = () => {
                 const y = e.clientY - Number(offsetTop) - imageOffsetY - pageOffsetTop;
                 const x = e.clientX - Number(offsetLeft)  - imageOffsetX;
                 if (img) {
-                    const newImage = new fabric.Image(img, {
+                    const newImage = new ImageId(img, {
+                        id: genTokenId(),
+                        layer: gameLayer.current === TOKEN_LAYER ? TOKEN_LAYER : MAP_LAYER,
                         left: Math.round(x / gridSize) * gridSize,
                         top: Math.round(y / gridSize) * gridSize,
                         transparentCorners: false,
@@ -186,18 +171,29 @@ export const PlayingPage = () => {
                     });
                     newImage.scaleToHeight(gridSize)
                     newImage.scaleToWidth(gridSize)
+                    const newImageDB: tokenDB = {
+                        id: genTokenId(),
+                        layer: "token",
+                        leftValue: Math.round(x / gridSize) * gridSize,
+                        topValue: Math.round(y / gridSize) * gridSize,
+                        width: newImage.width,
+                        height: newImage.height,
+                        scaleX: newImage.scaleX,
+                        scaleY: newImage.scaleY,
+                        currentSrc: newImage.getElement().src
+                    }
                     if (gameLayer.current === TOKEN_LAYER) {
-                        setTokenLayer([...tokenLayer, newImage]);
+                        tokenLayer.current = [...tokenLayer.current, newImage as ObjectId]
+                        tokenLayerDB.current = [...tokenLayerDB.current, newImageDB]
                         canvas?.current?.add(newImage).renderAll().bringToFront(newImage);
                     } else {
                         setMapLayer([...mapLayer, newImage]);
                         canvas?.current?.add(newImage).renderAll().sendToBack(newImage);
                     }
-
                 }
             }
         }
-
+  
         function handleDragEnd() {
             [].forEach.call(images, function (img: HTMLElement) {
                 img.classList.remove('img_dragging');
@@ -206,7 +202,7 @@ export const PlayingPage = () => {
     }
     
     const checkGameValidity = async () => {
-        const game = await getDeleteContent("campaigns/" + gameId, "GET", token)
+        const game = await getDeleteContent("campaigns/" + gameId, "GET", accessToken)
         if (!game || game?.user.id !== user?.id) {
             navigate("/404")
         }
@@ -216,7 +212,7 @@ export const PlayingPage = () => {
         return 'draggable' in document.createElement('span');
     }
     const retrieveCharacters = async () => {
-        const characters = await getDeleteContent("characters/filter/campaign/" + gameId, "GET", token);
+        const characters = await getDeleteContent("characters/filter/campaign/" + gameId, "GET", accessToken);
         if (characters) {
             setCharactersArray(characters.sort((a: { id: number; },b: { id: number; }) => (a.id > b.id) ? 1: -1))
         }
@@ -232,7 +228,7 @@ export const PlayingPage = () => {
             token.evented = true
             canvas.current?.renderAll()
         })
-        tokenLayer.forEach((token) => {
+        tokenLayer.current.forEach((token) => {
             token.selectable = false
             token.evented = false
             token.opacity = 0.35
@@ -247,7 +243,7 @@ export const PlayingPage = () => {
             token.evented = false
             canvas.current?.renderAll()
         })
-        tokenLayer.forEach((token) => {
+        tokenLayer.current.forEach((token) => {
             token.selectable = true
             token.evented = true
             token.opacity = 1
@@ -262,7 +258,42 @@ export const PlayingPage = () => {
     const cancelTokCreation = () => {
         handleCloseTokCreation()
         setNewTokenData(initTokCreationState)
-    }    
+    }
+
+    const saveTokens = () => {
+        /* tokenLayer.map((elem) => leftValue: ) */
+        const currentTokens = {
+            tokens: [...tokenLayerDB.current],
+            maps: [...mapLayer]
+        }
+        createUpdate("campaigns/tokens/" + gameId, "POST", currentTokens, accessToken)
+    }
+    const updateTokenPos = (layer: string, obj: ObjectId) => {
+        switch (layer) {
+            case TOKEN_LAYER: {
+                tokenLayer.current = [...tokenLayer.current.filter(function(token) {
+                    return token.id !== obj.id
+                }), obj]
+
+                const token = tokenLayerDB.current.find(tok => tok.id === obj.id)
+                if (token && obj.top !== undefined && obj.left !== undefined) {
+                    token.topValue = obj.top
+                    token.leftValue = obj.left
+                    tokenLayerDB.current = [...tokenLayerDB.current.filter(function(token) {
+                        return token.id !== obj.id
+                    }), token]
+                }
+                console.log("Token", tokenLayer.current)
+                console.log("TokenDB", tokenLayerDB.current)
+                break;
+            }
+            case MAP_LAYER:
+                console.log("map")
+                break;
+            default:
+                break;
+        }
+    }
 
     return (
         <div className="overflow-scroll playingPage pt-5">
@@ -276,7 +307,7 @@ export const PlayingPage = () => {
                 <div className="text-center mb-1">
                     <Button variant="secondary" className="my-2 mx-auto text-light" onClick={handleShow}>Create new Character</Button>
                 </div>
-                <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={gameId} token={token}/>
+                <DnDCharacterSheet show={show} handleClose={handleClose} character={undefined} updateChars={retrieveCharacters} gameId={gameId} token={accessToken}/>
                 <div className="px-2">
                     <div className="gameSideBarCategory">
                         <h3 className="ms-2">Characters</h3>
@@ -435,9 +466,9 @@ export const PlayingPage = () => {
                                                         canvas?.current?.sendToBack(obj)
                                                         canvas?.current?.discardActiveObject().renderAll()
                                                         setMapLayer([...mapLayer, obj])
-                                                        setTokenLayer((current) => current.filter(function(token) {
+                                                        tokenLayer.current = tokenLayer.current.filter(function(token) {
                                                             return token !== obj
-                                                        }))
+                                                        })
                                                     }
                                                 })
                                             }
@@ -449,13 +480,13 @@ export const PlayingPage = () => {
                                         if (canvas.current) {
                                             const activeObjects = canvas.current.getActiveObjects()
                                                 activeObjects.forEach((obj) => {
-                                                    if (tokenLayer.find(tok => tok === obj) === undefined) {
+                                                    if (tokenLayer.current.find(tok => tok === obj) === undefined) {
                                                         obj.selectable = false
                                                         obj.evented = false
                                                         obj.opacity = 0.35;
                                                         canvas?.current?.bringForward(obj)
                                                         canvas?.current?.discardActiveObject().renderAll()
-                                                        setTokenLayer([...tokenLayer, obj])
+                                                        tokenLayer.current = [...tokenLayer.current, obj as ObjectId]
                                                         setMapLayer((current) => current.filter(function(token) {
                                                             return token !== obj
                                                         }))
@@ -471,6 +502,7 @@ export const PlayingPage = () => {
                     </ul>
                 </div>
             </div>
+            <Button onClick={saveTokens}>Test</Button>
         </div>
     )
 }

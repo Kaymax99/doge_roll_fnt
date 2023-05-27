@@ -68,7 +68,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     updateCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        createUpdate("characters/" + this.state.character.id?.toString(), "PUT" , this.state.character,this.props.updateChars, this.props.token)
+        createUpdate("characters/" + this.state.character.id?.toString(), "PUT" , this.state.character,this.props.token, this.props.updateChars)
         this.props.handleClose();
     }
     discardChanges = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -81,7 +81,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
     newCharacter = (e: React.MouseEvent<HTMLButtonElement>) => {
         const newCharacter: DnDCharacter = {}
         e.preventDefault();
-        createUpdate("characters/campaign/" + this.props.gameId, "POST" , this.state.character,this.props.updateChars, this.props.token)
+        createUpdate("characters/campaign/" + this.props.gameId, "POST" , this.state.character,this.props.token, this.props.updateChars)
         
         this.setState({character: newCharacter});
         this.props.handleClose();
