@@ -87,6 +87,7 @@ export const PlayingPage = () => {
     }, [])
 
 
+    const currentActiveObj = canvas?.current?.getActiveObject() as ObjectId
     useEffect(() => {
         if (charactersArray && !dragAndDrop) {
             enableDragAndDrop()
@@ -95,6 +96,9 @@ export const PlayingPage = () => {
     useEffect(() => () => 
         saveOnUnload("campaigns/tokens/" + gameId, canvasTokensDB.current, accessToken)
     , [] );
+  /*   useEffect(() => {
+        
+    }, [currentActiveObj]) */
     
     const enableDragAndDrop = () => {
         setDragAndDrop(true);
@@ -235,8 +239,6 @@ export const PlayingPage = () => {
                 layer: token.layer,
                 left: token.leftValue,
                 top: token.topValue,
-                width: token.width,
-                height: token.height,
                 scaleX: token.scaleX,
                 scaleY: token.scaleY,
                 angle: token.angle,
@@ -246,16 +248,23 @@ export const PlayingPage = () => {
                 cornerSize: 10,
                 snapAngle: 45,
             })
+            const originalSize = newImage.getOriginalSize()
+            newImage.width = originalSize.width
+            newImage.height = originalSize.width
+            // if width/height multiplied by their respective scale is not divisible by the grid size, 
+            // scale the token to the closest size that is a multiple of the gridsize.
             if (token.width && token.height && token.scaleX && token.scaleY) {
-                if ((token.width * token.scaleX) < gridSize || (token.height * token.scaleX) < gridSize) {
-                    newImage.scaleToHeight(gridSize)
-                    newImage.scaleToWidth(gridSize)
+                if ((token.width * token.scaleX) % gridSize !== 0 || (token.height * token.scaleX)  % gridSize !== 0) {
+                    newImage.scaleToWidth((Math.round((token.width * token.scaleX) / gridSize)) * gridSize)
+                    newImage.scaleToHeight((Math.round((token.width * token.scaleX) / gridSize)) * gridSize)
                 }
             }
             canvasTokens.current = [...canvasTokens.current, newImage as ObjectId]
             canvas?.current?.add(newImage);
             if (token.layer === MAP_LAYER) {
                 canvas?.current?.sendToBack(newImage).renderAll()
+            } else {
+                canvas?.current?.bringToFront(newImage).renderAll()
             }
         })
         selectTokenLayer();
@@ -329,6 +338,8 @@ export const PlayingPage = () => {
                 return token.id !== obj.id
             }), token]
         }
+        console.log(canvasTokens)
+        console.log(canvasTokensDB)
     }
 
     const handleTokenCreation = (newImage: ImageId, newImageDB: tokenDB) => {
@@ -487,43 +498,58 @@ export const PlayingPage = () => {
                             </div>
                             <ChevronRight/>
                             <ul className="send2LayerMenu">
-                                <li className="tokenCTMItem">
+                                <li className={currentActiveObj?.layer === MAP_LAYER ? "tokenCTMItem current" : "tokenCTMItem"}>
                                     <span onClick={() => {
                                         if (canvas.current) {
                                             const activeObjects: ObjectId[] = canvas.current.getActiveObjects()
                                                 activeObjects.forEach((obj) => {
-                                                    obj.selectable = false
-                                                    obj.evented = false
-                                                    obj.layer = MAP_LAYER
-                                                    canvasTokens.current = [...canvasTokens.current.filter(function(token) {
-                                                        return token.id !== obj.id
-                                                    }), obj]
-                                                    const token = canvasTokensDB.current.find(tok => tok.id === obj.id)
-                                                    if (token) {
-                                                        token.layer = obj.layer
-                                                        canvasTokensDB.current = [...canvasTokensDB.current.filter(function(token) {
+                                                    if (obj.layer === MAP_LAYER) {
+                                                        return
+                                                    } else {
+                                                        obj.selectable = false
+                                                        obj.evented = false
+                                                        obj.layer = MAP_LAYER
+                                                        canvasTokens.current = [...canvasTokens.current.filter(function(token) {
                                                             return token.id !== obj.id
-                                                        }), token]
+                                                        }), obj]
+                                                        const token = canvasTokensDB.current.find(tok => tok.id === obj.id)
+                                                        if (token) {
+                                                            token.layer = obj.layer
+                                                            canvasTokensDB.current = [...canvasTokensDB.current.filter(function(token) {
+                                                                return token.id !== obj.id
+                                                            }), token]
+                                                        }
+                                                        canvas?.current?.sendToBack(obj);
                                                     }
-                                                    canvas?.current?.sendToBack(obj);
                                                 })
                                             }
                                         }}>Map layer
                                     </span>
                                 </li>
-                                <li className="tokenCTMItem">
+                                <li className={currentActiveObj?.layer === TOKEN_LAYER ? "tokenCTMItem current" : "tokenCTMItem"}>
                                     <span onClick={() => {
                                         if (canvas.current) {
                                             const activeObjects: ObjectId[]  = canvas.current.getActiveObjects()
                                                 activeObjects.forEach((obj) => {
-                                                    obj.selectable = false
-                                                    obj.evented = false
-                                                    obj.opacity = 0.5;
-                                                    obj.layer = TOKEN_LAYER
-                                                    canvasTokens.current = [...canvasTokens.current.filter(function(token) {
-                                                        return token.id !== obj.id
-                                                    }), obj]
-                                                    canvas?.current?.bringToFront(obj);
+                                                    if (obj.layer === TOKEN_LAYER) {
+                                                        return
+                                                    } else {
+                                                        obj.selectable = false
+                                                        obj.evented = false
+                                                        obj.opacity = 0.5;
+                                                        obj.layer = TOKEN_LAYER
+                                                        canvasTokens.current = [...canvasTokens.current.filter(function(token) {
+                                                            return token.id !== obj.id
+                                                        }), obj]
+                                                        const token = canvasTokensDB.current.find(tok => tok.id === obj.id)
+                                                        if (token) {
+                                                            token.layer = obj.layer
+                                                            canvasTokensDB.current = [...canvasTokensDB.current.filter(function(token) {
+                                                                return token.id !== obj.id
+                                                            }), token]
+                                                        }
+                                                        canvas?.current?.bringToFront(obj);
+                                                    }
                                                 })
                                             }
                                         }}>

@@ -209,6 +209,9 @@
     @extend .custCTMContent;
     .tokenCTMItem{
       @extend .custCTMItem;
+      &.current {
+        background-color: #69919c8a
+      }
     }
     .send2Layer{
       @extend .create;
