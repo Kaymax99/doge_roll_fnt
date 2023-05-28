@@ -1,7 +1,8 @@
 import {fabric} from "fabric";
 import { Dispatch, SetStateAction } from "react";
-import { ObjectId } from "./customFabric";
-import { ICoords, INewTokenData } from "../types/Interfaces";
+import { ImageId, ObjectId } from "./customFabric";
+import { ICoords, INewTokenData, MAP_LAYER, TOKEN_LAYER, tokenDB } from "../types/Interfaces";
+import { genTokenId } from "./hooks";
 
 export let gridSize = 50;
 export let gridGroup: fabric.Group;
@@ -38,7 +39,7 @@ export const setGridSize = (newSize: number) => {
     gridSize = newSize
 }
 
-export const snapControls = (options:fabric.IEvent<MouseEvent>, callbackFn: { (layer: string, obj: ObjectId): void; (arg0: string, arg1: ObjectId): void; }) => {
+export const snapControls = (options:fabric.IEvent<MouseEvent>, callbackFn: { (obj: ObjectId): void; (arg0: ObjectId): void; }) => {
     const evt = options.e
     const obj = options.target as ObjectId;
     /* console.log(obj) */
@@ -69,7 +70,7 @@ export const snapControls = (options:fabric.IEvent<MouseEvent>, callbackFn: { (l
             }
         }
         if (obj.layer) {
-            callbackFn(obj.layer, obj)
+            callbackFn(obj)
         }
     }
 }
@@ -180,7 +181,7 @@ export const moveTokenIndex = (canvas:fabric.Canvas | undefined, action: string)
         })
     }
 }
-export const createNewToken = (canvas: fabric.Canvas | undefined, tokenData: INewTokenData, coords: ICoords, callbackFn: { (): void; (): void; }) => {
+export const createNewToken = (canvas: fabric.Canvas | undefined, tokenData: INewTokenData, coords: ICoords, callbackFn: { (newImage: ImageId, newImageDB: tokenDB): void; (arg0: ImageId, arg1: tokenDB): void; }, currentLayer: string | undefined) => {
     const canvasObject = document.querySelector(".canvas-container");
     const pageContainer = document.querySelector(".playingPage");
     if (canvasObject && pageContainer) {
@@ -190,15 +191,17 @@ export const createNewToken = (canvas: fabric.Canvas | undefined, tokenData: INe
         const offsetLeft = Number(nodeStyle.getPropertyValue('margin-left').slice(0, -2))
         const pageOffsetTop = Number(pageStyle.getPropertyValue('padding-top').slice(0, -2))
 
-        const url = tokenData?.url
-        console.log(url)
-        
+        const url = tokenData?.url        
         if (canvas && coords?.x && coords?.y) {
+            const id = genTokenId();
+            const layer = currentLayer === TOKEN_LAYER ? TOKEN_LAYER : MAP_LAYER
             const image = new Image();
             image.src = url as "string";
             const y = coords.y - Number(offsetTop) - pageOffsetTop - 25;
             const x = coords.x - Number(offsetLeft) - 25;
-            const newImage = new fabric.Image(image, {
+            const newImage = new ImageId(image, {
+                id: id,
+                layer: layer,
                 left: Math.round((x / gridSize) * gridSize),
                 top: Math.round((y / gridSize) * gridSize),
                 transparentCorners: false,
@@ -207,11 +210,23 @@ export const createNewToken = (canvas: fabric.Canvas | undefined, tokenData: INe
                 cornerSize: 10,
                 snapAngle: 45,
             });
+            console.log(newImage)
             newImage.scaleToHeight(gridSize)
             newImage.scaleToWidth(gridSize)
             console.log(newImage)
+            const newImageDB: tokenDB = {
+                id: id,
+                layer: layer,
+                leftValue: newImage.left,
+                topValue: newImage.top,
+                width: newImage.width,
+                height: newImage.height,
+                scaleX: newImage.scaleX,
+                scaleY: newImage.scaleY,
+                currentSrc: newImage.getElement().src
+            }
             canvas.add(newImage).renderAll()
+            callbackFn(newImage, newImageDB)
         }
     }
-    callbackFn()
 }

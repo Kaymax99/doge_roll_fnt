@@ -1,5 +1,5 @@
 import DnDCharacter from "../../components/characterSheet/DnDCharacter";
-import { INewCampaign, tokenDB } from "../../types/Interfaces";
+import { ICampaignDetails, INewCampaign, tokenDB } from "../../types/Interfaces";
 
 export const baseUrl = "http://localhost:8080/"
 export const getDeleteContent = async (endpoint: string, type: string, token: string) => {
@@ -23,7 +23,7 @@ export const getDeleteContent = async (endpoint: string, type: string, token: st
         console.log("FATAL ERROR: ", error)
     }
 }
-export const createUpdate = async (endpoint: string | undefined, type: string, body: DnDCharacter | INewCampaign | { tokens: tokenDB[]; maps: fabric.Object[]; },  token: string, callbackFn?: () => Promise<void>) => {
+export const createUpdate = async (endpoint: string | undefined, type: string, body: DnDCharacter | INewCampaign | ICampaignDetails | tokenDB[],  token: string, callbackFn?: () => Promise<void>) => {
     try {
         const res = await fetch(baseUrl + endpoint, {
             method: type,
@@ -43,18 +43,18 @@ export const createUpdate = async (endpoint: string | undefined, type: string, b
         console.log("FATAL ERROR: ", error)
     }
 }
-/* export const saveOnUnload = (body) => {
-    console.log("nice")
-    const blolb = new Blob([JSON.stringify({body: body})], {type : "", })
-    navigator.sendBeacon()
-} */
-/* export const saveTokens = async (endpoint: string | undefined, body:{ tokens: fabric.Object[]; maps: fabric.Object[]; }) => {
+export const saveOnUnload = (endpoint: string, body: tokenDB[], accessToken: string) => {
     try {
-        const res = await fetch(baseUrl + endpoint), {
+        const res = fetch(baseUrl + endpoint, {
+            keepalive: true,
             method: "POST",
-            body: JSON.stringify()
-        }
+            body: JSON.stringify(body),
+            headers: {
+                Authorization: accessToken,
+                "Content-Type": "application/json",
+            }
+        })
     } catch (error) {
-        console.log(error)
+        console.log("FATAL ERROR: ", error)
     }
-} */
+}

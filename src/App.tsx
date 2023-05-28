@@ -9,6 +9,7 @@ import { WithNavbarAndFooter } from './components/navHandling/WithNavbarAndFoote
 import { MyGames } from './components/MyGames';
 import { GameDetails } from './components/GameDetails';
 import { ProfilePage } from './components/ProfilePage';
+import { NotFound } from './components/NotFound';
 
 function App() {
 
@@ -22,7 +23,7 @@ function App() {
             <Route path='/campaigns/search' element={<MyGames/>} />
             <Route path='/campaigns/details/:campaignId' element={<GameDetails/>} />
             <Route path='/users/:id' element={<ProfilePage/>} />
-            <Route path='*' element={<h1>Not found</h1>} />
+            <Route path='*' element={<NotFound/>} />
         </Route>
         <Route element={<WithoutNavbarAndFooter/>}>
           <Route path='/game/editor/:gameId' element={<PlayingPage/>} />

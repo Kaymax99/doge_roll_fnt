@@ -60,13 +60,13 @@ export interface CharCardProps {
 }
 
 export interface tokenDB {
-    id: string,
-    layer: string,
+    id?: string,
+    layer?: string,
     currentSrc?: string,
     width?: number,
     height?: number,
-    leftValue: number,
-    topValue: number,
+    leftValue?: number,
+    topValue?: number,
     scaleX?: number,
     scaleY?: number,
     angle?: number,
