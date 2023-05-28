@@ -20,7 +20,7 @@ export const DnDCharacterCard = ({character, updateChars, Cssclasses}: CharCardP
             <div
             className="d-flex align-items-center gameSideBarEntry mx-2 py-1"
             onClick={handleShow}>
-                <img className="charCardPic ms-2" src={defaultPic} id={"charImg-" + character.id}/>
+                <img className="charCardPic ms-2" src={character.picture ? character.picture : defaultPic} id={"charImg-" + character.id}/>
                 <div className={classes}>
                     {character.name}
                 </div>

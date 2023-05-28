@@ -45,7 +45,7 @@ export const createUpdate = async (endpoint: string | undefined, type: string, b
 }
 export const saveOnUnload = (endpoint: string, body: tokenDB[], accessToken: string) => {
     try {
-        const res = fetch(baseUrl + endpoint, {
+        fetch(baseUrl + endpoint, {
             keepalive: true,
             method: "POST",
             body: JSON.stringify(body),

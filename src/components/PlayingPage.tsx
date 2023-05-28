@@ -159,6 +159,7 @@ export const PlayingPage = () => {
                 const y = e.clientY - Number(offsetTop) - imageOffsetY - pageOffsetTop;
                 const x = e.clientX - Number(offsetLeft)  - imageOffsetX;
                 if (img) {
+                    console.log(img.height)
                     const id = genTokenId();
                     const layer = selectedLayer.current === TOKEN_LAYER ? TOKEN_LAYER : MAP_LAYER
                     const newImage = new ImageId(img, {
@@ -172,6 +173,9 @@ export const PlayingPage = () => {
                         cornerSize: 10,
                         snapAngle: 45,
                     });
+                    const originalSize = newImage.getOriginalSize()
+                    newImage.width = originalSize.width
+                    newImage.height = originalSize.width
                     newImage.scaleToHeight(gridSize)
                     newImage.scaleToWidth(gridSize)
                     const newImageDB: tokenDB = {
@@ -306,11 +310,6 @@ export const PlayingPage = () => {
         handleCloseTokCreation()
         setNewTokenData(initTokCreationState)
     }
-
-    const saveTokens = () => {
-        /* tokenLayer.map((elem) => leftValue: ) */
-        createUpdate("campaigns/tokens/" + gameId, "POST", canvasTokensDB.current, accessToken)
-    }
     const updateToken = (obj: ObjectId) => {
         canvasTokens.current = [...canvasTokens.current.filter(function(token) {
             return token.id !== obj.id
@@ -352,7 +351,7 @@ export const PlayingPage = () => {
                 <canvas id="gameScreen" width="800" height="800"></canvas>
             </div>
             <div className={sidebarClass}>
-                <div className="mx-auto text-center mb-2">
+                <div className="mx-auto text-center mb-2 mt-1">
                     <Link to={"/"}><img src={logo} alt="logo" id="dogeLogo"/></Link>
                 </div>
                 <div className="text-center mb-1">

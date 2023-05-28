@@ -42,7 +42,7 @@ export const setGridSize = (newSize: number) => {
 export const snapControls = (options:fabric.IEvent<MouseEvent>, callbackFn: { (obj: ObjectId): void; (arg0: ObjectId): void; }) => {
     const evt = options.e
     const obj = options.target as ObjectId;
-    /* console.log(obj) */
+    console.log(obj)
     if (evt.altKey === false) {
         const action = options.transform?.action
         if (action === "scale" || action === "scaleX" || action === "scaleY")  {
@@ -210,10 +210,11 @@ export const createNewToken = (canvas: fabric.Canvas | undefined, tokenData: INe
                 cornerSize: 10,
                 snapAngle: 45,
             });
-            console.log(newImage)
+            const originalSize = newImage.getOriginalSize()
+            newImage.width = originalSize.width
+            newImage.height = originalSize.width
             newImage.scaleToHeight(gridSize)
             newImage.scaleToWidth(gridSize)
-            console.log(newImage)
             const newImageDB: tokenDB = {
                 id: id,
                 layer: layer,

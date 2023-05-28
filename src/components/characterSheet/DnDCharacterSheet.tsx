@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Col, Container, Row, Button, Modal } from "react-bootstrap";
+import { Col, Container, Row, Button, Modal, Form } from "react-bootstrap";
 import DnDCharacter from "./DnDCharacter";
 import { createUpdate, getDeleteContent } from "../../hooks/fetch/gameFetches";
 import { StatBox } from "./components/StatBox";
@@ -10,6 +10,8 @@ import { StatBoxCombat } from "./components/StatBoxCombat";
 import heart from "../../assets/img/character-sheet/heart-frame.png";
 import { DeathSave } from "./components/DeathSave";
 import { Coins } from "./components/Coins";
+import noPic from "../../assets/img/profile_no_pic.jpg"
+import charaFrame from "../../assets/img/character-sheet/border.png"
 
 interface IDnDCharacterSheetProps {
     character?: DnDCharacter
@@ -110,6 +112,21 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                 </Modal.Header>
                 <Modal.Body>
                     <Container className="charSheet">
+                        <Row className="w-100 m-0 position-relative">
+                            <div className="mb-2 charaImageContainer">
+                                <div style={{backgroundImage: `url(${character.picture ? character.picture : noPic})`}}></div>
+                                <img src={charaFrame} alt="Character Frame"/>
+                            </div>
+                            <div className="py-2 text-center mb-3">
+                                <Form.Control
+                                type="text"
+                                value={character.picture ? character.picture : ""}
+                                placeholder="Character Image URL"
+                                onChange={(e) => this.characterChange("picture", e.target.value)}
+                                className="charInput charImageUrl"
+                                />
+                            </div>
+                        </Row>
                         <Row className="charSheetInfo">
                             <Col md={3} className="charRndBorder charName">
                                 <div className="my-2">
