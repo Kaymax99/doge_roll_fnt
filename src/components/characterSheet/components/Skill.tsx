@@ -1,12 +1,13 @@
+import { rollSelected } from "../../../hooks/diceRolling";
 import { statModCalculator } from "../StatsLogic";
 import { SkillsProps } from "./StatInterfaces";
 
-export const Skill = ({name, value, label, onChange, proficient, defaultStat, cssClass, proficiencyBonus}: SkillsProps) => {
+export const Skill = ({name, value, label, onChange, proficient, defaultStat, cssClass, proficiencyBonus, rollsHistory, rerender}: SkillsProps) => {
     let classes = "charSkills my-1"
     if (cssClass) {
         classes += " " + cssClass
     }
-    let skillMod;
+    let skillMod: number | undefined;
     const statMod = statModCalculator(value);
 
     
@@ -29,15 +30,22 @@ export const Skill = ({name, value, label, onChange, proficient, defaultStat, cs
             onChange(name + "Proficient", "proficient")
         }
     }
-
-
-    //name + "Proficient", !proficient
-    
+    const addDiceToHistory = (result: string) => {
+        if (rollsHistory?.length) {
+            if (rollsHistory?.length < 10) {
+                rollsHistory?.push(result)
+            } else {
+                rollsHistory.shift()
+                rollsHistory?.push(result)
+            }
+        }
+        rerender()
+    }
     return (
         <div className={classes}>
             <div className={proficient === "proficient" ? "charSkillsCheckbox proficient" : proficient === "expertise" ? "charSkillsCheckbox expertise" : "charSkillsCheckbox"}
             onClick={() => handleClick()}/>
-            <span>{skillMod != undefined && skillMod >= 0 ? "+" + skillMod : skillMod}</span>
+            <span onClick={() => addDiceToHistory(rollSelected(name.slice(-4) === "Save" ? label + " saving throw" : label, 20, statMod, defaultStat, proficient, Number(proficiencyBonus)))}>{skillMod != undefined && skillMod >= 0 ? "+" + skillMod : skillMod}</span>
             <label className="skillName">{label}</label>
             {defaultStat ? (
                 <span className='charSkillDefaultStat'>{defaultStat}</span>

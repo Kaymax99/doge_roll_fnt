@@ -76,7 +76,6 @@
     width: 100%;
     font-weight: bold;
     font-size: 0.65em;
-    margin-bottom: 0px;
     border: 2px solid black;
     border-radius: 8px;
     padding: 8px;
@@ -132,6 +131,7 @@
     word-wrap: break-word;
     text-overflow: ellipsis;
     text-transform: uppercase;
+    cursor: pointer;
     &.combat {
         margin-top: 0px;
         border-bottom-right-radius: 5px;
@@ -265,6 +265,7 @@
         padding: 0 2px;
         margin: 0 2px;
         text-align: center;
+        cursor: pointer;
     }
 }
 
@@ -493,7 +494,7 @@
         min-height: 150px;
     }
 }
-.charImageUrl{
+.charImageUrl {
     width: 50%;
     margin: auto auto;
     @media screen and (max-width: 767px) {
@@ -502,4 +503,40 @@
     @media screen and (max-width: 500px) {
         width: 100%;
     }
+}
+.rollsHistory {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 60%;
+    margin-bottom: 15px;
+    font-weight: 500;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 8px;
+    padding-bottom: 2px;
+    display: none;
+    > div {
+        min-height: 290px;
+    }
+    label {
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+    p {
+        @media screen and (max-width:1200px) {
+            font-size: 1rem;
+        }
+        @media screen and (max-width:500px) {
+            font-size: 0.8rem;
+        }
+    }
+    @media screen and (max-width:900px) {
+        max-width: 75%;
+    }
+    @media screen and (max-width:767px) {
+        max-width: 100%;
+    }
+}
+.rollsHistory.showHist {
+    display: block;
 }

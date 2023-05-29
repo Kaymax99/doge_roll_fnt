@@ -12,6 +12,7 @@ import { DeathSave } from "./components/DeathSave";
 import { Coins } from "./components/Coins";
 import noPic from "../../assets/img/profile_no_pic.jpg"
 import charaFrame from "../../assets/img/character-sheet/border.png"
+import { rollSelected } from "../../hooks/diceRolling";
 
 interface IDnDCharacterSheetProps {
     character?: DnDCharacter
@@ -25,11 +26,15 @@ interface IDnDCharacterSheetProps {
 interface IDnDCharacterSheetState {
     character: DnDCharacter
     isNewCharacter: boolean
+    rollsHistory: string[]
+    showRollHistory: boolean
   }
 
 const initialState: IDnDCharacterSheetState = {
     character: {},
-    isNewCharacter: true
+    isNewCharacter: true,
+    rollsHistory: [""],
+    showRollHistory: false
 }
 
 export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCharacterSheetState> {
@@ -99,6 +104,18 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     render() {
         const character = this.checkForCharChange()
+        const rollHistClass = this.state.showRollHistory ? "rollsHistory showHist" : "rollsHistory"
+        const addDiceToHistory = (result: string) => {
+            if (this.state.rollsHistory?.length) {
+                if (this.state.rollsHistory?.length < 10) {
+                    this.state.rollsHistory?.push(result)
+                } else {
+                    this.state.rollsHistory.shift()
+                    this.state.rollsHistory?.push(result)
+                }
+            }
+            this.forceUpdate()
+        }
 
         return (
             <Modal show={this.props.show} onHide={this.props.handleClose} className="characterModal">
@@ -125,6 +142,19 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                 onChange={(e) => this.characterChange("picture", e.target.value)}
                                 className="charInput charImageUrl"
                                 />
+                            </div>
+                            <div className="mx-auto text-center mb-2">
+                                <Button className="text-light" onClick={() => this.setState({showRollHistory: !this.state.showRollHistory})}>Show Roll History</Button>
+                            </div>
+                            <div className={rollHistClass}>
+                                <div>
+                                    {this.state.rollsHistory? this.state.rollsHistory.map(function(result, i) {
+                                        return (
+                                            <p className="m-0" key={"RollHistory-" + i}>{result}</p>
+                                        )
+                                    }) : ""}
+                                </div>
+                                <label>Rolls History</label>
                             </div>
                         </Row>
                         <Row className="charSheetInfo">
@@ -235,35 +265,50 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             value={character.strength}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
-                                            }}/>
+                                            }}
+                                            defaultStat="(Str)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}/>
                                             <StatBox
                                             label='Dexterity'
                                             name='dexterity'
                                             value={character.dexterity}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
-                                            }}/>
+                                            }}
+                                            defaultStat="(Str)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}/>
                                             <StatBox
                                             label='Constitution'
                                             name='constitution'
                                             value={character.constitution}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
-                                            }}/>
+                                            }}
+                                            defaultStat="(Str)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}/>
                                             <StatBox
                                             label='Intelligence'
                                             name='intelligence'
                                             value={character.intelligence}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
-                                            }}/>
+                                            }}
+                                            defaultStat="(Str)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}/>
                                             <StatBox
                                             label='Wisdom'
                                             name='wisdom'
                                             value={character.wisdom}
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
-                                            }}/>
+                                            }}
+                                            defaultStat="(Str)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}/>
                                             <StatBox
                                             label='Charisma'
                                             name='charisma'
@@ -271,6 +316,9 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Str)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                         </div>
                                     </Col>
@@ -303,6 +351,9 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Str)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="dexSave"
@@ -313,6 +364,9 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Dex)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="conSave"
@@ -323,6 +377,9 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Con)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="intSave"
@@ -333,6 +390,9 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Int)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="wisSave"
@@ -343,6 +403,9 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Wis)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="chaSave"
@@ -353,14 +416,15 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Cha)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
-                                            
                                         </div>
                                         <label>Saving Throws</label>
                                     </div>
                                     <div className="charBox">
                                         <div className="charSkills">
-                                            
                                             <Skill
                                             name="acrobatics"
                                             label="Acrobatics"
@@ -371,6 +435,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="animalHandling"
@@ -382,6 +448,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="arcana"
@@ -393,6 +461,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="athletics"
@@ -404,6 +474,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="deception"
@@ -415,6 +487,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="history"
@@ -426,6 +500,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="insight"
@@ -437,6 +513,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="intimidation"
@@ -448,6 +526,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="investigation"
@@ -459,6 +539,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="medicine"
@@ -470,6 +552,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="nature"
@@ -481,6 +565,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="perception"
@@ -492,6 +578,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="performance"
@@ -503,6 +591,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="persuasion"
@@ -514,6 +604,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="religion"
@@ -525,6 +617,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="slightOfHand"
@@ -536,6 +630,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="stealth"
@@ -547,6 +643,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                             <Skill
                                             name="survival"
@@ -558,6 +656,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                         </div>
                                         <label>Skills</label>
@@ -670,7 +770,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             />
                                         </Col>
                                         <Col xs={6}>
-                                            <div className="charBox deathSaveContainer">
+                                            <div className="charBox deathSaveContainer mt-1">
                                                 <DeathSave
                                                 label="Successes"
                                                 name="deathsaveSuccesses"
@@ -678,6 +778,8 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                 onChange={(name: string, value: any) => {
                                                     this.characterChange(name, value)
                                                 }}
+                                                rollsHistory={this.state.rollsHistory}
+                                                rerender={() => this.forceUpdate()}
                                                 />
                                                 <DeathSave
                                                 cssClass="failure"
@@ -687,8 +789,10 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                                 onChange={(name: string, value: any) => {
                                                     this.characterChange(name, value)
                                                 }}
+                                                rollsHistory={this.state.rollsHistory}
+                                                rerender={() => this.forceUpdate()}
                                                 />
-                                                <label>Death Saves</label>
+                                                <label className="mt-2" onClick={() => addDiceToHistory(rollSelected("Death saving throw", 20))}>Death Saves</label>
                                             </div>
                                         </Col>
                                     </Row>
