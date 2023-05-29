@@ -16,7 +16,6 @@ export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantS
         }
         
     }
-    
 
     return (
         <div>

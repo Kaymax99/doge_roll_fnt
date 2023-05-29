@@ -4,11 +4,13 @@ export interface StatProps {
     label: React.ReactNode
     onChange: (arg0: string, arg1: any) => void
     cssClass?: string
+    rollsHistory?: string[]
+    rerender?: any
+    defaultStat?: React.ReactNode
 }
 
 export interface SkillsProps extends StatProps {
     proficient?: string
-    defaultStat?: React.ReactNode
     proficiencyBonus?: number
 }
 

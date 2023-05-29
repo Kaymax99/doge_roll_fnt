@@ -4,7 +4,7 @@ import { preventDragOffCanvas, snapControls, gridSize, addGrid, customContextMen
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button, Form, Modal } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
-import { createUpdate, getDeleteContent, saveOnUnload } from "../hooks/fetch/gameFetches";
+import { getDeleteContent, saveOnUnload } from "../hooks/fetch/gameFetches";
 import { CaretRightFill } from "react-bootstrap-icons"
 import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
