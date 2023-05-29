@@ -41,6 +41,7 @@ export const PlayingPage = () => {
     const [newTokenData, setNewTokenData] = useState<INewTokenData>(initTokCreationState);
     const [currentLayer, setCurrentLayer] = useState<string>(); 
     const selectedLayer = useRef<string>();
+    const currentActiveObj = canvas?.current?.getActiveObject() as ObjectId
 
 
     useEffect( () => {
@@ -87,7 +88,6 @@ export const PlayingPage = () => {
     }, [])
 
 
-    const currentActiveObj = canvas?.current?.getActiveObject() as ObjectId
     useEffect(() => {
         if (charactersArray && !dragAndDrop) {
             enableDragAndDrop()
@@ -96,9 +96,6 @@ export const PlayingPage = () => {
     useEffect(() => () => 
         saveOnUnload("campaigns/tokens/" + gameId, canvasTokensDB.current, accessToken)
     , [] );
-  /*   useEffect(() => {
-        
-    }, [currentActiveObj]) */
     
     const enableDragAndDrop = () => {
         setDragAndDrop(true);
