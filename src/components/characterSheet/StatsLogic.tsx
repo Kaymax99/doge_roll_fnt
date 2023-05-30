@@ -79,10 +79,10 @@ export const setCharProficiency = (value:string | undefined) => {
 }
 
 export const statModCalculator = (value: string | number | undefined) => {
-    let modifier;
+    let modifier: number;
     if (value && !isNaN(Number(value))) {
         const statModifier = Math.floor((Number(value) - 10) /2)
         modifier = statModifier
-    }
     return modifier
+    }
 }

@@ -176,7 +176,6 @@
     margin: -35px auto 10px;
     width: 60%;
     input {
-        /* background-color: black; */
         border-radius: 50%;
         overflow: hidden;
         padding: 0;
@@ -355,6 +354,56 @@
 
 .grayLabel{
     color: #909090;
+}
+//Attacks 
+.charAttacksBox{
+    text-align: left;
+    .atkSlot {
+        margin-bottom: 4px;
+        .arkSlotName {
+            .form-control {
+                background-color: #daebf3;
+                text-align: center;
+                padding: 4px;
+                border: 0;
+                margin-bottom: 2px;
+            }
+        }
+        .arkSlotRollInfo {
+            text-align: center;
+        }
+        .dmgStat{
+            text-transform: capitalize;
+            font-weight: 400;
+        }
+    }
+}
+.atkStatSelect{
+    -webkit-appearance: none;
+    text-align: center;
+    background-color: #daebf3;
+    border: none;
+    padding: 0
+}
+.atkExtraMod {
+    @extend .atkStatSelect;
+    max-width: 15px;
+}
+.atkCritRange{
+    @extend .atkStatSelect;
+    max-width: 20px;
+}
+.atkDiceQnt {
+    @extend .atkStatSelect;
+    max-width: 18px;
+}
+.atkCheckbox {
+    @extend .charSkillsCheckbox;
+    margin-bottom: 2px;
+}
+.atkDmgType {
+    @extend .atkStatSelect;
+    max-width: 60px;
 }
 
 //Equipment

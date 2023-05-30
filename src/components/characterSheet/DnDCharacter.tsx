@@ -88,6 +88,10 @@ export default class DnDCharacter {
     deathsaveSuccesses?: string
     deathsaveFailures?: string
 
+    //attacks
+    attacks?: any[]
+    attacksText?: string
+
     //spellcasting
 
     spellcastingType?: string

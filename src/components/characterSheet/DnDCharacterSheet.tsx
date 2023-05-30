@@ -13,6 +13,7 @@ import { Coins } from "./components/Coins";
 import noPic from "../../assets/img/profile_no_pic.jpg"
 import charaFrame from "../../assets/img/character-sheet/border.png"
 import { rollSelected } from "../../hooks/diceRolling";
+import { AttacksBox } from "./components/AttacksBox";
 
 interface IDnDCharacterSheetProps {
     character?: DnDCharacter
@@ -798,8 +799,23 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                     </Row>
                                 </div>
 
-                                <div>
-                                    {/* attack table */}
+                                <div className="charBox">
+                                    <AttacksBox
+                                    slots={5}
+                                    name="attacks"
+                                    value={character.attacks}
+                                    onChange={(name: string, value: any) => {
+                                        this.characterChange(name, value)}}
+                                    str={character.strength}
+                                    dex={character.dexterity}
+                                    con={character.constitution}
+                                    int={character.intelligence}
+                                    wis={character.wisdom}
+                                    cha={character.charisma}
+                                    profBonus={setCharProficiency(character.classLevel)}
+                                    rollsHistory={this.state.rollsHistory}
+                                    rerender={() => this.forceUpdate()}
+                                    />
                                 </div>
 
                                 <div className="charBox">
