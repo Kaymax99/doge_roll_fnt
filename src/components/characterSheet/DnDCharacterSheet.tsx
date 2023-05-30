@@ -14,6 +14,7 @@ import noPic from "../../assets/img/profile_no_pic.jpg"
 import charaFrame from "../../assets/img/character-sheet/border.png"
 import { rollSelected } from "../../hooks/diceRolling";
 import { AttacksBox } from "./components/AttacksBox";
+import { SpellsList } from "./components/SpellsList";
 
 interface IDnDCharacterSheetProps {
     character?: DnDCharacter
@@ -58,6 +59,19 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
             newCharacter.charisma = "10"
             this.setState({character: newCharacter})
         }
+    }
+    componentDidUpdate() {
+        this.hideTabContent();
+        this.removeActiveClass();
+        const tabcontent = Array.from(document.getElementsByClassName("tabcontent") as HTMLCollectionOf<HTMLElement>);
+        if (tabcontent) {
+            console.log(tabcontent)
+            /* tabcontent[0].style.display = "block"; */
+        }
+        const loginTab = document.getElementById("mainSheetBtn");
+            if (loginTab) {
+                loginTab.className += " activeSheetTab";
+            }
     }
 
     checkForCharChange() {
@@ -109,6 +123,35 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
 
     }
 
+    hideTabContent = () => {
+        let i;
+        // Get all elements with class="sheetContent" and hide them
+        const sheetContent = Array.from(document.getElementsByClassName("sheetContent") as HTMLCollectionOf<HTMLElement>);
+        for (i = 0; i < sheetContent.length; i++) {
+            sheetContent[i].style.display = "none";
+        }
+    }
+    removeActiveClass = () => {
+        let i;
+        // Get all elements with class="tablinks" and remove the class "activeSign"
+        const tablinks: HTMLCollectionOf<Element> = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" activeSheetTab", "");
+        }
+    }
+
+    toggleSheet = (e: React.MouseEvent<HTMLElement>, signType: string) => {  
+        this.hideTabContent();
+        this.removeActiveClass();
+
+        // Show the current tab, and add an "activeSign" class to the button that opened the tab
+        const selectedSign = document.getElementById(signType);
+        if (selectedSign) {
+            selectedSign.style.display = "block";
+        }
+        e.currentTarget.className += " activeSheetTab";
+    }
+
     render() {
         const character = this.checkForCharChange()
         const rollHistClass = this.state.showRollHistory ? "rollsHistory showHist" : "rollsHistory"
@@ -135,7 +178,12 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                     }
                 </Modal.Header>
                 <Modal.Body>
-                    <Container className="charSheet">
+                        <div className="tab rounded-top">
+                            <button id="mainSheetBtn" className="tablinks rounded activeSheetTab" onClick={(event: React.MouseEvent<HTMLElement>) => this.toggleSheet(event, "mainSheet")}>Main Sheet</button>
+                            <button id="spellsBtn" className="tablinks rounded" onClick={(event: React.MouseEvent<HTMLElement>) => this.toggleSheet(event, "spellSheet")}>Spells</button>
+                        </div>
+
+                    <Container id="mainSheet" className="charSheet sheetContent">
                         <Row className="w-100 m-0 position-relative">
                             <div className="mb-2 charaImageContainer">
                                 <div style={{backgroundImage: `url(${character.picture ? character.picture : noPic})`}}></div>
@@ -1073,6 +1121,13 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                 </div>
                             </Col>
                         </Row>
+                    </Container>
+
+                    <Container id="spellSheet" className="charSheet sheetContent">
+                        <SpellsList 
+                        character={character} 
+                        onChange={(name: string, value: any) => {this.characterChange(name, value)}}
+                        />
                     </Container>
                 </Modal.Body>
                 <Modal.Footer className="d-flex justify-content-between">

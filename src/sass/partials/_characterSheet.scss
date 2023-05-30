@@ -60,7 +60,7 @@
     border-bottom-left-radius: 15px 50%;;
     border-top-right-radius: 15px 50%;;
     border-top-left-radius: 15px 50%;;
-    &:nth-child(1) {
+    &.charName {
         margin-right: -6px;
         @media screen and (min-width:768px) {
             border-bottom-right-radius: 0;
@@ -587,4 +587,60 @@
 }
 .rollsHistory.showHist {
     display: block;
+}
+.tab {
+    .tablinks.activeSheetTab {
+        color: #CA9534;
+        border: 3px solid #CA9534;
+    }
+}
+//Spells 
+.spellsRndBorder {
+    @extend .charRndBorder;
+    .spellsStats {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 8px auto;
+        label {
+            font-size: 0.85rem;
+        }
+    }
+    .spellRndBorder {
+        @extend .charRndBorder;
+        margin: 0;
+        text-align: center;
+        padding: 0 16px;
+        margin: 2px;
+        &.spellAbility {
+            padding: 0 50px;
+            @media screen and (max-width:500px) {
+                padding: 0 25px;
+            }
+            @media screen and (max-width:400px) {
+                padding: 0 10px;
+            }
+        }
+        @media screen and (max-width:768px) {
+            padding: 0 10px;
+        }
+    }
+    .row {
+        margin: 0;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .spellAbilitySelect {
+        @extend .atkStatSelect;
+        margin: 4px 0;
+    }
+    .knownSpells {
+        margin: 0;
+        padding: 0;
+        max-width: 35px;
+        text-align: center;
+        border: 0;
+        background-color: #daebf3;
+    }
 }

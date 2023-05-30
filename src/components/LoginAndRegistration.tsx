@@ -131,7 +131,6 @@ export const LoginAndRegistration = () => {
                         </div>
 
                         <Container id="login" className="tabcontent">
-                            {/* {user} */}
                             <div className="text-center my-3">
                                 <h1 className="text-secondary headingMsg">Welcome back!</h1>
                             </div>

@@ -296,7 +296,7 @@ export const PlayingPage = () => {
         }).forEach((token) => {
             token.selectable = false
             token.evented = false
-            canvas.current?.sendBackwards(token).renderAll()
+            canvas.current?.sendToBack(token).renderAll()
         })
         canvasTokens.current.filter(function(token) {
             return token.layer === TOKEN_LAYER
@@ -304,6 +304,7 @@ export const PlayingPage = () => {
             token.selectable = true
             token.evented = true
             token.opacity = 1
+            canvas.current?.bringToFront(token).renderAll()
         })
         canvas.current?.renderAll()
     }
@@ -335,8 +336,6 @@ export const PlayingPage = () => {
                 return token.id !== obj.id
             }), token]
         }
-        console.log(canvasTokens)
-        console.log(canvasTokensDB)
     }
 
     const handleTokenCreation = (newImage: ImageId, newImageDB: tokenDB) => {
