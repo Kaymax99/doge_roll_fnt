@@ -35,7 +35,8 @@ export const AttacksBox = ({slots, name, value, onChange, str, dex, con, int, wi
     return (
         <div className="charAttacksBox">
             {getValue().map(
-                    (val:  {
+                    (val:
+                    {
                         name: string
                         bonus: string | number | string[] | undefined
                         damage: string | number | string[] | undefined
@@ -68,48 +69,3 @@ export const AttacksBox = ({slots, name, value, onChange, str, dex, con, int, wi
         </div>
     )
 }
-
-        {/* <Table size="sm" striped bordered hover className="charAttacksBox">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th style={{ width: '70px' }}>Attack Bonus</th>
-                    <th>Damage Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                {getValue().map(
-                    (val:  {
-                        name: string | number | string[] | undefined
-                        bonus: string | number | string[] | undefined
-                        damage: string | number | string[] | undefined
-                    }, index: string
-                    ) => {
-                        return (
-                            <tr key={"charAttacksBox" + index}>
-                                <td>
-                                    <Form.Control
-                                    type="text"
-                                    value={val.name ? val.name : ""}
-                                    onChange={(e) => updateValue(index, "name", e.target.value)}
-                                    />
-                                </td>
-                                <td>
-                                    <Form.Control
-                                    type='text'
-                                    value={val.bonus ? val.bonus : ''}
-                                    onChange={(e) => updateValue(index, 'bonus', e.target.value)}
-                                    />
-                                </td>
-                                <td>
-                                    <Form.Control
-                                    type='text'
-                                    value={val.damage ? val.damage : ''}
-                                    onChange={(e) => updateValue(index, 'damage', e.target.value)}
-                                    />
-                                </td>
-                            </tr>
-                        )
-                    })}
-            </tbody>
-        </Table> */}

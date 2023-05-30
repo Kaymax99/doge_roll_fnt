@@ -50,6 +50,12 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
             this.setState( {character: this.props.character, isNewCharacter: false})
         } else {
             const newCharacter: DnDCharacter = {}
+            newCharacter.strength = "10"
+            newCharacter.dexterity = "10"
+            newCharacter.constitution = "10"
+            newCharacter.intelligence = "10"
+            newCharacter.wisdom = "10"
+            newCharacter.charisma = "10"
             this.setState({character: newCharacter})
         }
     }
@@ -69,7 +75,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
             } else if (value < 0) {
                 value = "1"
             }
-        }
+        }        
         newCharacter[name as keyof DnDCharacter] = value
         this.setState({ character: newCharacter })
     }

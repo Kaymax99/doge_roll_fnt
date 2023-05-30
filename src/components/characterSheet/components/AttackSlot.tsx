@@ -20,7 +20,7 @@ export const AttackSlot = ({value, updateValue, index, str, dex, con, int, wis, 
         if (!value.diceQnt) {
             updateValue(index, "diceQnt", 1)
         }
-    }, [])
+    })
 
     const handleDiceChange = (e: ChangeEvent<HTMLSelectElement>) => {
         updateValue(index, "diceType", e.target.value)
@@ -140,7 +140,7 @@ export const AttackSlot = ({value, updateValue, index, str, dex, con, int, wis, 
             </div>
             <div className="arkSlotRollInfo">
                 <span className="text-muted">Hit:</span> 
-                {value?.bonusAtk ? Math.floor(calcRollAvg()) + Number(value.bonusAtk) : Math.floor(calcRollAvg())}
+                {value?.bonusAtk ? Math.floor(calcRollAvg()) + Number(value.bonusAtk) : value.diceType ? Math.floor(calcRollAvg()) : 0}
                 (
                 <span>
                     <input
