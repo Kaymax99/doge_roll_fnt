@@ -18,9 +18,9 @@ export const AttackSlot = ({value, updateValue, index, str, dex, con, int, wis, 
             updateValue(index, "diceType", "d8")
         }
         if (!value.diceQnt) {
-            updateValue(index, "diceQnt", 1)
+            updateValue(index, "diceQnt", 0)
         }
-    })
+    }, [])
 
     const handleDiceChange = (e: ChangeEvent<HTMLSelectElement>) => {
         updateValue(index, "diceType", e.target.value)
@@ -145,12 +145,11 @@ export const AttackSlot = ({value, updateValue, index, str, dex, con, int, wis, 
                 <span>
                     <input
                     type="number"
-                    min={1}
                     className="atkDiceQnt"
                     value={value.diceQnt ? value.diceQnt : ""}
                     onChange={(e) => updateValue(index, "diceQnt", e.target.value)}
                     />
-                    <select value={value.diceType} onChange={handleDiceChange} className="atkStatSelect">
+                    <select value={value.diceType ? value.diceType : ""} onChange={handleDiceChange} className="atkStatSelect">
                         <option value="d2">d2</option>
                         <option value="d4">d4</option>
                         <option value="d6">d6</option>

@@ -60,19 +60,6 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
             this.setState({character: newCharacter})
         }
     }
-    componentDidUpdate() {
-        this.hideTabContent();
-        this.removeActiveClass();
-        const tabcontent = Array.from(document.getElementsByClassName("tabcontent") as HTMLCollectionOf<HTMLElement>);
-        if (tabcontent) {
-            console.log(tabcontent)
-            /* tabcontent[0].style.display = "block"; */
-        }
-        const loginTab = document.getElementById("mainSheetBtn");
-            if (loginTab) {
-                loginTab.className += " activeSheetTab";
-            }
-    }
 
     checkForCharChange() {
         const character = this.state.character
@@ -148,6 +135,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
         const selectedSign = document.getElementById(signType);
         if (selectedSign) {
             selectedSign.style.display = "block";
+            selectedSign.className += " activeContent"
         }
         e.currentTarget.className += " activeSheetTab";
     }
@@ -178,12 +166,6 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                     }
                 </Modal.Header>
                 <Modal.Body>
-                        <div className="tab rounded-top">
-                            <button id="mainSheetBtn" className="tablinks rounded activeSheetTab" onClick={(event: React.MouseEvent<HTMLElement>) => this.toggleSheet(event, "mainSheet")}>Main Sheet</button>
-                            <button id="spellsBtn" className="tablinks rounded" onClick={(event: React.MouseEvent<HTMLElement>) => this.toggleSheet(event, "spellSheet")}>Spells</button>
-                        </div>
-
-                    <Container id="mainSheet" className="charSheet sheetContent">
                         <Row className="w-100 m-0 position-relative">
                             <div className="mb-2 charaImageContainer">
                                 <div style={{backgroundImage: `url(${character.picture ? character.picture : noPic})`}}></div>
@@ -212,6 +194,12 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                 <label>Rolls History</label>
                             </div>
                         </Row>
+                        <div className="tab rounded-top">
+                            <button id="mainSheetBtn" className="tablinks rounded activeSheetTab" onClick={(event: React.MouseEvent<HTMLElement>) => this.toggleSheet(event, "mainSheet")}>Main Sheet</button>
+                            <button id="spellsBtn" className="tablinks rounded" onClick={(event: React.MouseEvent<HTMLElement>) => this.toggleSheet(event, "spellSheet")}>Spells</button>
+                        </div>
+
+                    <Container id="mainSheet" className="charSheet mt-3 sheetContent activeContent">
                         <Row className="charSheetInfo">
                             <Col md={3} className="charRndBorder charName">
                                 <div className="my-2">
@@ -920,7 +908,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             <textarea
                                                 className="charInput"
                                                 value={character.equipment ? character.equipment : ""}
-                                                onChange={(e) => this.characterChange("maxHp", e.target.value)} 
+                                                onChange={(e) => this.characterChange("equipment", e.target.value)} 
                                                 rows={15}
                                             />
                                         </Col>
@@ -1123,10 +1111,11 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                         </Row>
                     </Container>
 
-                    <Container id="spellSheet" className="charSheet sheetContent">
+                    <Container id="spellSheet" className="charSheet mt-3 sheetContent">
                         <SpellsList 
                         character={character} 
                         onChange={(name: string, value: any) => {this.characterChange(name, value)}}
+                        addToHistory={addDiceToHistory}
                         />
                     </Container>
                 </Modal.Body>

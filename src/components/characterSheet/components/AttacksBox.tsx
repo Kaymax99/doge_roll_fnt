@@ -1,4 +1,4 @@
-import { AttacksBoxProps } from "./StatInterfaces"
+import { AttacksBoxProps, IAttack } from "./StatInterfaces"
 import { AttackSlot } from "./AttackSlot"
 
 export const AttacksBox = ({slots, name, value, onChange, str, dex, con, int, wis, cha, profBonus, rollsHistory, rerender}: AttacksBoxProps) => {
@@ -34,19 +34,10 @@ export const AttacksBox = ({slots, name, value, onChange, str, dex, con, int, wi
 
     return (
         <div className="charAttacksBox">
-            {getValue().map(
-                    (val:
-                    {
-                        name: string
-                        bonus: string | number | string[] | undefined
-                        damage: string | number | string[] | undefined
-                        proficiency: boolean
-                        critRange: number
-                        diceQnt: number
-                        diceType: string
-                        damageType: string
-                        bonusAtk: number
-                    }, index: string
+            {getValue().sort(function(a: IAttack, b: IAttack) { 
+                return a.id - b.id;
+                }).map(
+                    (val: IAttack, index: string
                     ) => {
                         return (
                             <AttackSlot 

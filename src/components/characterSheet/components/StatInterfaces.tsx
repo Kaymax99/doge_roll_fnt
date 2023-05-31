@@ -33,17 +33,18 @@ export interface AttacksBoxProps {
     rerender?: any
 }
 export interface AttackSlotProps extends AttacksBoxProps{
-    value: {
-        name: string
-        bonus: string | number | string[] | undefined
-        damage: string | number | string[] | undefined
-        proficiency: boolean
-        critRange: number
-        diceQnt: number
-        diceType: string
-        damageType: string
-        bonusAtk: number
-    }
+    value: IAttack
     updateValue: (index: React.Key, field: string, newVal: string | boolean | number) => void
     index: string
+}
+export interface IAttack {
+    id: number
+    name: string
+    bonus: string | number | string[] | undefined
+    proficiency: boolean
+    critRange: number
+    diceQnt: number
+    diceType: string
+    damageType: string
+    bonusAtk: number
 }

@@ -74,8 +74,6 @@ export const setCharProficiency = (value:string | undefined) => {
         profBonus = 2
     }
     return profBonus
-    
-    
 }
 
 export const statModCalculator = (value: string | number | undefined) => {

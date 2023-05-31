@@ -101,43 +101,43 @@ export default class DnDCharacter {
     knownSpells?: string
     preparedSpells?: string
 
-    cantrips?: any[]
+    cantrips?: string
 
     lvl1SpellSlotsMax?: string
     lvl1SpellSlotsUsed?: string
-    lvl1Spells?: any[]
+    lvl1Spells?: string
   
     lvl2SpellSlotsMax?: string
     lvl2SpellSlotsUsed?: string
-    lvl2Spells?: any[]
+    lvl2Spells?: string
   
     lvl3SpellSlotsMax?: string
     lvl3SpellSlotsUsed?: string
-    lvl3Spells?: any[]
+    lvl3Spells?: string
   
     lvl4SpellSlotsMax?: string
     lvl4SpellSlotsUsed?: string
-    lvl4Spells?: any[]
+    lvl4Spells?: string
   
     lvl5SpellSlotsMax?: string
     lvl5SpellSlotsUsed?: string
-    lvl5Spells?: any[]
+    lvl5Spells?: string
   
     lvl6SpellSlotsMax?: string
     lvl6SpellSlotsUsed?: string
-    lvl6Spells?: any[]
+    lvl6Spells?: string
   
     lvl7SpellSlotsMax?: string
     lvl7SpellSlotsUsed?: string
-    lvl7Spells?: any[]
+    lvl7Spells?: string
   
     lvl8SpellSlotsMax?: string
     lvl8SpellSlotsUsed?: string
-    lvl8Spells?: any[]
+    lvl8Spells?: string
   
     lvl9SpellSlotsMax?: string
     lvl9SpellSlotsUsed?: string
-    lvl9Spells?: any[]
+    lvl9Spells?: string
 
     //attacks
 
