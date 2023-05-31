@@ -277,7 +277,6 @@ export const PlayingPage = () => {
         }).forEach((token) => {
             token.selectable = true
             token.evented = true
-            canvas.current?.bringForward(token).renderAll()
         })
         canvasTokens.current.filter(function(token) {
             return token.layer === TOKEN_LAYER
@@ -296,7 +295,6 @@ export const PlayingPage = () => {
         }).forEach((token) => {
             token.selectable = false
             token.evented = false
-            canvas.current?.sendToBack(token).renderAll()
         })
         canvasTokens.current.filter(function(token) {
             return token.layer === TOKEN_LAYER
@@ -304,7 +302,6 @@ export const PlayingPage = () => {
             token.selectable = true
             token.evented = true
             token.opacity = 1
-            canvas.current?.bringToFront(token).renderAll()
         })
         canvas.current?.renderAll()
     }
@@ -381,21 +378,21 @@ export const PlayingPage = () => {
                     <h3 className="ms-2">Testing Tokens</h3>
                         <div className="characterImages">
                             <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
-                                <img className="charCardPic ms-2" src="https://via.placeholder.com/100x100/848/fff"/>
+                                <img className="charCardPic ms-2" src="https://i.imgur.com/czZO2rY.jpg"/>
                                 <div className="text-light ms-2">
-                                    100x100
+                                    Fort
                                 </div>
                             </div>
                             <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
                                 <img className="charCardPic ms-2" src="https://i.imgur.com/j6hFdKJ.jpg"/>
                                 <div className="text-light ms-2">
-                                    200x200
+                                    Woods
                                 </div>
                             </div>
                             <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
-                                <img className="charCardPic ms-2" src={testcoin}/>
+                                <img className="charCardPic ms-2" src="https://i.imgur.com/60pV49q.png"/>
                                 <div className="text-light ms-2">
-                                    CP
+                                    Barrel
                                 </div>
                             </div>
                         </div>
