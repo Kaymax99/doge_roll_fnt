@@ -139,9 +139,15 @@
   margin-top: 0.3rem;
 }
 .gameSideBarEntry {
+  display: flex;
+  align-items: center;
   border-top: 1px solid $light;
   border-radius: 0;
+  &.noBorder {
+    border: 0;
+  }
 }
+
 // Custom Context Menu (CTM)
 .custCTMShadow {
   box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);

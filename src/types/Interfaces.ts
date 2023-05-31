@@ -57,6 +57,7 @@ export interface CharCardProps {
     character: DnDCharacter;
     updateChars: () => Promise<void>;
     Cssclasses?: string;
+    noBorder?: boolean;
 }
 
 export interface tokenDB {

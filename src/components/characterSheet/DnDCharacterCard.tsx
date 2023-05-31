@@ -4,7 +4,7 @@ import { CharCardProps } from "../../types/Interfaces";
 import defaultPic from "../../assets/img/profile_no_pic.jpg"
 import { useAppSelector } from "../../hooks/hooks";
 
-export const DnDCharacterCard = ({character, updateChars, Cssclasses}: CharCardProps) => {
+export const DnDCharacterCard = ({character, updateChars, Cssclasses, noBorder}: CharCardProps) => {
 
     const [show, setShow] = useState(false);
     const user = useAppSelector((state) => state.user.content);
@@ -18,7 +18,7 @@ export const DnDCharacterCard = ({character, updateChars, Cssclasses}: CharCardP
     return (
         <>
             <div
-            className="d-flex align-items-center gameSideBarEntry mx-2 py-1"
+            className={noBorder ? "gameSideBarEntry mx-2 py-1 noBorder" : "gameSideBarEntry mx-2 py-1"}
             onClick={handleShow}>
                 <img className="charCardPic ms-2" src={character.picture ? character.picture : defaultPic} id={"charImg-" + character.id}/>
                 <div className={classes}>

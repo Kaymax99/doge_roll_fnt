@@ -1,6 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap"
 import logo from "../assets/img/logo.png"
 import { Facebook, Instagram, Linkedin, Github } from "react-bootstrap-icons"
+import { Link } from "react-router-dom"
 
 export const CustomFooter = () => {
     return (
@@ -16,16 +17,24 @@ export const CustomFooter = () => {
                     </Col>
                     <Col xs={12} sm={4} className="mb-2">
                         <Button>
-                            <Facebook/>
+                            <Link to={"https://www.facebook.com/Simone.Kaymax/"}>
+                                <Facebook/>
+                            </Link>
                         </Button>
                         <Button>
-                            <Instagram/>
+                            <Link to={"https://www.instagram.com/simone_b99/"}>
+                                <Instagram/>
+                            </Link>
                         </Button>
                         <Button>
-                            <Linkedin/>
+                            <Link to={"https://www.linkedin.com/in/simonebasile99/"}>
+                                <Linkedin/>
+                            </Link>
                         </Button>
                         <Button>
-                            <Github/>
+                            <Link to={"https://github.com/Kaymax99"}>
+                                <Github/>
+                            </Link>
                         </Button>
                     </Col>
                 </Row>

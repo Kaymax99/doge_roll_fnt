@@ -20,8 +20,9 @@ export const CustomNavbar = () => {
             <Container className="position-relative">
                 <Row className="justify-content-center w-100 mx-0">
                     <Col xs={12} className="text-md-center py-2 upperNav d-flex align-items-center">
-                        <Link to={"/"}>
+                        <Link to={"/"} className="logoLink">
                             <img src={logo} alt="logo" id="navLogo"/>
+                            <span className="dogeRoll">DogeRoll</span>
                         </Link>
                         <div className="nav-dropdown" data-dropdown>
                             <List className="mobile-nav-btn d-md-none" data-dropdown-button data-mobile-dropdown-button/>

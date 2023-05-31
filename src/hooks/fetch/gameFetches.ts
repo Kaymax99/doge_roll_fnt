@@ -23,7 +23,12 @@ export const getDeleteContent = async (endpoint: string, type: string, token: st
         console.log("FATAL ERROR: ", error)
     }
 }
-export const createUpdate = async (endpoint: string | undefined, type: string, body: DnDCharacter | INewCampaign | ICampaignDetails | tokenDB[],  token: string, callbackFn?: () => Promise<void>) => {
+export const createUpdate = async (
+    endpoint: string | undefined, 
+    type: string, 
+    body: DnDCharacter | INewCampaign | ICampaignDetails | tokenDB[],  
+    token: string, 
+    callbackFn?: () => Promise<void>) => {
     try {
         const res = await fetch(baseUrl + endpoint, {
             method: type,

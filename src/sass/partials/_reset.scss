@@ -1,4 +1,5 @@
 html, body, #root, .playingPage {
+    font-family: 'Nunito', sans-serif;
     min-height: 100vh;
 
     /* Hide scrollbar for IE, Edge and Firefox */
@@ -48,11 +49,10 @@ input[type=number] {
 }
 
 .pageContent{
-  /* max-width: 1296px; */
   padding: 0 1.5em;
 
   .bgWhite {
-    background-color: rgba(255, 255, 255, 0.849);
+    background-color: rgba(255, 255, 255, 0.712);
   }
   .bgPrimary{
     background-color: $primary;
@@ -67,6 +67,7 @@ input[type=number] {
   >.row {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    overflow: hidden;
   }
   footer {
     border-bottom-left-radius: 10px;

@@ -9,7 +9,6 @@ import { CaretRightFill } from "react-bootstrap-icons"
 import logo from "../assets/img/logo.png"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { genTokenId, useAppSelector } from "../hooks/hooks";
-import testcoin from "../assets/img/character-sheet/Untitled-1.png"
 import DnDCharacter from "./characterSheet/DnDCharacter";
 import { ChevronRight, Boxes, Map } from "react-bootstrap-icons"
 import { ImageId, ObjectId } from "../hooks/customFabric";
@@ -95,7 +94,7 @@ export const PlayingPage = () => {
     })
     useEffect(() => () => 
         saveOnUnload("campaigns/tokens/" + gameId, canvasTokensDB.current, accessToken)
-    , [] );
+    , []);
     
     const enableDragAndDrop = () => {
         setDragAndDrop(true);
@@ -160,7 +159,6 @@ export const PlayingPage = () => {
                 const y = e.clientY - Number(offsetTop) - imageOffsetY - pageOffsetTop;
                 const x = e.clientX - Number(offsetLeft)  - imageOffsetX;
                 if (img) {
-                    console.log(img.height)
                     const id = genTokenId();
                     const layer = selectedLayer.current === TOKEN_LAYER ? TOKEN_LAYER : MAP_LAYER
                     const newImage = new ImageId(img, {
@@ -377,19 +375,19 @@ export const PlayingPage = () => {
                     <div className="gameSideBarCategory">
                     <h3 className="ms-2">Testing Tokens</h3>
                         <div className="characterImages">
-                            <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
+                            <div className="gameSideBarEntry mx-2 py-1">
                                 <img className="charCardPic ms-2" src="https://i.imgur.com/czZO2rY.jpg"/>
                                 <div className="text-light ms-2">
                                     Fort
                                 </div>
                             </div>
-                            <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
+                            <div className="gameSideBarEntry mx-2 py-1">
                                 <img className="charCardPic ms-2" src="https://i.imgur.com/j6hFdKJ.jpg"/>
                                 <div className="text-light ms-2">
                                     Woods
                                 </div>
                             </div>
-                            <div className="d-flex align-items-center gameSideBarEntry mx-2 py-1">
+                            <div className="gameSideBarEntry mx-2 py-1">
                                 <img className="charCardPic ms-2" src="https://i.imgur.com/60pV49q.png"/>
                                 <div className="text-light ms-2">
                                     Barrel
@@ -428,7 +426,7 @@ export const PlayingPage = () => {
 
             <Modal show={showTokCreation} onHide={cancelTokCreation}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>Create a new Token</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Label>Insert url</Form.Label>

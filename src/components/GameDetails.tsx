@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Modal, Row } from "react-bootstrap"
+import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { createUpdate, getDeleteContent } from "../hooks/fetch/gameFetches";
 import { useAppSelector } from "../hooks/hooks";
@@ -24,6 +24,8 @@ export const GameDetails = () => {
     const token = user?.accessToken ? user.accessToken : "";
     const [showDelete, setShowDelete] = useState(false);
     const [showCharModal, setShowCharModal] = useState(false);
+    const [showImgInput, setShowImgInput] = useState(false);
+    const imgInputClass = showImgInput ? "imageURL showInput" : "imageURL"
 
     const handleCloseCharModal = () => setShowCharModal(false);
     const handleShowCharModa = () => setShowCharModal(true);
@@ -58,7 +60,7 @@ export const GameDetails = () => {
         }
     }
     const saveChanges = () => {
-        createUpdate("campaigns/" + campaignId, "PUT", campaignDetails, fetchGame, token)
+        createUpdate("campaigns/" + campaignId, "PUT", campaignDetails, token, fetchGame )
 
     }
     const deleteGame = async() => {
@@ -73,7 +75,18 @@ export const GameDetails = () => {
                 <Col xs={12} md={8}>
                     <div className="campaignHead">
                         <div>
-                            <img src={campaignDetails?.image? campaignDetails.image : placeholder}/>
+                            <div className={imgInputClass}>
+                                <Form.Control
+                                type="text"
+                                placeholder="Insert image URL"
+                                value={campaignDetails?.image ? campaignDetails?.image : ""}
+                                onChange={(e) => handleChange("image", e.target.value)}
+                                className="w-50 mx-auto"/>
+                            </div>
+                            <div className="imageWrapper">
+                                <img src={campaignDetails?.image? campaignDetails.image : placeholder}/>
+                                <Button variant="primary" onClick={() => setShowImgInput(!showImgInput)}>Change Picture</Button>
+                            </div>
                         </div>
                         <input
                         type="text"
@@ -145,7 +158,7 @@ export const GameDetails = () => {
                         {charactersArray?.map( function(char, i) {
                             return (
                                 <DnDCharacterCard
-                                key={"character-" + i} character={char} updateChars={retrieveCharacters} />
+                                key={"character-" + i} character={char} updateChars={retrieveCharacters} noBorder/>
                             )
                         })}
                     </div>
