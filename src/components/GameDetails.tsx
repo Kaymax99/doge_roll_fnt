@@ -9,6 +9,7 @@ import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { ProfileMiniCard } from "./ProfileMiniCard";
 import { ICampaignDetails } from "../types/Interfaces";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export const GameDetails = () => {
     const { campaignId } = useParams<{campaignId: string}>();
@@ -26,6 +27,7 @@ export const GameDetails = () => {
     const [showCharModal, setShowCharModal] = useState(false);
     const [showImgInput, setShowImgInput] = useState(false);
     const imgInputClass = showImgInput ? "imageURL showInput" : "imageURL"
+    useDocumentTitle(`${campaignDetails?.name ? campaignDetails?.name : "Unkown"} | DogeRoll`);
 
     const handleCloseCharModal = () => setShowCharModal(false);
     const handleShowCharModa = () => setShowCharModal(true);

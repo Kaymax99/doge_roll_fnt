@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/hooks";
 import { LOG_IN } from "../redux/reducers/userReducer";
 import { IAccountData, IUserData, LoginData } from "../types/Interfaces";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 
 export const LoginAndRegistration = () => {
+    useDocumentTitle(`${window.location.href.slice(22) === "account/login" ? "Login" : "Register"} | DogeRoll`);
     const [regData, setRegData] = useState<IAccountData>({
         name: "",
         surname: "",
@@ -18,7 +20,6 @@ export const LoginAndRegistration = () => {
         username: "",
         password: "",
     })
-    /* const user =  */
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -239,5 +240,4 @@ export const LoginAndRegistration = () => {
             </Row>
         </Container>
     )
-
 }

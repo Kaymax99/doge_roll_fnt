@@ -1,11 +1,13 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { useAppSelector } from "../hooks/hooks"
 import { Link } from "react-router-dom";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 
 export const 
 Home = () => {
     const user = useAppSelector((state) => state.user.content);
+    useDocumentTitle(`Home | DogeRoll`);
 
     return (
         <Container fluid className="pageContent mainContent">

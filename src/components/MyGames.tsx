@@ -6,15 +6,16 @@ import { createUpdate, getDeleteContent } from "../hooks/fetch/gameFetches"
 import { useNavigate } from "react-router-dom"
 import { ProfileMiniCard } from "./ProfileMiniCard"
 import { INewCampaign } from "../types/Interfaces"
+import { useDocumentTitle } from "../hooks/useDocumentTitle"
 
 export const MyGames = () => {
+    useDocumentTitle(`My Games | DogeRoll`);
     const [gamesList, setGamesList] = useState([])
     const [showCreateGame, setShowCreateGame] = useState (false);
     const user = useAppSelector((state) => state.user.content);
     const token = user?.accessToken ? user.accessToken : "";
     const navigate = useNavigate()
 
-    const handleShow = () => setShowCreateGame(true);
     const handleClose = () => setShowCreateGame(false);
 
 
@@ -28,6 +29,7 @@ export const MyGames = () => {
             navigate("/account/login")
         }
         retrieveGames();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const retrieveGames = async() => {
