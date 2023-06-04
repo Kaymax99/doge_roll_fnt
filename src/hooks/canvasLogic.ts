@@ -106,7 +106,7 @@ export const customContextMenu = (options:fabric.IEvent<MouseEvent>, canvas:fabr
 
     if (options.button === 3) {
         if (selCanvas && contextMenu && createMenu && tokenMenu && activeObjects && canvas) {
-            document.addEventListener("click", (e) => {
+            document.addEventListener("click", () => {
                 contextMenu.style.visibility = "hidden";
                 tokenMenu.style.visibility = "hidden"
             });

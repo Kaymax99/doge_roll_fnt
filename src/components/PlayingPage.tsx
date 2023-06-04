@@ -12,13 +12,20 @@ import { genTokenId, useAppSelector } from "../hooks/hooks";
 import DnDCharacter from "./characterSheet/DnDCharacter";
 import { ChevronRight, Boxes, Map } from "react-bootstrap-icons"
 import { ImageId, ObjectId } from "../hooks/customFabric";
-import { ICoords, INewTokenData, MAP_LAYER, TOKEN_LAYER, tokenDB } from "../types/Interfaces";
+import { ICampaignDetails, ICoords, INewTokenData, MAP_LAYER, TOKEN_LAYER, tokenDB } from "../types/Interfaces";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 const initTokCreationState:INewTokenData = {
     url: null
 }
 
 export const PlayingPage = () => {
+    const [ campaignDetails, setCampaignDetails] = useState<ICampaignDetails>( {
+        name: "",
+        nextSession: "",
+        image: "",
+        description: ""
+    });
     const [sidebarOpen, setSideBarOpen] = useState(false);
     const sidebarClass = sidebarOpen ? "sidebar open" : "sidebar"; 
     const [charactersArray, setCharactersArray] = useState<DnDCharacter[]>();
@@ -41,6 +48,7 @@ export const PlayingPage = () => {
     const [currentLayer, setCurrentLayer] = useState<string>(); 
     const selectedLayer = useRef<string>();
     const currentActiveObj = canvas?.current?.getActiveObject() as ObjectId
+    useDocumentTitle(`${campaignDetails?.name ? campaignDetails?.name : "Playing"} | DogeRoll`);
 
 
     useEffect( () => {
@@ -80,7 +88,7 @@ export const PlayingPage = () => {
             alert("Your browser does not support Drag and Drop, some functionality will not work.")
         }
 
-        window.onbeforeunload = (e) =>{
+        window.onbeforeunload = () =>{
             saveOnUnload("campaigns/tokens/" + gameId, canvasTokensDB.current, accessToken)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -94,6 +102,7 @@ export const PlayingPage = () => {
     })
     useEffect(() => () => 
         saveOnUnload("campaigns/tokens/" + gameId, canvasTokensDB.current, accessToken)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     , []);
     
     const enableDragAndDrop = () => {
@@ -208,7 +217,8 @@ export const PlayingPage = () => {
     }
     
     const checkGameValidity = async () => {
-        const game = await getDeleteContent("campaigns/" + gameId, "GET", accessToken)
+        const game = await getDeleteContent("campaigns/" + gameId, "GET", accessToken);
+        setCampaignDetails(game)
         if (!game || game?.user.id !== user?.id) {
             navigate("/404")
         }

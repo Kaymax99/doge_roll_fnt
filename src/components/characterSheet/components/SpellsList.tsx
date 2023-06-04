@@ -1,4 +1,4 @@
-import { Col, Form, Row } from "react-bootstrap"
+import { Col, Row } from "react-bootstrap"
 import DnDCharacter from "../DnDCharacter"
 import { setCharProficiency, statModCalculator } from "../StatsLogic"
 import { rollSelected } from "../../../hooks/diceRolling"
