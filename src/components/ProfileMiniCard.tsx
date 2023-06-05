@@ -8,7 +8,8 @@ export const ProfileMiniCard = ({user}: IMiniCardProps) => {
     return (
         <Row className="mt-3">
             <Col xs={4} className="myGamesProfilePic">
-                <img src={user?.profilePic? user.profilePic : noPic}></img>
+                <div className="miniPic" style={{backgroundImage:`url("${user?.profilePic? user.profilePic : noPic}")`}}></div>
+                {/* <img src={user?.profilePic? user.profilePic : noPic}></img> */}
             </Col>
             <Col xs={8}>
                 <Link to={"/users/" + user?.id}><span  className="fw-bold">{user?.username}</span></Link>

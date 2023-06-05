@@ -3,9 +3,10 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap"
 import { useParams } from "react-router-dom";
 import { createUpdate, getDeleteContent } from "../hooks/fetch/gameFetches";
 import { IUserData } from "../types/Interfaces";
-import { formatDate, useAppSelector } from "../hooks/hooks";
+import { formatDate, useAppDispatch, useAppSelector } from "../hooks/hooks";
 import noPic from "../assets/img/profile_no_pic.jpg"
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { LOG_IN } from "../redux/reducers/userReducer";
 
 export const ProfilePage = () => {
     const { id } = useParams<{id: string}>();
@@ -20,6 +21,7 @@ export const ProfilePage = () => {
     const user = useAppSelector((state) => state.user.content);
     const token = user?.accessToken ? user.accessToken : "";
     useDocumentTitle(`${user?.username ? user.username : "Unkown"} | DogeRoll`);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         fetchUser()
@@ -30,7 +32,19 @@ export const ProfilePage = () => {
     }
 
     const updateUser = async () => {
-        createUpdate("api/auth/user/" + id, "PUT" , profile, token, fetchUser)
+        await createUpdate("api/auth/user/" + id, "PUT" , profile, token, fetchUser)
+        const updatedUser: IUserData = {
+            id: user?.id,
+            name: profile.name,
+            surname: profile.surname,
+            username: profile.username,
+            profilePic: profile.profilePic,
+            registration_date: user?.registration_date,
+            bio: profile.bio,
+            email: profile.email,
+            accessToken: user?.accessToken
+        }
+        dispatch({type: LOG_IN, payload: updatedUser})
     }
 
     const handleChange = (name: string, value: string | Date) => {
@@ -43,7 +57,7 @@ export const ProfilePage = () => {
             <Row className="bgWhite m-0 pb-3 px-2">
                 <Col md={4}>
                 <div className="profilePicContainer profileSection py-3">
-                    <img src={profile?.profilePic ? profile?.profilePic: noPic}/>
+                    <div className="profilePic" style={{backgroundImage:`url("${profile?.profilePic ? profile?.profilePic: noPic}")`}}></div>
                     {user?.id === profile?.id ? 
                     <Form.Control
                     className="mt-2"

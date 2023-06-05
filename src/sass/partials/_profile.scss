@@ -17,8 +17,10 @@
 }
 .profilePicContainer {
     overflow: hidden;
-    img {
-        width: 100%;
+    .profilePic {
+        background: no-repeat center;
+        background-size: cover;
+        height: 100%;
         aspect-ratio: 1/1;
     }
 }
