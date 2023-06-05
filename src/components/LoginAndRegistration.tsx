@@ -41,7 +41,7 @@ export const LoginAndRegistration = () => {
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [window.location.href]) 
+    }, []) 
 
     const hideTabContent = () => {
         let i;

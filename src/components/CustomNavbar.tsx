@@ -3,12 +3,18 @@ import { Link, useNavigate } from "react-router-dom"
 import logo from "../assets/img/logo.png"
 import { List } from "react-bootstrap-icons"
 import { useAppDispatch, useAppSelector } from "../hooks/hooks"
+import { enableDropdown } from "../hooks/dropdown"
+import { useEffect } from "react"
 
 export const CustomNavbar = () => {
 
     const user = useAppSelector((state) => state.user.content);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        enableDropdown()
+    }, [])
 
     const logout = () => {
         dispatch({type: "LOG_OUT", payload: null})
