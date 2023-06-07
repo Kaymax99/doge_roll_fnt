@@ -146,13 +146,6 @@ export const customContextMenu = (options:fabric.IEvent<MouseEvent>, canvas:fabr
     }
 }
 
-export const deleteSelected = (canvas:fabric.Canvas | undefined) => {
-    if (canvas) {
-        const activeObjects = canvas.getActiveObjects()
-        activeObjects.forEach((obj) => 
-        canvas?.remove(obj));
-    }
-}
 export const moveTokenIndex = (canvas:fabric.Canvas | undefined, action: string) => {
     if (canvas) {
         const activeObjects = canvas.getActiveObjects()

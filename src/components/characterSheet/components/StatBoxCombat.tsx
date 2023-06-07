@@ -1,7 +1,8 @@
+import { rollSelected } from "../../../hooks/diceRolling"
 import { statModCalculator } from "../StatsLogic"
 import { CombatStatProps } from "./StatInterfaces"
 
-export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantStat}:CombatStatProps) => {
+export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantStat, rollsHistory, rerender, defaultStat}:CombatStatProps) => {
     let classes = "charStatBox combat"
     if (cssClass) {
         classes += " " + cssClass
@@ -17,6 +18,18 @@ export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantS
         
     }
 
+    const addDiceToHistory = (result: string) => {
+        if (rollsHistory?.length) {
+            if (rollsHistory?.length < 10) {
+                rollsHistory?.push(result)
+            } else {
+                rollsHistory.shift()
+                rollsHistory?.push(result)
+            }
+        }
+        rerender()
+    }
+
     return (
         <div>
             <div className={classes}>
@@ -27,7 +40,7 @@ export const StatBoxCombat = ({name, value, label, onChange, cssClass, relevantS
                         value={value ? value : ""}
                         onChange={(e) => onChange(name, e.target.value)}
                         className="charInput"
-                        /> : <span>{modifier != undefined && modifier >= 0 ? "+" + modifier : modifier}</span>}
+                        /> : <span onClick={() => addDiceToHistory(rollSelected(label, 20, modifier, defaultStat))}>{modifier != undefined && modifier >= 0 ? "+" + modifier : modifier}</span>}
                     </div>
                     : 
                     <div className="charStatboxMod hitDieContainer">

@@ -319,7 +319,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
-                                            defaultStat="(Str)"
+                                            defaultStat="(Dex)"
                                             rollsHistory={this.state.rollsHistory}
                                             rerender={() => this.forceUpdate()}/>
                                             <StatBox
@@ -329,7 +329,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
-                                            defaultStat="(Str)"
+                                            defaultStat="(Con)"
                                             rollsHistory={this.state.rollsHistory}
                                             rerender={() => this.forceUpdate()}/>
                                             <StatBox
@@ -339,7 +339,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
-                                            defaultStat="(Str)"
+                                            defaultStat="(Int)"
                                             rollsHistory={this.state.rollsHistory}
                                             rerender={() => this.forceUpdate()}/>
                                             <StatBox
@@ -349,7 +349,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
-                                            defaultStat="(Str)"
+                                            defaultStat="(Wis)"
                                             rollsHistory={this.state.rollsHistory}
                                             rerender={() => this.forceUpdate()}/>
                                             <StatBox
@@ -359,7 +359,7 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
-                                            defaultStat="(Str)"
+                                            defaultStat="(Cha)"
                                             rollsHistory={this.state.rollsHistory}
                                             rerender={() => this.forceUpdate()}
                                             />
@@ -752,6 +752,9 @@ export class DnDCharacterSheet extends Component<IDnDCharacterSheetProps,IDnDCha
                                             onChange={(name: string, value: any) => {
                                                 this.characterChange(name, value)
                                             }}
+                                            defaultStat="(Dex)"
+                                            rollsHistory={this.state.rollsHistory}
+                                            rerender={() => this.forceUpdate()}
                                             />
                                         </Col>
                                         <Col xs={4}>

@@ -1,6 +1,6 @@
 import { fabric } from "fabric";
 import { useEffect, useRef, useState } from "react";
-import { preventDragOffCanvas, snapControls, gridSize, addGrid, customContextMenu, deleteSelected, moveTokenIndex, createNewToken } from "../hooks/canvasLogic";
+import { preventDragOffCanvas, snapControls, gridSize, addGrid, customContextMenu, moveTokenIndex, createNewToken } from "../hooks/canvasLogic";
 import { DnDCharacterCard } from "./characterSheet/DnDCharacterCard";
 import { Button, Form, Modal } from "react-bootstrap";
 import { DnDCharacterSheet } from "./characterSheet/DnDCharacterSheet";
@@ -80,7 +80,6 @@ export const PlayingPage = () => {
                     return token.id !== obj.id
                 })])
                 deleteSelected(canvas.current)
-                canvas.current.discardActiveObject().renderAll()
             }
         }, false);
 
@@ -104,6 +103,16 @@ export const PlayingPage = () => {
         saveOnUnload("campaigns/tokens/" + gameId, canvasTokensDB.current, accessToken)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     , []);
+
+    
+    const deleteSelected = (canvas:fabric.Canvas | undefined) => {
+        if (canvas) {
+            const activeObjects = canvas.getActiveObjects()
+            activeObjects.forEach((obj) => 
+            canvas?.remove(obj));
+            canvas.discardActiveObject().renderAll()
+        }
+    }
     
     const enableDragAndDrop = () => {
         setDragAndDrop(true);
@@ -491,7 +500,18 @@ export const PlayingPage = () => {
                             <span onClick={() => moveTokenIndex(canvas.current, "backwards")}>Move Back</span>
                         </li>
                         <li className="tokenCTMItem">
-                            <span onClick={() => deleteSelected(canvas.current)}>Delete</span>
+                            <span onClick={() => {
+                                if (canvas.current) {
+                                    const activeObjs:ObjectId[] = canvas.current.getActiveObjects()
+                                    activeObjs.forEach((obj) => canvasTokens.current = [...canvasTokens.current.filter(function(token) {
+                                        return token.id !== obj.id
+                                    })])
+                                    activeObjs.forEach((obj) => canvasTokensDB.current = [...canvasTokensDB.current.filter(function(token) {
+                                        return token.id !== obj.id
+                                    })])
+                                    deleteSelected(canvas.current)
+                                }
+                            }}>Delete</span>
                         </li>
                         <li className="tokenCTMItem send2Layer">
                             <div>
